@@ -341,7 +341,7 @@ console.log("navigation params from basic info",navigationParams)
       console.log("data after submitting form", registerUserData)
       if (registerUserData.success) {
         setSuccess(true)
-        setMessage("Thank you for joining OZOSTARS Loyalty program, we will get back to you within 1-2 working days")
+        setMessage("Thank you for joining dixcy scott Loyalty program, we will get back to you within 1-2 working days")
         setModalTitle("Greetings")
       }
       setHideButton(false)

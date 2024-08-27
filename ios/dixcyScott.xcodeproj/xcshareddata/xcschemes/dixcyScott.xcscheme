@@ -15,9 +15,9 @@
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "13B07F861A680F5B00A75B9A"
-               BuildableName = "OzoneOverseas.app"
-               BlueprintName = "OzoneOverseas"
-               ReferencedContainer = "container:OzoneOverseas.xcodeproj">
+               BuildableName = "dixcyScott.app"
+               BlueprintName = "dixcyScott"
+               ReferencedContainer = "container:dixcyScott.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
       </BuildActionEntries>
@@ -33,9 +33,9 @@
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "00E356ED1AD99517003FC87E"
-               BuildableName = "OzoneOverseasTests.xctest"
-               BlueprintName = "OzoneOverseasTests"
-               ReferencedContainer = "container:OzoneOverseas.xcodeproj">
+               BuildableName = "dixcyScottTests.xctest"
+               BlueprintName = "dixcyScottTests"
+               ReferencedContainer = "container:dixcyScott.xcodeproj">
             </BuildableReference>
          </TestableReference>
       </Testables>
@@ -55,9 +55,9 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "13B07F861A680F5B00A75B9A"
-            BuildableName = "OzoneOverseas.app"
-            BlueprintName = "OzoneOverseas"
-            ReferencedContainer = "container:OzoneOverseas.xcodeproj">
+            BuildableName = "dixcyScott.app"
+            BlueprintName = "dixcyScott"
+            ReferencedContainer = "container:dixcyScott.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
    </LaunchAction>
@@ -72,9 +72,9 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "13B07F861A680F5B00A75B9A"
-            BuildableName = "OzoneOverseas.app"
-            BlueprintName = "OzoneOverseas"
-            ReferencedContainer = "container:OzoneOverseas.xcodeproj">
+            BuildableName = "dixcyScott.app"
+            BlueprintName = "dixcyScott"
+            ReferencedContainer = "container:dixcyScott.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
    </ProfileAction>
