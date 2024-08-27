@@ -1,4 +1,4 @@
-package com.genefied.dixcyScott;
+package com.genefied.modenik;
 
 import com.facebook.react.ReactActivity;
 import com.facebook.react.ReactActivityDelegate;

@@ -1,4 +1,4 @@
-package com.genefied.dixcyScott;
+package com.genefied.modenik;
 
 import android.app.Application;
 import com.facebook.react.PackageList;

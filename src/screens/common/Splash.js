@@ -774,7 +774,7 @@ const Splash = ({ navigation }) => {
   }, [navigation, fetchLocation]);
 
   useEffect(() => {
-    getAppTheme("ozone");
+    getAppTheme("modenik");
     const checkToken = async () => {
       const fcmToken = await messaging().getToken();
       if (fcmToken) {
@@ -825,7 +825,7 @@ const Splash = ({ navigation }) => {
                 text: "Update",
                 onPress: () =>
                   Linking.openURL(
-                    "https://play.google.com/store/apps/details?id=com.genefied.dixcyScott"
+                    "https://play.google.com/store/apps/details?id=com.genefied.modenik"
                   ),
               },
             ]
@@ -841,7 +841,7 @@ const Splash = ({ navigation }) => {
                 text: "Update",
                 onPress: () =>
                   Linking.openURL(
-                    "https://play.google.com/store/apps/details?id=com.genefied.dixcyScott"
+                    "https://play.google.com/store/apps/details?id=com.genefied.modenik"
                   ),
               },
             ]
@@ -892,7 +892,7 @@ const Splash = ({ navigation }) => {
     dispatch(setAppVersion(currentVersion));
 
     getMinVersionSupportFunc(currentVersion);
-    getAppTheme("ozone");
+    getAppTheme("modenik");
     getData();
   }, [isConnected, locationStatusChecked]);
 
@@ -997,7 +997,7 @@ const Splash = ({ navigation }) => {
       __DEV__ && setMinVersionSupport(true);
 
       if (value === "Yes") {
-        navigation.navigate("SelectUser");
+        navigation.navigate("Introduction");
       } else {
         navigation.navigate("Introduction");
       }

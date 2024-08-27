@@ -75,13 +75,13 @@ android {
 
     compileSdkVersion rootProject.ext.compileSdkVersion
 
-    namespace "com.genefied.dixcyScott"
+    namespace "com.genefied.modenik"
     defaultConfig {
-        applicationId "com.genefied.dixcyScott"
+        applicationId "com.genefied.modenik"
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
-        versionCode 70025
-        versionName "70025"
+        versionCode 1
+        versionName ".0.0"
         missingDimensionStrategy 'react-native-camera', 'general'
         
     }
