@@ -451,7 +451,7 @@ const VerifyOtp = ({ navigation, route }) => {
   const modalWithBorderClose = () => {
     setModalWithBorder(false);
     setMessage('')
-  navigation.reset({ index: '0', routes: [{ name: 'Dashboard' }] })
+  navigation.reset({ index: '0', routes: [{ name: 'CheckKycOptions' }] })
   };
 
   const ModalContent = () => {

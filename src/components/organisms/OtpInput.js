@@ -57,9 +57,9 @@ const OtpInput = (propData) => {
             // Make sure that you pass onLayout={getCellOnLayoutHandler(index)} prop to root component of "Cell"
             onLayout={getCellOnLayoutHandler(index)}
             key={index}
-            style={[styles.cellRoot, isFocused && {...styles.focusCell,borderBlockColor:primaryThemeColor,
-            borderBottomWidth: 2,},{borderBottomColor: buttonThemeColor,
-            borderBottomWidth: 1,}]}>
+            style={[styles.cellRoot, isFocused && {...styles.focusCell,borderWidth:1,borderColor:buttonThemeColor
+            },{
+            borderWidth: 2,}]}>
             <Text style={{...styles.cellText, color: buttonThemeColor,}}>
               {symbol || (isFocused ? <Cursor /> : null)}
             </Text>
@@ -80,8 +80,8 @@ const styles =  StyleSheet.create({
       marginRight: 'auto',
     },
     cellRoot: {
-      width: 40,
-      height: 40,
+      width: 46,
+      height: 46,
       justifyContent: 'center',
       alignItems: 'center',
       
@@ -92,7 +92,8 @@ const styles =  StyleSheet.create({
       textAlign: 'center',
     },
     focusCell: {
-      
+      borderWidth:1,
+      borderColor:"#DDDDDD"
     },
   });
 

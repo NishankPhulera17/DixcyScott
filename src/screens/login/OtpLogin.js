@@ -7,7 +7,8 @@ import {
   ScrollView,
   KeyboardAvoidingView,
   TouchableOpacity,
-  Keyboard
+  Keyboard,
+  Alert
 } from 'react-native';
 import { useSelector, useDispatch } from 'react-redux';
 import { BaseUrl } from '../../utils/BaseUrl';
@@ -126,7 +127,7 @@ const OtpLogin = ({ navigation, route }) => {
       if (sendOtpData?.success === true && mobile.length === 10) {
         if(Object.keys(getNameData.body).length!=0)
         {
-        navigation.navigate('VerifyOtp', { navigationParams })
+        navigation.navigate('VerifyOtp', {navigationParams,...getNameData?.body })
 
         }
       }
@@ -137,10 +138,12 @@ const OtpLogin = ({ navigation, route }) => {
     }
     else if (sendOtpError) {
       console.log("err", sendOtpError)
+
       if(sendOtpError.status == 400)
       setAlert(true)
       else
       setError(true)
+
       setHideButton(false)
       setMessage(sendOtpError?.data?.message)
     }
@@ -153,11 +156,12 @@ const OtpLogin = ({ navigation, route }) => {
     if (getNameData) {
       console.log("getNameData", getNameData)
       if (getNameData?.success) {
-        setName(getNameData?.body.name)
+        setMobile(getNameData?.body.mobile)
       }
     }
     else if (getNameError) {
       console.log("getNameError", getNameError)
+
     }
   }, [getNameData, getNameError])
 
@@ -165,25 +169,29 @@ const OtpLogin = ({ navigation, route }) => {
     console.log("Name in use effect--------->>>>>>>>>>>>>>>",name)
   }, [name])
 
-  const getMobile = data => {
-    // console.log(data)
-    const reg = '^([0|+[0-9]{1,5})?([6-9][0-9]{9})$';
-    const mobReg = new RegExp(reg)
+  const getUid = data => {
+    console.log("UID DATA",data)
+    setName(data)
+    // const reg = '^([0|+[0-9]{1,5})?([6-9][0-9]{9})$';
+    // const mobReg = new RegExp(reg)
     
-      setMobile(data)
-      if (data !== undefined) {
-        if (data.length === 10) {
-          if(mobReg.test(data))
-        {
-          getNameFunc({ mobile: data })
-          Keyboard.dismiss();
-        }
-        else{
-          setError(true)
-          setMessage("Please enter a valid mobile number")
-        }
-      }
-    }
+    //   setMobile(data)
+    //   if (data !== undefined) {
+    //     if (data.length === 10) {
+    //       if(mobReg.test(data))
+    //     {
+          // getNameFunc({ mobile: data })
+          if(data.length===6)
+          getNameFunc({ uid: data })
+
+      //     Keyboard.dismiss();
+      //   }
+      //   else{
+      //     setError(true)
+      //     setMessage("Please enter a valid mobile number")
+      //   }
+      // }
+    // }
     
     
 
@@ -201,12 +209,25 @@ const OtpLogin = ({ navigation, route }) => {
 
 
 
-  const getName = data => {
-    const nameRegex = /^[a-zA-Z\s-]+$/;
+  const getMobile = data => {
     console.log("Data getting function", data)
     if (data !== undefined) {
-   
-        setName(data)
+        const reg = '^([0|+[0-9]{1,5})?([6-9][0-9]{9})$';
+    const mobReg = new RegExp(reg)
+    
+      setMobile(data)
+      if (data !== undefined) {
+        if (data.length === 10) {
+          if(mobReg.test(data))
+        {
+        setMobile(data)
+        }
+        else{
+        Alert.alert("Kindly enter a valid mobile number")
+        setMobile("")
+        }
+      }
+    }
       
     
     }
@@ -223,14 +244,7 @@ const OtpLogin = ({ navigation, route }) => {
     // navigation.navigate('VerifyOtp',{navigationParams})
   }
   const handleButtonPress = () => {
-    crashlytics().setAttributes({
-      name: 'test',
-      id: '13',
-      email: "nishankphulera@gmail.com",
-      userType: "carpenter",
-    })
-    // console.log("first",getNameData.message)
-    // console.log("mobile",mobile,name.length,name,isChecked,getNameData)
+   
     if (isChecked) {
       console.log("handleButtonPress",getNameData,isChecked,name,mobile)
       if (getNameData && isChecked && name !== undefined && mobile !== undefined && name != "" && mobile.length !== 0 && name.length !== 0) {
@@ -328,7 +342,7 @@ const OtpLogin = ({ navigation, route }) => {
 
 
             }}
-            source={require('../../../assets/images/ozoneWhiteLogo.png')}></Image>
+            source={{uri:icon}}></Image>
         </View>
         <View
           style={{
@@ -358,18 +372,17 @@ const OtpLogin = ({ navigation, route }) => {
               marginTop: 40,
             }}>
             <TextInputRectangularWithPlaceholder
-              placeHolder={t("mobile no")}
-              handleData={getMobile}
-              maxLength={10}
-              value = {mobile}
-              KeyboardType="numeric"
+              placeHolder={t("UID")}
+              handleData={getUid}
+              value = {name}
             ></TextInputRectangularWithPlaceholder>
 
             <TextInputRectangularWithPlaceholder
-              placeHolder={t("name")}
-              handleData={getName}
-              value={name}
-              specialCharValidation={true}
+              placeHolder={t("mobile")}
+              handleData={getMobile}
+              value={mobile}
+              maxLength = {10}
+              keyboardType = "numeric"
             ></TextInputRectangularWithPlaceholder>
           </View>
         </KeyboardAvoidingView>

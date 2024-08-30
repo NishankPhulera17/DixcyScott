@@ -289,7 +289,7 @@ const SelectUser = ({navigation}) => {
       </LinearGradient>
       :
       <ImageBackground
-      resizeMode="contain"
+      resizeMode='stretch'
       style={{
         height: "100%",
         width: "100%",

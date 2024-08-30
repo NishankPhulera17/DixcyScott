@@ -126,7 +126,7 @@ const Splash = ({ navigation }) => {
   // const [gotLoginData, setGotLoginData] = useState()
   const isConnected = useSelector((state) => state.internet.isConnected);
   let lastFetchedApiOn;
-  let currentVersion;
+  let currentVersion = undefined;
   if (isConnected?.isConnected) {
     currentVersion = VersionCheck.getCurrentVersion();
     console.log("current version check", currentVersion);
@@ -250,10 +250,42 @@ const Splash = ({ navigation }) => {
     getData();
   }, []);
 
+  useEffect(()=>{
+    const requestNotificationPermission = async () => {
+      if(Platform.OS ==="android"){
+        try {
+          PermissionsAndroid.check('android.permission.POST_NOTIFICATIONS').then(
+            response => {
+              console.log("BACKGROUND NOTIFICATION",response)
+              if(!response){
+                PermissionsAndroid.request('android.permission.POST_NOTIFICATIONS',{
+                    title: 'Notification',
+                    message:
+                      'App needs access to your notification ' +
+                      'so you can get Updates',
+                    buttonNeutral: 'Ask Me Later',
+                    buttonNegative: 'Cancel',
+                    buttonPositive: 'OK',
+                })
+              }
+            }
+          ).catch(
+            err => {
+              console.log("Notification Error=====>",err);
+            }
+          )
+        } catch (err){
+          console.log(err);
+        }
+      }
+    };
+    requestNotificationPermission()
+  },[])
+
   useEffect(() => {
     console.log("currentVersion", currentVersion);
     if (isConnected.isConnected) {
-      getMinVersionSupportFunc(currentVersion);
+      currentVersion && getMinVersionSupportFunc(currentVersion);
 
       const fetchTerms = async () => {
         // const credentials = await Keychain.getGenericPassword();
@@ -891,7 +923,7 @@ const Splash = ({ navigation }) => {
     getData();
     dispatch(setAppVersion(currentVersion));
 
-    getMinVersionSupportFunc(currentVersion);
+    currentVersion &&  getMinVersionSupportFunc(currentVersion);
     getAppTheme("modenik");
     getData();
   }, [isConnected, locationStatusChecked]);
