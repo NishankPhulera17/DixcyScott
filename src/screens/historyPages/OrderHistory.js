@@ -13,8 +13,10 @@ import { useGetPointSharingDataMutation } from '../../apiServices/pointSharing/p
 import { dispatchCommand } from 'react-native-reanimated';
 import InputDate from '../../components/atoms/input/InputDate';
 import { useTranslation } from 'react-i18next';
+import { useGetOrderHistoryMutation } from '../../apiServices/orders/GetOrderApi';
+import { hasTdsSetup } from '../../utils/HandleClientSetup';
 
-const PointHistory = ({ navigation }) => {
+const OrderHistory = ({ navigation }) => {
     const [displayList, setDisplayList] = useState([])
     const [isLoading, setIsLoading] = useState(true)
     const points = 100
@@ -43,12 +45,12 @@ const PointHistory = ({ navigation }) => {
         isError: userPointIsError
     }] = useFetchUserPointsMutation()
 
-    const [fetchUserPointsHistoryFunc, {
-        data: fetchUserPointsHistoryData,
-        error: fetchUserPointsHistoryError,
-        isLoading: fetchUserPointsHistoryLoading,
-        isError: fetchUserPointsHistoryIsError
-    }] = useFetchUserPointsHistoryMutation()
+   const [getOrderFunc, { 
+    data:getOrderData,
+    error:getOrderError,
+    isLoading: getOrderIsLoading,
+    isError:getOrderIsError
+   }] = useGetOrderHistoryMutation()
 
     const {t} = useTranslation();
 
@@ -64,9 +66,9 @@ const PointHistory = ({ navigation }) => {
 
     const params ={
         token: token,
-       userId :userId
+       appUserId :userId
       }
-          fetchUserPointsHistoryFunc(params);
+      getOrderFunc(params);
         })();
       }, []);
 
@@ -102,11 +104,8 @@ const PointHistory = ({ navigation }) => {
             token: token
         }
         userPointFunc(params)
-
     }
-    useEffect(()=>{
-        console.log("DisplayList",displayList)
-    },[displayList])
+    
 
     useEffect(() => {
         if (userPointData) {
@@ -118,52 +117,35 @@ const PointHistory = ({ navigation }) => {
 
     }, [userPointData, userPointError])
 
-    useEffect(() => {
-        if (getPointSharingData) {
-            
-            console.log("getPointSharingData", JSON.stringify(getPointSharingData))
-            if(getPointSharingData.success)
-            {
-                setIsLoading(false)
-
-            setDisplayList(getPointSharingData.body.data)
-            }
-        }
-        else if (getPointSharingError) {
-            console.log("getPointSharingError", getPointSharingError)
-        }
-        else if(getPointSharingIsLoading)
-        {
-            setIsLoading(true)
-        }
-    }, [getPointSharingData, getPointSharingError])
+   
 
     useEffect(() => {
-        if (fetchUserPointsHistoryData) {
-            console.log("fetchUserPointsHistoryData", JSON.stringify(fetchUserPointsHistoryData))
+        if (getOrderData) {
+            console.log("getOrderData", JSON.stringify(getOrderData))
             
 
-            if(fetchUserPointsHistoryData.success)
+            if(getOrderData.success)
             {
                 setIsLoading(false)
-            setDisplayList(fetchUserPointsHistoryData.body.data)
+            setDisplayList(getOrderData.body)
+            
             }
         }
-        else if (fetchUserPointsHistoryError) {
-            console.log("fetchUserPointsHistoryError", fetchUserPointsHistoryError)
+        else if (getOrderError) {
+            console.log("getOrderError", getOrderError)
         }
 
-    }, [fetchUserPointsHistoryData, fetchUserPointsHistoryError])
+    }, [getOrderData, getOrderError])
 
     useEffect(()=>{
-        if(getPointSharingIsLoading || fetchUserPointsHistoryLoading)
+        if(getOrderIsLoading)
     {
         setIsLoading(true)
     }
     else{
         setIsLoading(false)
     }
-},[getPointSharingIsLoading,fetchUserPointsHistoryLoading])
+},[getOrderIsLoading])
 
     const fetchDataAccToFilter=()=>{
     
@@ -260,14 +242,14 @@ const PointHistory = ({ navigation }) => {
                 </TouchableOpacity>    
                 }
 
-                <TouchableOpacity onPress={()=>{
+                {hasTdsSetup && <TouchableOpacity onPress={()=>{
                     getRegistrationPoints("tds_deducted_2024_25")
                     setType("TDS Deducted")
                 }} style={{height:'100%',width:120,alignItems:"center",justifyContent:'center',backgroundColor:type==="TDS Deducted" ? "#DDDDDD":"white",borderLeftWidth:1,borderColor:'#DDDDDD'}}>
                     {/* <PoppinsTextMedium content="Registration Bonus" style={{color:'black',fontWeight:'700',fontSize:14}}></PoppinsTextMedium> */}
                     <PoppinsTextMedium content={t("TDS Deducted")} style={{color:'black',fontWeight:'700',fontSize:14}}></PoppinsTextMedium>
 
-                </TouchableOpacity>
+                </TouchableOpacity>}
                 
             </ScrollView>
         )
@@ -361,12 +343,12 @@ const PointHistory = ({ navigation }) => {
 
     const DisplayEarnings = () => {
         return (
-            <View style={{ flexDirection: "row", alignItems: "center", justifyContent: "flex-start",width:'100%' }}>
+            <View style={{ flexDirection: "row", alignItems: "center", justifyContent: "flex-start",width:'100%',backgroundColor:'#DDDDDD',padding:8 }}>
                 <View style={{ alignItems: "center", justifyContent: "center",marginLeft:20 }}>
                     {userPointData && <PoppinsText style={{ color: "black" }} content={userPointData.body.point_earned}></PoppinsText>}
                     <PoppinsTextMedium style={{ color: "black", fontSize: 14, color: 'black' }} content="Lifetime Earnings"></PoppinsTextMedium>
                 </View>
-                <View style={{ alignItems: "center", justifyContent: "center", marginLeft: 20 }}>
+                <View style={{ alignItems: "center", justifyContent: "center", marginLeft: 40 }}>
                     {userPointData && <PoppinsText style={{ color: "black" }} content={userPointData.body.point_redeemed}></PoppinsText>}
                     <PoppinsTextMedium style={{ color: "black", fontSize: 14, color: 'black' }} content="Lifetime Burns"></PoppinsTextMedium>
                 </View>
@@ -391,18 +373,18 @@ const PointHistory = ({ navigation }) => {
         const type = props.type
         const points = props?.points
         const is_reverted = props.is_reverted
-        console.log("point props", props,type,image)
+        // console.log("point props", props,type,image)
         return (
-            <View style={{ flexDirection: "row", alignItems: "center", justifyContent: "center", margin: 8, borderBottomWidth: 1, borderColor: '#DDDDDD', paddingBottom: 10,width:'100%',height:120,backgroundColor:'white' }}>
-                <View style={{ height: 60, width: '14%', alignItems: "center", justifyContent: "center", borderRadius: 10, borderWidth: 1, borderColor: '#DDDDDD',position:'absolute',left:10,}}>
-                    {image ? <Image style={{ height: 40, width: 40, resizeMode: "contain" }} source={{uri:image}}></Image>: <Image style={{ height: 40, width: 40, resizeMode: "contain" }} source={require('../../../assets/images/modenikLogo.png')}></Image>}
+            <View style={{ flexDirection: "row", alignItems: "center", justifyContent: "flex-start", margin: 8, borderBottomWidth: 1, borderColor: '#DDDDDD', paddingBottom: 10,width:'100%',height:120,backgroundColor:'white' }}>
+                <View style={{ height: 60, width: '14%', alignItems: "center", justifyContent: "center", borderRadius: 10, borderWidth: 1, borderColor: '#DDDDDD'}}>
+                    {image ? <Image style={{ height: 40, width: 40, resizeMode: "contain" }} source={{uri:image}}></Image>: <Image style={{ height: 40, width: 40, resizeMode: "contain" }} source={require('../../../assets/images/box.png')}></Image>}
                 </View>
-                <View style={{ alignItems: "flex-start", justifyContent: "center",position:'absolute',left:80,width:'60%' }}>
+                <View style={{ alignItems: "flex-start", justifyContent: "center",width:'60%',height:'100%',bottom:10,marginLeft:10}}>
                 {type!=="registration_bonus" && <PoppinsTextMedium style={{ fontWeight: '700', fontSize: 14, color: 'black' }} content={description}></PoppinsTextMedium>}
                     {type==="registration_bonus" &&<PoppinsTextMedium style={{ fontWeight: '400', fontSize: 14, color: 'black',fontWeight: '700' }} content={`Registration Bonus`}></PoppinsTextMedium>}
 
-                    {type!=="registration_bonus" &&<PoppinsTextMedium style={{ fontWeight: '400', fontSize: 12, color: 'black' }} content={`Product Code : ${productCode}`}></PoppinsTextMedium>}
-                    {type!=="registration_bonus" && <PoppinsTextMedium style={{ fontWeight: '400', fontSize: 12, color: 'black' }} content={`Visible Code : ${visibleCode}`}></PoppinsTextMedium>}
+                    {type!=="registration_bonus" &&<PoppinsTextMedium style={{ fontWeight: '400', fontSize: 12, color: 'black' }} content={`Invoice Number : ${productCode}`}></PoppinsTextMedium>}
+                    {type!=="registration_bonus" && <PoppinsTextMedium style={{ fontWeight: '400', fontSize: 12, color: 'black' }} content={`Purchase Amount : ${visibleCode}`}></PoppinsTextMedium>}
                     <PoppinsTextMedium style={{ fontWeight: '400', fontSize: 12, color: 'black' }} content={date}></PoppinsTextMedium>
                     
                     <PoppinsTextMedium style={{ fontWeight: '400', fontSize: 12, color: 'black' }} content={time}></PoppinsTextMedium>
@@ -429,31 +411,33 @@ const PointHistory = ({ navigation }) => {
 
                 </TouchableOpacity>
                 {/* <PoppinsTextMedium content="Points History" style={{ marginLeft: 10, fontSize: 16, fontWeight: '600', color: '#171717' }}></PoppinsTextMedium> */}
-                <PoppinsTextMedium content={t("points history")} style={{ marginLeft: 10, fontSize: 16, fontWeight: '600', color: '#171717' }}></PoppinsTextMedium>
+                <PoppinsTextMedium content={t("Order history")} style={{ marginLeft: 10, fontSize: 16, fontWeight: '600', color: '#171717' }}></PoppinsTextMedium>
 
                 {/* <TouchableOpacity style={{ marginLeft: 180 }}>
                     <Image style={{ height: 30, width: 30, resizeMode: 'contain' }} source={require('../../../assets/images/notificationOn.png')}></Image>
                 </TouchableOpacity> */}
             </View>
             <View style={{ padding: 14, alignItems: "center", justifyContent: "flex-start", width: "100%", flexDirection: "row",backgroundColor:'white' }}>
-                <View style={{ width: 100 }}>
+                <View style={{ width: '70%', alignItems: "flex-start", justifyContent: 'space-evenly',marginLeft:10 }}>
                     {/* <PoppinsTextMedium style={{ marginLeft: 10, fontSize: 20, fontWeight: '600', color: '#6E6E6E', }} content="You Have"></PoppinsTextMedium> */}
-                    <PoppinsTextMedium style={{ marginLeft: 10, fontSize: 20, fontWeight: '600', color: '#6E6E6E', }} content={t("you have")}></PoppinsTextMedium>
+                    <PoppinsTextMedium style={{ fontSize: 24, fontWeight: '600', color: '#6E6E6E', }} content={t("You have")}></PoppinsTextMedium>
 
                     {userPointData &&
-                        <PoppinsText style={{ marginLeft: 14, fontSize: 24, fontWeight: '600', color: '#373737', width: 100, width: 150 }} content={userPointData.body.point_balance}></PoppinsText>
+                        <PoppinsText style={{  fontSize: 24, fontWeight: '600', color: '#373737'}} content={userPointData.body.point_balance}></PoppinsText>
 
                     }
                     {/* <PoppinsTextMedium style={{ marginLeft: 10, fontSize: 20, fontWeight: '600', color: '#6E6E6E' }} content="Points"></PoppinsTextMedium> */}
-                    <PoppinsTextMedium style={{ marginLeft: 10, fontSize: 20, fontWeight: '600', color: '#6E6E6E' }} content={t("points")}></PoppinsTextMedium>
+                    <PoppinsTextMedium style={{  fontSize: 24, fontWeight: '600', color: '#6E6E6E' }} content={t("Balance Points")}></PoppinsTextMedium>
 
                 </View>
-                <Image style={{ height: 80, width: 80, resizeMode: 'contain', position: 'absolute', right: 20 }} source={require('../../../assets/images/points.png')}></Image>
+                <Image style={{ height: 80, width: '30%', resizeMode: 'contain', position: 'absolute', right: 20 }} source={require('../../../assets/images/points.png')}></Image>
             </View>
            
             <DisplayEarnings></DisplayEarnings>
-            <Header></Header>
-            <PointCategoryTab></PointCategoryTab>
+
+            {/* <Header></Header> */}
+
+            {/* <PointCategoryTab></PointCategoryTab> */}
 
             {
                 displayList.length==0 && !isLoading &&
@@ -484,15 +468,15 @@ const PointHistory = ({ navigation }) => {
            />
            </View>
             }
-            {displayList && !isLoading && <FlatList
+            {displayList && <FlatList
             style={{width:'100%',height:'60%'}}
                 data={displayList}
                 contentContainerStyle={{backgroundColor:"white",paddingBottom:200}}
                 showsVerticalScrollIndicator={false}
                 renderItem={({ item, index }) => {
-                    console.log(index + 1, item)
+                    console.log(item)
                     return (
-                        <ListItem visibleCode = {item.batch_running_code} type = {item?.cause?.type} image={item?.images ===undefined ? undefined : item?.images ===null ? undefined:item?.images[0]} description={item?.product_name} productCode={item?.product_code} amount={item?.points} status={item?.status} points={item?.points} is_reverted= {item?.is_reverted} date = {moment(item?.created_at).format("DD-MMM-YYYY")} time={moment(item?.created_at).format("HH:mm a")}/>
+                        <ListItem visibleCode = {item.bill_value} type = {item?.cause?.type} image={item?.images ===undefined ? undefined : item?.images ===null ? undefined:item?.images[0]} description={item?.product_name} productCode={item?.invoice_id} amount={item?.bill_value} status={item?.status} points={item?.points} is_reverted= {item?.is_reverted} date = {moment(item?.created_at).format("DD-MMM-YYYY")} time={moment(item?.created_at).format("HH:mm a")}/>
                     )
                 }}
                 keyExtractor={(item,index) => index}
@@ -503,4 +487,4 @@ const PointHistory = ({ navigation }) => {
 
 const styles = StyleSheet.create({})
 
-export default PointHistory;
+export default OrderHistory;

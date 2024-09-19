@@ -258,7 +258,7 @@ const CustomDrawer = () => {
                 navigation.navigate("Passbook")
               }
               else if (props.title.toLowerCase() === "rewards") {
-                navigation.navigate('RedeemRewardHistory')
+                navigation.navigate('RedeemedHistory')
               }
               else if (props.title.toLowerCase() === "gift catalogue") {
                 navigation.navigate('GiftCatalogue')
@@ -298,6 +298,12 @@ const CustomDrawer = () => {
               }
               else if (props.title.toLowerCase() === "scan list") {
                 navigation.navigate('ScannedHistory')
+              }
+              else if (props.title.toLowerCase() === "feedback") {
+                navigation.navigate('Feedback')
+              }
+              else if (props.title.toLowerCase() === "media") {
+                navigation.navigate('WhatsNew')
               }
               else if (props.title.toLowerCase() === "add user") {
                 navigation.navigate('ListUsers')
@@ -529,7 +535,7 @@ const CustomDrawer = () => {
         }
 
         {/* My Program Starting */}
-        <View
+        {/* <View
           style={{
             minHeight: 54,
             width: '100%',
@@ -555,8 +561,7 @@ const CustomDrawer = () => {
               marginTop: 10
             }}>
 
-            {/* <SvgUri width={40} height={40} uri={image}></SvgUri> */}
-            {/* <Icon size={size} name="bars" color={ternaryThemeColor}></Icon> */}
+        
             {!myProgramVisible && <Image style={{ height: 20, width: 20, resizeMode: 'contain', transform: [{ rotate: '270deg' }], marginTop: 4 }} source={require('../../assets/images/arrowDown.png')}></Image>}
             {myProgramVisible && <Image style={{ height: 20, width: 20, resizeMode: 'contain' }} source={require('../../assets/images/arrowDown.png')}></Image>}
           </TouchableOpacity>
@@ -607,11 +612,11 @@ const CustomDrawer = () => {
             }
 
           </View>
-        </View>
+        </View> */}
         {/* My Program ending*/}
 
         {/* Ozone Products Starting */}
-        <View
+        {/* <View
           style={{
             minHeight: 54,
             width: '100%',
@@ -637,8 +642,7 @@ const CustomDrawer = () => {
               marginTop: 10
             }}>
 
-            {/* <SvgUri width={40} height={40} uri={image}></SvgUri> */}
-            {/* <Icon size={size} name="bars" color={ternaryThemeColor}></Icon> */}
+            
             {!ozoneProductVisible && <Image style={{ height: 20, width: 20, resizeMode: 'contain', transform: [{ rotate: '270deg' }], marginTop: 4 }} source={require('../../assets/images/arrowDown.png')}></Image>}
             {ozoneProductVisible && <Image style={{ height: 20, width: 20, resizeMode: 'contain' }} source={require('../../assets/images/arrowDown.png')}></Image>}
           </TouchableOpacity>
@@ -679,11 +683,11 @@ const CustomDrawer = () => {
             }
 
           </View>
-        </View>
+        </View> */}
         {/* Ozone Products ending*/}
 
         {/* Community Starting */}
-        <View
+        {/* <View
           style={{
             minHeight: 54,
             width: '100%',
@@ -709,8 +713,7 @@ const CustomDrawer = () => {
               marginTop: 10
             }}>
 
-            {/* <SvgUri width={40} height={40} uri={image}></SvgUri> */}
-            {/* <Icon size={size} name="bars" color={ternaryThemeColor}></Icon> */}
+           
             {!communityVisible && <Image style={{ height: 20, width: 20, resizeMode: 'contain', transform: [{ rotate: '270deg' }], marginTop: 4 }} source={require('../../assets/images/arrowDown.png')}></Image>}
             {communityVisible && <Image style={{ height: 20, width: 20, resizeMode: 'contain' }} source={require('../../assets/images/arrowDown.png')}></Image>}
           </TouchableOpacity>
@@ -755,11 +758,11 @@ const CustomDrawer = () => {
             }
 
           </View>
-        </View>
+        </View> */}
         {/* Community ending*/}
 
         {/* Knowledge Hub */}
-        <View
+        {/* <View
           style={{
             minHeight: 54,
             width: '100%',
@@ -785,8 +788,7 @@ const CustomDrawer = () => {
               marginTop: 10
             }}>
 
-            {/* <SvgUri width={40} height={40} uri={image}></SvgUri> */}
-            {/* <Icon size={size} name="bars" color={ternaryThemeColor}></Icon> */}
+           
             {!KnowledgeHubVisible && <Image style={{ height: 20, width: 20, resizeMode: 'contain', transform: [{ rotate: '270deg' }], marginTop: 4 }} source={require('../../assets/images/arrowDown.png')}></Image>}
             {KnowledgeHubVisible && <Image style={{ height: 20, width: 20, resizeMode: 'contain' }} source={require('../../assets/images/arrowDown.png')}></Image>}
           </TouchableOpacity>
@@ -813,21 +815,12 @@ const CustomDrawer = () => {
                 }} style={{ marginTop: 5, marginBottom: 5 }}>
                   <Text style={{ fontSize: 15, color: ternaryThemeColor }}>{t("Installation Video")}</Text>
                 </TouchableOpacity>
-                {/* 
-              <TouchableOpacity style={{ marginTop:5,marginBottom:5 }} onPress={()=>{
-                navigation.navigate("ProductCatalogue")
-              }}>
-                <Text style={{  fontSize:15, color:ternaryThemeColor }}>Product Guideline</Text> 
-              </TouchableOpacity>     */}
-
-                {/* <TouchableOpacity style={{ marginTop:5,marginBottom:5 }} onPress={()=>{navigation.navigate("ListAddress")}}>
-                <Text style={{  fontSize:15, color:ternaryThemeColor }}>List Address</Text> 
-              </TouchableOpacity>     */}
+               
               </View>
             }
 
           </View>
-        </View>
+        </View> */}
         {/* Knowledge Hub*/}
 
         <TouchableOpacity style={{ backgroundColor: ternaryThemeColor, height: 70, justifyContent: 'center', width: '100%', alignItems: 'center' }} onPress={() => {

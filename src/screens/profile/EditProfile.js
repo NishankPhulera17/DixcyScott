@@ -271,6 +271,7 @@ const EditProfile = ({ navigation, route }) => {
       const getToken = async () => {
         const credentials = await Keychain.getGenericPassword();
         const token = credentials.username;
+        console.log("upload file ",JSON.stringify(uploadFile))
         uploadImageFunc({ body: uploadFile, token: token });
       };
 

@@ -50,7 +50,7 @@ const CartList = ({ navigation, route }) => {
   const userData = useSelector(state => state.appusersdata.userData);
   const schemeType = route.params?.schemeType
   const schemeID = route.parmas?.schemeID
-  console.log('userdata', route.params.cart);
+  console.log('userdata', cart);
   const height = Dimensions.get('window').height
 
   console.log("cart is",route.params.cart)
@@ -514,7 +514,6 @@ const CartList = ({ navigation, route }) => {
 
               return (
                 <RewardsBox
-
                   data={item}
                   key={index}
                   product={item.name}

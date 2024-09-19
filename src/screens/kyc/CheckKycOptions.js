@@ -1,313 +1,645 @@
-import React, { useEffect, useState } from 'react';
-import { StyleSheet, View,Image, TextInput, KeyboardAvoidingView,ScrollView,Keyboard, TouchableOpacity } from 'react-native';
-import { useSelector } from 'react-redux';
-import PoppinsTextMedium from '../../components/electrons/customFonts/PoppinsTextMedium';
-import { RadioButton } from 'react-native-paper';
-import TextInputGST from '../../components/atoms/input/TextInputGST';
-import Check from 'react-native-vector-icons/AntDesign'
-import Cross from 'react-native-vector-icons/Entypo'
-import { useVerifyGstMutation } from '../../apiServices/verification/GstinVerificationApi';
-import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
-import { useVerifyPanMutation } from '../../apiServices/verification/PanVerificationApi';
-import CameraInputWithUpload from '../../components/atoms/input/CameraInputWithUpload';
-import { useSendAadharOtpMutation, useVerifyAadharMutation } from '../../apiServices/verification/AadharVerificationApi';
-const CheckKycOptions = () => {
-    const [checked, setChecked] = React.useState();
-    const [gstin, setGstin] = useState()
-    const [message, setMessage] = useState()
-    const [pan, setPan] = useState()
-    const [value,setValue] = useState()
-    const [otp, setOtp] = useState()
-    const [otpSent, setOtpSent] = useState(false)
-    const [showOtp, setShowOtp] = useState(false)
-    const [aadhar, setAadhar] = useState()
-    const [marg, setMarg] = useState(0)
-    const [gotGstinImage, setGotGstinImage] = useState(false)
-    const [panVerified, setPanVerified] = useState()
-    const [aadharVerified, setAadharVerified] = useState()
-    const [gstinVerified, setGstinVerified] = useState()
-    const icon = useSelector(state => state.apptheme.icon)
-    const ternaryThemeColor = useSelector(
-        state => state.apptheme.ternaryThemeColor,
-      )
+import React, { useEffect, useRef, useState } from "react";
+import {
+  StyleSheet,
+  View,
+  Image,
+  TextInput,
+  KeyboardAvoidingView,
+  ScrollView,
+  Keyboard,
+  TouchableOpacity,
+  PermissionsAndroid
+} from "react-native";
+import { useSelector } from "react-redux";
+import PoppinsTextMedium from "../../components/electrons/customFonts/PoppinsTextMedium";
+import { ActivityIndicator, RadioButton } from "react-native-paper";
+import CameraInputWithUpload from "../../components/atoms/input/CameraInputWithUpload";
+import { useUpdateProfileMutation } from "../../apiServices/profile/profileApi";
+import AADHAARVerificationComp from "../../components/organisms/KYC/AADHAARVerificationComp";
+import GSTINVerificationComp from "../../components/organisms/KYC/GSTINVerificationComp";
+import PanVerificationComp from "../../components/organisms/KYC/PanVerificationComp";
+import { kycOption1, kycOption2 } from "../../utils/HandleClientSetup";
+import PoppinsTextLeftMedium from "../../components/electrons/customFonts/PoppinsTextLeftMedium";
+import * as Keychain from "react-native-keychain";
+import ModalWithBorder from "../../components/modals/ModalWithBorder";
+import Icon from 'react-native-vector-icons/Feather';
+import Close from 'react-native-vector-icons/Ionicons';
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import LeftIcon from 'react-native-vector-icons/AntDesign'
 
-      const [sendAadharOtpFunc,{
-        data:sendAadharOtpData,
-        error:sendAadharOtpError,
-        isLoading:sendAadharOtpIsLoading,
-        isError:sendAadharOtpIsError
-      }]= useSendAadharOtpMutation()
-
-      const [verifyAadharFunc,{
-        data:verifyAadharData,
-        error:verifyAadharError,
-        isLoading:verifyAadharIsLoading,
-        isError:verifyAadharIsError
-      }]= useVerifyAadharMutation()
-
-      const [verifyPanFunc, {
-        data: verifyPanData,
-        error: verifyPanError,
-        isLoading: verifyPanIsLoading,
-        isError: verifyPanIsError
-      }] = useVerifyPanMutation()
-
-      const [verifyGstFunc,{
-        data:verifyGstData,
-        error:verifyGstError,
-        isLoading:verifyGstIsLoading,
-        isError:verifyGstIsError
-      }]= useVerifyGstMutation()
-
-      useEffect(()=>{
-        if(sendAadharOtpData)
-        {
-        console.log("sendAadharOtpData",sendAadharOtpData)
-        // setRefId(sendAadharOtpData.body.ref_id)
-        if(sendAadharOtpData.success)
-        {
-          console.log("success")
-          setOtpSent(true)
-          setShowOtp(true)
-          setShowLoading(false)
-          props.notVerified(false)
-        }
-        }
-        else if(sendAadharOtpError)
-        {
-          props.notVerified(false)
-        console.log("sendAadharOtpError",sendAadharOtpError)
-          setShowLoading(false)
-          setAadharExists(true)
-        
-        }
-        
-        },[sendAadharOtpData,sendAadharOtpError])
-
-        useEffect(()=>{
-          if(verifyAadharData)
-          {
-            console.log("verifyAadharData",verifyAadharData)
-            if(verifyAadharData.success)
-            {
-            setModalVisible(true)
-            setShowLoading(false)
-            setAadharVerified(true)
-            props.notVerified(true)
-            }
-          }
-          else if(verifyAadharError){
-            console.log("verifyAadharError",verifyAadharError)
-            props.notVerified(false)
-            setShowLoading(false)
-
-          }
-          },[verifyAadharError,verifyAadharData])
-
-      useEffect(() => {
-        if (verifyPanData) {
-          console.log("verifyPanData", verifyPanData)
-          if (verifyPanData.success) {
-           
-            setPanVerified(true)
-          }
-        }
-        else if (verifyPanError) {
-          console.log("verifyPanError", verifyPanError)
-        
-          setPanVerified(false)
-        }
-      }, [verifyPanData, verifyPanError])
-
-      useEffect(()=>{
-        if(verifyGstData)
-        {
-        console.log("verifyGstData",JSON.stringify(verifyGstData))
-        if(verifyGstData.success)
-        {
-        setGstinVerified(true)
-        }
-        }
-        else if(verifyGstError)
-        {
-            if(verifyGstError.status == 409)
-            {
-              setMessage(verifyGstError.data.message)
-            }
-
-            if(verifyGstError.status == 500)
-            {
-              setMessage(verifyGstError.data.Error.message)
-            }
-
-            setGstinVerified(false)
-        console.log("verifyGstError",verifyGstError)
-        }
-        },[verifyGstData,verifyGstError])
+const CheckKycOptions = ({navigation,route}) => {
+  const [checked, setChecked] = React.useState();
+  const [gotShopImage, setGotShopImage] = useState(false);
+  const [shopData, setShopData] = useState()
+  const [openModalWithBorder, setModalWithBorder] = useState(false)
+  const [message, setMessage] = useState("")
+  const [showOptions, setShowOptions] = useState(false)
+  const [clickedSubmit, setClickedSubmit] = useState(true)
+  const [panDetails, setPanDetails] = useState()
+  const [aadharDetails, setAadharDetails] = useState()
+  const [gstinDetails, setGstinDetails] = useState()
+  const [gotPan, setGotPan] = useState(false)
+  const [gotAadhar, setGotAadhar] = useState(false)
+  const [gotGstin, setGotGstin] = useState(false)
+  const [aadharNumber, setAadharNumber] = useState()
+  // const [imageDta, setImageDta] = useState()
+  const icon = useSelector((state) => state.apptheme.icon1);
+  const ternaryThemeColor = useSelector(
+    (state) => state.apptheme.ternaryThemeColor
+  );
+  const timer = useRef(0);
+  const imageData = route?.params?.imageData
+  console.log("imageData", imageData)
+  const [
+    updateProfileFunc,
+    {
+      data: updateProfileData,
+      error: updateProfileError,
+      isLoading: updateProfileIsLoading,
+      isError: updateProfileIsError,
+    },
+  ] = useUpdateProfileMutation();
 
 
-        useEffect(()=>{
-            setGstin()
-            setGstinVerified()
-        },[checked])
-
-        useEffect(() => {
-            if (pan) {
-              if (pan.length === 10) {
-                const data = {
-                  "pan": pan
-                }
-                verifyPanFunc(data)
-              }
-            }
-          }, [pan])
-
-      useEffect(()=>{
-        if(gstin)
-        if(gstin.length===15)
-        {
-            const data = {
-                "gstin":gstin,
-        
-            }
-            verifyGstFunc(data)
-        }
-      },[gstin])
-
-      const getGstinImage=(data)=>{
-        console.log("GSTIN IMAGE UPLOADED",data)
-        setGotGstinImage(true)
-      }
-
-      const handleGstinSubmission=()=>{
-
-      }
-
-    Keyboard.addListener('keyboardDidShow',()=>{
-        console.log("keyboard open")
-        setMarg(20)
-    })
-    Keyboard.addListener('keyboardDidHide',()=>{
-        console.log("keyboard closed")
-        setMarg(0)
-
-    })
+  useEffect(()=>{
+    console.log("imageDataqwerty",imageData)
+    if(imageData)
+    {
+      setGotShopImage(true)
+      setShopData(imageData)
+    }
     
+  },[imageData])
+
+  useEffect(()=>{
+    if(kycOption2.length == 0)
+    {
+      setShowOptions(false)
+    }
+    else{
+      setShowOptions(true)
+    }
+  },[])
+
+  const modalClose = () => {
+    setMessage('')
+    setModalWithBorder(false)
+    navigation.navigate("Dashboard")
+  };
+  
+  const getShowImage = (data) => {
+    console.log("GSTIN IMAGE UPLOADED", data);
+    setShopData(data)
+    setGotShopImage(true);
+  };
+
+  const handleGstinSubmission = () => {
+    submitKycData()
+  };  
+
+  const panData =(panVerified, verifyPanData)=>{
+    console.log("PAN Verification status", panVerified,verifyPanData)
+    setPanDetails(verifyPanData)
+    setGotPan(true)
+  }
+  const gstinData=(gstinVerified,verifyGstData)=>{
+    console.log("GSTIN Verification status", gstinVerified,verifyGstData)
+    setGstinDetails(verifyGstData)
+    setGotGstin(true)
+  }
+  const aadharData=(aadharVerified,verifyAadharData,aadhar)=>{
+    console.log("AADHAAR Verification status", aadharVerified,verifyAadharData)
+    setAadharDetails(verifyAadharData)
+    setGotAadhar(true)
+    setAadharNumber(aadhar)
+  }
+
+  useEffect(() => {
+    if (updateProfileData) {
+      console.log("updateProfileData", updateProfileData);
+      setClickedSubmit(true)
+      setModalWithBorder(true)
+      setGotShopImage(false)
+      setMessage("Congratulation, your account has been successfully updated.")
+      createValidatedJson(updateProfileData?.body)
+      // setTimeout(() => {
+      //   console.log("running2")
+      //   modalWithBorderClose()
+      // }, 2000);
+    } else if (updateProfileError) {
+      console.log("updateProfileError", updateProfileError);
+      setClickedSubmit(true)
+      
+    }
+  }, [updateProfileData, updateProfileError]);
+
+  useEffect(()=>{
+    console.log("checked status",checked,kycOption1,kycOption2)
+    tempData={}
+
+  },[checked])
+
+  const createValidatedJson=async(profileData)=>{
+    let temp ={}
+    try {
+      const jsonValue = await AsyncStorage.getItem('loginData');
+      console.log("loginData",JSON.parse(jsonValue))
+      if(jsonValue!=null)
+      {
+        console.log("updateLoginData",jsonValue,profileData)
+        if(profileData)
+        {
+          const keys = Object.keys(profileData)
+          const values = Object.values(profileData)
+          console.log("updateLoginDatakeys",keys,values)
+        for(var i =0;i<keys.length;i++)
+        {
+          if(keys.includes("gstin"))
+          {
+            if(profileData["gstin"]!=null)
+            temp["gstin"] = profileData["gstin"]
+          }
+          if(keys.includes("aadhar"))
+          {
+            if(profileData["aadhar"]!=null)
+            temp["aadhar"] = profileData["aadhar"]
+          }
+          if(keys.includes("pan"))
+          {
+            if(profileData["pan"]!=null)
+            temp["pan"] = profileData["pan"]
+          }
+          console.log("ghsadghhgsafdhhashdghas",profileData["gstin"],profileData["aadhar"],profileData["pan"])
+
+        }
+        console.log("updateLoginDataqwerty",temp)
+        updateLoginData(temp, JSON.parse(jsonValue))
+      }
+
+      }
+      
+    } catch (e) {
+      console.log("Error is reading loginData",e)
+    }
+  }
+
+  const updateLoginData=(recievedKyc, loginData)=>{
+    let temp = loginData
+    const keys = Object.keys(recievedKyc)
+    for(var i=0;i<keys.length;i++)
+    {
+      if(keys[i]== "gstin")
+      {
+        if(recievedKyc["gstin"])
+        {
+          temp["is_valid_gstin"] = true
+          console.log("heloo form the other side",recievedKyc["gstin"],temp["is_valid_gstin"],temp)
+
+        }
+      }
+      if(keys[i]== "aadhar")
+      {
+        if(recievedKyc["aadhar"])
+        {
+          temp["is_valid_aadhar"] = true
+        }
+      }
+      if(keys[i]== "pan")
+      {
+        if(recievedKyc["pan"])
+        {
+          temp["is_valid_pan"] = true
+        }
+      }
+    }
+    console.log("dfgdfashjgdhjasghjdghjasgdhjgashjdgh",recievedKyc["gstin"],recievedKyc["aadhar"],recievedKyc["pan"])
+    const storeData = async (value) => {
+      console.log("storeDataloginDataQwerty",value)
+      try {
+        const jsonValue = JSON.stringify(value);
+        await AsyncStorage.setItem('loginData', jsonValue);
+      } catch (e) {
+        console.log("Error while saving loginData", e)
+      }
+    };
+    storeData(temp)
+  }
+
+  const submitKycData =async()=>{
+    let tempData = {}
+    const credentials = await Keychain.getGenericPassword();
+    const token = credentials.username;
+
+    if(gotPan)
+    {
+    tempData = {...tempData, "pan" : panDetails.pan}
+    }
+    if(gotAadhar)
+    {
+    tempData = {...tempData, "aadhar" : aadharNumber}
+    }
+    if(gotGstin)
+    {
+      tempData = {...tempData, "gstin" : gstinDetails?.GSTIN}
+    }
+    if(checked)
+    {
+      const optionsLength = kycOption1.length;
+      const kycObjectValues = Object.values(tempData)
+      const kycObjectKeys = Object.keys(tempData)
+
+      if(kycObjectKeys.length == optionsLength && kycObjectValues.length == optionsLength)
+      {
+        console.log("got all fields from option 1",gotShopImage)
+        if(!gotShopImage)
+    {
+      alert("Shop image is required to continue")
+    }
+    else{
+      tempData={...tempData, "profile_pic" : shopData.fileLink,"is_online_verification":true}
+      const params = {token:token,data:tempData}
+      console.log("FINAL FORM SUBMISSION", params)
+      setClickedSubmit(false)
+      updateProfileFunc(params)
+    }
+
+      }
+      else{
+        let missingFields = " "
+        for(var i=0;i<kycOption1.length;i++)
+        {
+          if(!kycObjectKeys.includes(kycOption1[i]))
+          {
+            missingFields +=  " "+kycOption1[i]
+          }
+        }
+        alert("Missing fields "+missingFields)
+      }
+    }
+    else{
+      const optionsLength = kycOption2.length;
+      const kycObjectValues = Object.values(tempData)
+      const kycObjectKeys = Object.keys(tempData)
+
+      if(kycObjectKeys.length == optionsLength && kycObjectValues.length == optionsLength)
+      {
+        console.log("got all fields from option 2")
+        if(!gotShopImage)
+    {
+      alert("Shop image is required to continue")
+    }
+    else{
+      tempData={...tempData, "profile_pic" : shopData.value,"is_online_verification":true}
+      const params = {token:token,data:tempData}
+      console.log("FINAL FORM SUBMISSION", params)
+      setClickedSubmit(false)
+      updateProfileFunc(params)
+    }
+      }
+      else{
+        let missingFields = " "
+        for(var i=0;i<kycOption2.length;i++)
+        {
+          if(!kycObjectKeys.includes(kycOption2[i]))
+          {
+            missingFields += " "+kycOption2[i]
+          }
+        }
+        alert("Missing fields "+missingFields)
+      }
+    }
+
+    
+
+  }
+  const modalWithBorderClose = () => {
+    setModalWithBorder(false);
+    setMessage('')
+    navigation.navigate("Dashboard")
+
+    
+    
+  };
+
+  const ModalContent = () => {
     return (
-        <View style={{alignItems:'center',justifyContent:'flex-start',backgroundColor:'white',height:'100%',width:'100%'}}>
-            <View style={{width:'100%',alignItems:'flex-start',justifyContent:'flex-start',backgroundColor:ternaryThemeColor}}>
-                <Image style={{height:80,width:80,resizeMode:'contain',marginLeft:20}} source={{uri:icon}}></Image>
-                <View style={{alignItems:'flex-start',justifyContent:'flex-start',marginLeft:20,marginTop:10,marginBottom:10}}>
-                <PoppinsTextMedium style={{color:"white",fontSize:29,fontWeight:'600'}} content="Complete Your"></PoppinsTextMedium>
-                <PoppinsTextMedium style={{color:"white",fontSize:29,fontWeight:'600'}} content="Registration"></PoppinsTextMedium>
-                </View>
-            </View>
-            <ScrollView style={{width:'100%',flex:1}} contentContainerStyle={{alignItems:'flex-start'}}>
-                <View style={{alignItems:'center',justifyContent:'center',flexDirection:'row',marginTop:20,marginLeft:20}}>
-                <PoppinsTextMedium style={{color:"black",fontSize:16,fontWeight:'400',marginLeft:20,marginRight:10}} content="Do you have GST?"></PoppinsTextMedium>
-                
-                <View style={{alignItems:'center',justifyContent:'center',height:40,width:74,borderRadius:18,borderWidth:1,borderColor:'#171717',flexDirection:'row'}}>
-                <RadioButton
-                value="yes"
-                color={ternaryThemeColor}
-                status={ checked === true ? 'checked' : 'unchecked' }
-                onPress={() => setChecked(true)}
-                />
-                <PoppinsTextMedium style={{color:"black",fontSize:14,fontWeight:'500'}} content="Yes"></PoppinsTextMedium>
-                
-                </View>
-                <View style={{alignItems:'center',justifyContent:'center',height:40,width:74,borderRadius:18,borderWidth:1,borderColor:'#171717',flexDirection:'row',marginLeft:10}}>
-                <RadioButton
-                value="no"
-                color={ternaryThemeColor}
-                status={ checked === false ? 'checked' : 'unchecked' }
-                onPress={() => setChecked(false)}
-                />
-                <PoppinsTextMedium style={{color:"black",fontSize:14,fontWeight:'500'}} content="No"></PoppinsTextMedium>
-                
-                </View>
-            </View>
-            {checked == true && <View style={{alignItems:'center',justifyContent:'center',width:'100%',marginTop:20}}>
-                <View style={{alignItems:'flex-start',justifyContent:'flex-start',height:60,width:'80%',borderWidth:1,borderColor:"#DDDDDD",flexDirection:'row'}}>
-                <View style={{padding:4,backgroundColor:'white',position:"absolute",top:-16,left:16}}>
-                <PoppinsTextMedium style={{color:"#919191",fontSize:15,fontWeight:'500'}} content="Enter GST Number"></PoppinsTextMedium>
-                </View>
-                <TextInput maxLength={15} onChangeText={(text)=>{
-                    setGstin(text)
-                }} style={{alignItems:"center",justifyContent:'center',width:'80%',color:'#171717',letterSpacing:2,marginLeft:14,height:'100%'}}></TextInput>
-                <View style={{alignItems:"center",justifyContent:'center',height:'100%'}}>
-                { gstinVerified == true && <Check name="checkcircle" size={30} color={ternaryThemeColor}></Check>}
-                { gstinVerified == false && <Cross name="circle-with-cross" size={30} color={ternaryThemeColor}></Cross>}
-                </View>
-               
+      <View style={{ width: '100%', alignItems: "center", justifyContent: "center" }}>
+        <View style={{ marginTop: 30, alignItems: 'center', maxWidth: '80%' }}>
+          <Icon name="check-circle" size={53} color={ternaryThemeColor} />
+          <PoppinsTextMedium style={{ fontSize: 27, fontWeight: '600', color: ternaryThemeColor, marginLeft: 5, marginTop: 5 }} content={"Success ! !"}></PoppinsTextMedium>
+          
+          <ActivityIndicator size={'small'} animating={true} color={ternaryThemeColor} />
 
-                </View>
-                {verifyGstData && <View style={{alignItems:'flex-start',justifyContent:'flex-start',width:'84%',borderWidth:1,borderStyle:'dotted',backgroundColor:"#F1F8FA",borderColor:'#DDDDDD',marginTop:20,borderRadius:20,paddingTop:10,paddingBottom:10}}>
-                <PoppinsTextMedium style={{color:"#171717",fontSize:16,fontWeight:'500',marginLeft:10,marginTop:10}} content={`Name : ${verifyGstData?.body?.legal_name_of_business}`}></PoppinsTextMedium>
-                <PoppinsTextMedium style={{color:"#171717",fontSize:16,fontWeight:'500',marginLeft:10,marginTop:10,textAlign:'left'}} content={`Address : ${verifyGstData?.body?.principal_place_address}`}></PoppinsTextMedium>
-                </View>}
-                {
-                    gstinVerified == false && 
-                    <View style={{alignItems:"flex-start",justifyContent: 'flex-start'}}>
-                <PoppinsTextMedium style={{color:"red",fontSize:16,fontWeight:'500',marginLeft:10,marginTop:10}} content={message}></PoppinsTextMedium>
-                    </View>
+          <View style={{ marginTop: 10, marginBottom: 30 }}>
+            <PoppinsTextMedium style={{ fontSize: 16, fontWeight: '600', color: "#000000", marginLeft: 5, marginTop: 5, }} content={message}></PoppinsTextMedium>
+          </View>
 
-                }
-                { gstinVerified &&
-                <View style={{marginTop:20}}>
-                    <CameraInputWithUpload
-                    name = {"Gstin Image"}
-                    title={"GSTIN Image"}
-                    jsonData={{name:"Gstin Image", required:true, title:"GSTIN Image"}}
-                    handleData={getGstinImage}
-                ></CameraInputWithUpload>
-                </View>
-                }
-                {gotGstinImage && <TouchableOpacity onPress={()=>{
-                    handleGstinSubmission()
-                }} style={{height:40,width:100,backgroundColor:ternaryThemeColor,borderRadius:10,marginTop:20,alignItems:"center",justifyContent:"center"}}>
-                <PoppinsTextMedium style={{color:"white",fontSize:16,fontWeight:'600'}} content="Submit"></PoppinsTextMedium>
-                    
-                    </TouchableOpacity>}
-            </View> }
-            {checked===false && <View style={{alignItems:'center',justifyContent:'center',width:'100%',marginTop:20}}>
-            <View style={{alignItems:'flex-start',justifyContent:'flex-start',height:60,width:'80%',borderWidth:1,borderColor:"#DDDDDD",flexDirection:'row'}}>
-                <View style={{padding:4,backgroundColor:'white',position:"absolute",top:-16,left:16}}>
-                <PoppinsTextMedium style={{color:"#919191",fontSize:15,fontWeight:'500'}} content="Enter PAN Number"></PoppinsTextMedium>
-                </View>
-                <TextInput maxLength={15} onChangeText={(text)=>{
-                    setPan(text)
-                }} style={{alignItems:"center",justifyContent:'center',width:'80%',color:'#171717',letterSpacing:2,marginLeft:14,height:'100%'}}></TextInput>
-                <View style={{alignItems:"center",justifyContent:'center',height:'100%'}}>
-                { panVerified == true && <Check name="checkcircle" size={30} color={ternaryThemeColor}></Check>}
-                { panVerified == false && <Cross name="circle-with-cross" size={30} color={ternaryThemeColor}></Cross>}
-                </View>
-                {verifyPanData && <View style={{alignItems:'flex-start',justifyContent:'flex-start',width:'84%',borderWidth:1,borderStyle:'dotted',backgroundColor:"#F1F8FA",borderColor:'#DDDDDD',marginTop:20,borderRadius:20,paddingTop:10,paddingBottom:10}}>
-                <PoppinsTextMedium style={{color:"#171717",fontSize:16,fontWeight:'500',marginLeft:10,marginTop:10}} content={`Name : ${verifyPanData?.body?.registered_name}`}></PoppinsTextMedium>
-                <PoppinsTextMedium style={{color:"#171717",fontSize:16,fontWeight:'500',marginLeft:10,marginTop:10,textAlign:'left'}} content={`Father Name : ${verifyPanData?.body?.father_name}`}></PoppinsTextMedium>
-                </View>}
 
-                </View>
-                <View style={{alignItems:'flex-start',justifyContent:'flex-start',height:60,width:'80%',borderWidth:1,borderColor:"#DDDDDD",flexDirection:'row',marginTop:40}}>
-                <View style={{padding:4,backgroundColor:'white',position:"absolute",top:-16,left:16}}>
-                <PoppinsTextMedium style={{color:"#919191",fontSize:15,fontWeight:'500'}} content="Enter Aadhar Number"></PoppinsTextMedium>
-                </View>
-                <TextInput maxLength={15} onChangeText={(text)=>{
-                    setAadhar(text)
-                }} style={{alignItems:"center",justifyContent:'center',width:'80%',color:'#171717',letterSpacing:2,marginLeft:14,height:'100%'}}></TextInput>
-                <View style={{alignItems:"center",justifyContent:'center',height:'100%'}}>
-                { aadharVerified == true && <Check name="checkcircle" size={30} color={ternaryThemeColor}></Check>}
-                { aadharVerified == false && <Cross name="circle-with-cross" size={30} color={ternaryThemeColor}></Cross>}
-                </View>
-               
+          {/* <View style={{ alignItems: 'center', marginBottom: 30 }}>
+            <ButtonOval handleOperation={modalWithBorderClose} backgroundColor="#000000" content="OK" style={{ color: 'white', paddingVertical: 4 }} />
+          </View> */}
 
-                </View>
-            </View>}
-            </ScrollView>
         </View>
-    );
-}
 
-const styles = StyleSheet.create({})
+        <TouchableOpacity style={[{
+          backgroundColor: ternaryThemeColor, padding: 6, borderRadius: 5, position: 'absolute', top: -10, right: -10,
+        }]} onPress={modalClose} >
+          <Close name="close" size={17} color="#ffffff" />
+        </TouchableOpacity>
+
+      </View>
+    )
+  }
+  
+
+  return (
+    <ScrollView
+      contentContainerStyle={{
+        alignItems: "center",
+        justifyContent: "flex-start",
+        backgroundColor: "white",
+        height: "100%",
+        width: "100%",
+      }}
+    >
+      <View
+        style={{
+          width: "100%",
+          alignItems: "flex-start",
+          justifyContent: "flex-start",
+          backgroundColor: ternaryThemeColor,
+        }}
+      >
+        <View style={{alignItems:'center',justifyContent:'center',flexDirection:"row",marginLeft:10}}>
+          <TouchableOpacity onPress={()=>{
+            navigation.navigate("SelectUser")
+          }}>
+        <LeftIcon name="arrowleft" size={24} color={"white"}></LeftIcon>
+        </TouchableOpacity>
+        <Image
+          style={{
+            height: 80,
+            width: 80,
+            resizeMode: "contain",
+            marginLeft: 20,
+          }}
+          source={{ uri: icon }}
+        ></Image>
+        </View>
+        
+        <View
+          style={{
+            alignItems: "flex-start",
+            justifyContent: "flex-start",
+            marginLeft: 20,
+            marginTop: 10,
+            marginBottom: 10,
+          }}
+        >
+          <PoppinsTextMedium
+            style={{ color: "white", fontSize: 29, fontWeight: "600" }}
+            content="Complete Your"
+          ></PoppinsTextMedium>
+          <PoppinsTextMedium
+            style={{ color: "white", fontSize: 29, fontWeight: "600" }}
+            content="Registration"
+          ></PoppinsTextMedium>
+        </View>
+      </View>
+      <ScrollView
+        style={{ width: "100%", flex: 1 }}
+        contentContainerStyle={{ alignItems: "flex-start" }}
+      >
+        {showOptions && <View
+          style={{
+            alignItems: "center",
+            justifyContent: "center",
+            flexDirection: "row",
+            marginTop: 20,
+            width:'100%'
+          }}
+
+        >
+          <View style={{width:'40%',alignItems:'center',justifyContent:'center'}}>
+          <PoppinsTextLeftMedium
+            style={{
+              color: "#171717",
+              fontSize: 16,
+              fontWeight: "700",
+              marginLeft: 10,
+              marginRight: 4,
+              
+            }}
+            content="Do you have GST ? "
+          ></PoppinsTextLeftMedium>
+          </View>
+          <View style={{width:'60%',alignItems:'center',justifyContent:'center',flexDirection:'row'}}>
+          <View
+            style={{
+              alignItems: "center",
+              justifyContent: "center",
+              height: 40,
+              padding:8,
+              borderRadius: 14,
+              borderWidth: 2,
+              borderColor: "black",
+              flexDirection: "row",
+            }}
+          >
+            <RadioButton
+              value="option1"
+              color={ternaryThemeColor}
+              status={checked === true ? "checked" : "unchecked"}
+              onPress={() => setChecked(true)}
+            />
+            <PoppinsTextMedium
+              style={{ color: "#171717", fontSize: 12, fontWeight: "700" }}
+              content="Yes"
+            ></PoppinsTextMedium>
+          </View>
+          <View
+            style={{
+              alignItems: "center",
+              justifyContent: "center",
+              height: 40,
+              padding:8,
+              borderRadius: 14,
+              borderWidth: 2,
+              borderColor: "black",
+              flexDirection: "row",
+              marginLeft: 10,
+            }}
+          >
+            <RadioButton
+              value="option2"
+              color={ternaryThemeColor}
+              status={checked === false ? "checked" : "unchecked"}
+              onPress={() => setChecked(false)}
+            />
+            <PoppinsTextMedium
+              style={{ color: "#171717", fontSize: 12, fontWeight: "700" }}
+              content="No"
+            ></PoppinsTextMedium>
+          </View>
+          </View>
+        </View>}
+        {checked == true && (
+          <View
+            style={{
+              alignItems: "center",
+              justifyContent: "center",
+              width: "100%",
+              marginTop: 20,
+            }}
+          >
+            {
+              checked &&
+              kycOption1.map((item,index)=>{
+                if(item == "gstin")
+                {
+                  return(
+                    <GSTINVerificationComp key = {`Option1${index}`} required = {true} verify= {true} showDetails={true} gstinData={gstinData} ></GSTINVerificationComp>
+                  )
+                }
+                else if(item == "aadhar")
+                {
+                  return(
+                    <AADHAARVerificationComp key = {`Option1${index}`} required = {true} verify= {true} showDetails={true} aadharData={aadharData}></AADHAARVerificationComp>
+                  )
+                }
+                else if(item == "pan")
+                {
+                  return(
+                    <PanVerificationComp key = {`Option1${index}`} required = {true} verify= {true} showDetails={true} panData={panData}></PanVerificationComp>
+
+                  )
+                }
+              })
+            }
+            
+
+
+              <View style={{ marginTop: 20 }}>
+                <CameraInputWithUpload
+                  theme = "new"
+                  image = {imageData}
+                  name={"shop image"}
+                  title={"Shop Image"}
+                  jsonData={{
+                    name: "shop image",
+                    required: true,
+                    title: "Shop Image",
+                  }}
+                  handleData={getShowImage}
+                ></CameraInputWithUpload>
+              </View>
+            
+            
+              <TouchableOpacity
+                onPress={() => {
+                  handleGstinSubmission();
+                }}
+                style={{
+                  height: 40,
+                  width: 140,
+                  backgroundColor: ternaryThemeColor,
+                  borderRadius: 10,
+                  marginTop: 20,
+                  alignItems: "center",
+                  justifyContent: "center",
+                }}
+              >
+                <PoppinsTextMedium
+                  style={{ color: "white", fontSize: 18, fontWeight: "600" }}
+                  content="Submit"
+                ></PoppinsTextMedium>
+              </TouchableOpacity>
+            
+          </View>
+        )}
+        {checked === false && (
+          <View
+            style={{
+              alignItems: "center",
+              justifyContent: "center",
+              width: "100%",
+              marginTop: 0,
+            }}
+          >
+           {
+              kycOption2.map((item,index)=>{
+                console.log("Option 2",item)
+                if(item === "gstin")
+                {
+                  return(
+                    <GSTINVerificationComp key = {`Option2${index}`} required = {true} verify= {true} showDetails={true} gstinData={gstinData} ></GSTINVerificationComp>
+                  )
+                }
+                 if(item === "aadhar")
+                {
+                  return(
+                    <AADHAARVerificationComp key = {`Option2${index}`} required = {true} verify= {true} showDetails={true} aadharData={aadharData}></AADHAARVerificationComp>
+                  )
+                }
+                 if(item === "pan")
+                {
+                  return(
+                    <PanVerificationComp key = {`Option2${index}`} required = {true} verify= {true} showDetails={true} panData={panData}></PanVerificationComp>
+
+                  )
+                }
+              })
+            }
+              <View style={{ marginTop: 20 }}>
+                <CameraInputWithUpload
+                theme ="new"
+                  image = {imageData}
+                  name={"shop image"}
+                  title={"Shop Image"}
+                  jsonData={{
+                    name: "shop image",
+                    required: true,
+                    title: "Shop Image",
+                  }}
+                  handleData={getShowImage}
+                ></CameraInputWithUpload>
+              </View>
+           
+           
+              <TouchableOpacity
+                onPress={() => {
+                  handleGstinSubmission();
+                }}
+                style={{
+                  height: 40,
+                  width: 140,
+                  backgroundColor: ternaryThemeColor,
+                  borderRadius: 10,
+                  marginTop: 20,
+                  alignItems: "center",
+                  justifyContent: "center",
+                }}
+              >
+                <PoppinsTextMedium
+                  style={{ color: "white", fontSize: 18, fontWeight: "600" }}
+                  content="Submit"
+                ></PoppinsTextMedium>
+              </TouchableOpacity>
+            
+          </View>
+        )}
+        {openModalWithBorder &&
+          <ModalWithBorder
+            modalClose={modalWithBorderClose}
+            message={message}
+            openModal={openModalWithBorder}
+            comp={ModalContent}>
+          </ModalWithBorder>}
+      </ScrollView>
+    </ScrollView>
+  );
+};
+
+const styles = StyleSheet.create({});
 
 export default CheckKycOptions;

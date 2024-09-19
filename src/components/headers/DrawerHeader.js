@@ -16,23 +16,23 @@ const DrawerHeader = () => {
       )
         ? useSelector(state => state.apptheme.ternaryThemeColor)
         : 'grey';
-    const icon = useSelector(state => state.apptheme.icon)
-        ? useSelector(state => state.apptheme.icon)
+    const icon1 = useSelector(state => state.apptheme.icon1)
+        ? useSelector(state => state.apptheme.icon1)
         : require('../../../assets/images/demoIcon.png');
-    
+    console.log("ICONsajdghasghdghasg",icon1)
     const BellComponent =()=>{
         return(
             <TouchableOpacity style={{height:30,width:30}} onPress={()=>{navigation.navigate("Notification")}} >
-            <Bell name="bell" size={30} color={ternaryThemeColor}></Bell>
+            <Bell name="bell" size={30} color={"white"}></Bell>
         </TouchableOpacity>
         )
     }
     return (
-        <View style={{height:60,width:'100%',flexDirection:"row",alignItems:"center",marginBottom:20,backgroundColor:"white"}}>
+        <View style={{height:60,width:'100%',flexDirection:"row",alignItems:"center",marginBottom:20,backgroundColor:ternaryThemeColor}}>
             <TouchableOpacity onPress={()=>{navigation.dispatch(DrawerActions.toggleDrawer());}} style={{marginLeft:10}}>
-            <Icon name="bars" size={30} color={ternaryThemeColor}></Icon>
+            <Icon name="bars" size={30} color={"white"}></Icon>
             </TouchableOpacity>
-            <Image style={{height:60,width:80,resizeMode:"contain",marginLeft:10}} source={{uri: icon}}></Image>
+            <Image style={{height:60,width:80,resizeMode:"contain",marginLeft:10}} source={{uri: icon1}}></Image>
            
                 <RotateViewAnimation outputRange={["0deg","30deg", "-30deg","0deg"]} inputRange={[0,1,2,3]} comp={BellComponent} style={{height:30,width:30,position:'absolute',right:30}}>
                     

@@ -6,7 +6,8 @@ import QrCodeScanner from '../../screens/camera/QrCodeScanner';
 import { useSelector } from 'react-redux';
 
 const DashboardMenuBox=(props)=>{
-    const data = props?.data
+    const dataa = props?.data
+    console.log("dashboard menu box data",dataa)
     const navigation = props.navigation
     const width = Dimensions.get('window').width
     const requiresLocation = props.requiresLocation
@@ -19,8 +20,8 @@ const DashboardMenuBox=(props)=>{
         {
             navigation.navigate("Passbook")
         }
-        else if(data.toLowerCase() === "rewards"){
-            navigation.navigate('RedeemRewardHistory')
+        else if(data.toLowerCase() === "my rewards"){
+            navigation.navigate('RedeemGifts')
         }
         else if(data.toLowerCase() === "profile"){
             navigation.navigate('Profile')
@@ -53,6 +54,9 @@ const DashboardMenuBox=(props)=>{
         else if(data.toLowerCase() === "product catalogue"){
             navigation.navigate('ProductCatalogue')
         }
+        else if(data.toLowerCase() === "gift-tracker"){
+            navigation.navigate('RedeemedHistory')
+        }
         else if(data.toLowerCase() === "add user"){
             navigation.navigate('ListUsers')
         }
@@ -68,7 +72,7 @@ const DashboardMenuBox=(props)=>{
         <View style={{borderColor:'#DDDDDD',borderRadius:20,borderWidth:1.2,width:width-20,alignItems:"center",justifyContent:"center",backgroundColor:'white',padding:4,marginBottom:30}}>
         <View style={{width:'100%',flexWrap:"wrap",flexDirection:"row",alignItems:"center",justifyContent:'center'}}>
         {
-            data.map((item,index)=>{
+            dataa.map((item,index)=>{
                 return(
                    
                     <MenuItems handlePress={handleMenuItemPress} key={index} image={item?.icon} content={item?.name}></MenuItems>

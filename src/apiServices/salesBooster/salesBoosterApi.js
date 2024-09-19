@@ -3,6 +3,34 @@ import { slug } from "../../utils/Slug";
 
 export const salesBoosterApi = baseApi.injectEndpoints({
     endpoints: (builder) => ({
+
+        getSalesBoosterOrder:builder.mutation({
+            query: (params) => {
+                return {
+                method: "POST",
+                url: `/api/tenant/modenik/app/scheme-info?app_user_id=${params.appUserID}&sb_id=${params.sb_id}&month=${params.month}&year=${params.year}`,
+                headers: {
+                "Content-Type": "application/json",
+                Authorization: "Bearer " + params.token,
+                slug: slug,
+                },
+                };
+                },
+        }),
+
+        getAllSalesBooster: builder.mutation({
+            query: (params) => {
+            return {
+            method: "GET",
+            url: `/api/tenant/modenik/scheme/${params.appUserID}`,
+            headers: {
+            "Content-Type": "application/json",
+            Authorization: "Bearer " + params.token,
+            slug: slug,
+            },
+            };
+            },
+            }),
         checkSalesBooster: builder.mutation({
         query: (token) => {
         return {
@@ -47,4 +75,4 @@ export const salesBoosterApi = baseApi.injectEndpoints({
     })
 });
 
-export const {useCheckSalesBoosterMutation,useCheckSalesBoosterOnEachScanMutation,useClaimSalesBoosterMutation} = salesBoosterApi;
+export const {useGetAllSalesBoosterMutation,useCheckSalesBoosterMutation,useCheckSalesBoosterOnEachScanMutation,useClaimSalesBoosterMutation,useGetSalesBoosterOrderMutation} = salesBoosterApi;

@@ -661,8 +661,8 @@ const codeScanner = useCodeScanner({
         let requestData = { };
 
         if (qrData?.split("-").length === 1) {
-            requestData["unique_code"] = `ozone-${qrData}`;
-            qrData = `ozone-${qrData}`
+            requestData["unique_code"] = `modenik-${qrData}`;
+            qrData = `modenik-${qrData}`
         } else if (qrData?.split("-").length === 2) {
             requestData["unique_code"] = qrData;
         }

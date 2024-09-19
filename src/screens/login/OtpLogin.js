@@ -26,13 +26,13 @@ import TextInputRectangularWithPlaceholder from '../../components/atoms/input/Te
 import { useIsFocused } from '@react-navigation/native';
 import PoppinsTextLeftMedium from '../../components/electrons/customFonts/PoppinsTextLeftMedium';
 import Checkbox from '../../components/atoms/checkbox/Checkbox';
-import { useFetchLegalsMutation } from '../../apiServices/fetchLegal/FetchLegalApi';
 import * as Keychain from 'react-native-keychain';
 import FastImage from 'react-native-fast-image';
 import { useTranslation } from 'react-i18next';
 import AlertModal from '../../components/modals/AlertModal';
 import crashlytics from '@react-native-firebase/crashlytics';
-
+import LeftIcon from 'react-native-vector-icons/AntDesign'
+import { useFetchLegalsMutation } from '../../apiServices/fetchLegal/FetchLegalApi';
 const OtpLogin = ({ navigation, route }) => {
   const [mobile, setMobile] = useState("")
   const [name, setName] = useState("")
@@ -62,7 +62,7 @@ const OtpLogin = ({ navigation, route }) => {
     state => state.apptheme.ternaryThemeColor,
   )
    
-  const icon = useSelector(state => state.apptheme.icon)
+  const icon = useSelector(state => state.apptheme.icon1)
 
 
   // ------------------------------------------------
@@ -127,7 +127,8 @@ const OtpLogin = ({ navigation, route }) => {
       if (sendOtpData?.success === true && mobile.length === 10) {
         if(Object.keys(getNameData.body).length!=0)
         {
-        navigation.navigate('VerifyOtp', {navigationParams,...getNameData?.body })
+        const nameData = getNameData?.body
+        navigation.navigate('VerifyOtp', {navigationParams,kycData:nameData })
 
         }
       }
@@ -223,7 +224,7 @@ const OtpLogin = ({ navigation, route }) => {
         setMobile(data)
         }
         else{
-        Alert.alert("Kindly enter a valid mobile number")
+        Alert.alert("Kindly enter a valid UID ")
         setMobile("")
         }
       }
@@ -264,7 +265,7 @@ const OtpLogin = ({ navigation, route }) => {
           }
           else {
             setError(true)
-            setMessage("Please enter your 10 digit mobile number")
+            setMessage("Please enter your 6 digit UID")
           }
           // setName('')
           // setMobile('')
@@ -326,9 +327,10 @@ const OtpLogin = ({ navigation, route }) => {
             onPress={() => {
               navigation.goBack();
             }}>
-            <Image
+            {/* <Image
               style={{ height: 20, width: 20, resizeMode: 'contain' }}
-              source={require('../../../assets/images/blackBack.png')}></Image>
+              source={require('../../../assets/images/blackBack.png')}></Image> */}
+              <LeftIcon name="arrowleft" size={24} color={"white"}></LeftIcon>
           </TouchableOpacity>
           <Image
             style={{
@@ -353,7 +355,7 @@ const OtpLogin = ({ navigation, route }) => {
           }}>
           <PoppinsText
             style={{ color: 'white', fontSize: 28 }}
-            content={t("tell us number")}></PoppinsText>
+            content={t("Tell us your identity")}></PoppinsText>
 
         </View>
       </View>
@@ -411,7 +413,7 @@ const OtpLogin = ({ navigation, route }) => {
             backgroundColor={buttonThemeColor}
             style={{ color: 'white', fontSize: 16 }}
             isLoading={sendOtpIsLoading}
-            content={t("login")}
+            content={t("Agree & Continue")}
             navigateTo="VerifyOtp"
             navigationParams={navigationParams}
             mobileLength={mobile}

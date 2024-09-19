@@ -36,6 +36,9 @@ const RedeemRewardHistory = ({navigation}) => {
         : 'grey';
 
     useEffect(()=>{
+        if(workflowProgram)
+        {
+           
         if(workflowProgram.includes("Static Coupon") || workflowProgram.includes("static coupon"))
         {
             setShowCoupons(true)
@@ -52,6 +55,8 @@ const RedeemRewardHistory = ({navigation}) => {
         {
             setShowCashback(true)
         }
+    }
+
 
     },[])
     const [fetchUserPointsHistoryFunc,{

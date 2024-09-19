@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Image, StyleSheet, TouchableOpacity, View,ActivityIndicator } from "react-native";
+import { Image, StyleSheet, TouchableOpacity, View,ActivityIndicator,PermissionsAndroid } from "react-native";
 import { Camera, useCameraPermission,useCameraDevice } from "react-native-vision-camera";
 import PoppinsTextMedium from "../../electrons/customFonts/PoppinsTextMedium";
 import { useSelector } from "react-redux";
@@ -14,7 +14,7 @@ const CameraInputWithUpload = (props) => {
   const [openCamera, setOpenCamera] = useState(false);
   const [showButton, setShowButton] = useState(false)
   const [capturePressed, setCapturePressed] = useState(false)
-  const [loading, setLoading] = useState()
+  const [loading, setLoading] = useState(false)
   const { hasPermission, requestPermission } = useCameraPermission();
   const device = useCameraDevice("back");
   const ternaryThemeColor = useSelector(
@@ -25,8 +25,10 @@ const CameraInputWithUpload = (props) => {
 
   const navigation = useNavigation();
   const title = props.title
+  const theme = props.theme
   const jsonData = props.jsonData
-
+  const image = props.image
+    console.log("Image was already saved", image,theme)
   const [
     uploadImageFunc,
     {
@@ -74,6 +76,7 @@ const CameraInputWithUpload = (props) => {
 
 const captureImage=async()=>{
   try{
+  
 const result = await launchCamera({quality:0.9})
 console.log("launchCameraOutput",result)
 const imageData = {
@@ -93,7 +96,8 @@ const imageData = {
   };
 
   getToken();
-  }
+  
+}
   catch(e)
   {
     console.log("Exception in Image libray",e)
@@ -104,19 +108,31 @@ const imageData = {
 
   return (
     <View style={{ alignItems: "center", justifyContent: "center" }}>
-    <PoppinsTextMedium style={{color:'black',fontSize:18,fontWeight:'700'}} content ={`${title} ${jsonData.required ? "*" : ""}`}></PoppinsTextMedium>
-    {loading == false && <ActivityIndicator size={40} color={ternaryThemeColor}></ActivityIndicator>}
+    {theme!="new" && <PoppinsTextMedium style={{color:'black',fontSize:18,fontWeight:'700'}} content ={`${title} ${jsonData.required ? "*" : ""}`}></PoppinsTextMedium>}
+    {/* {loading  && <ActivityIndicator size={40} color={ternaryThemeColor}></ActivityIndicator>} */}
+    {image && <Image loadingIndicatorSource={{uri:"https://picsum.photos/200"}} style={{height:200,width:300,resizeMode:'contain',marginTop:20}} source={{uri:image?.fileLink}}></Image>}
     {uploadImageData && <Image style={{height:260,width:340,resizeMode:'contain',marginTop:20}} source={{uri:uploadImageData?.body?.fileLink}}></Image>}
    {!showButton && <ActivityIndicator size={40} color={ternaryThemeColor}></ActivityIndicator>}
-   {showButton && <TouchableOpacity onPress={async()=>{
-        setCapturePressed(true)
-       setTimeout(() => {
-        captureImage()
-        setCapturePressed(false)
-       }, 2000);
-       
+   {showButton && theme !== "new" && <TouchableOpacity onPress={async()=>{
+      //   setCapturePressed(true)
+      //  setTimeout(() => {
+      //   captureImage()
+      //   setCapturePressed(false)
+      //  }, 2000);
+      
+       navigation.navigate("CameraCapture")
     }} style={{height:40,width:100,alignItems:'center',justifyContent:'center',borderRadius:10,backgroundColor:capturePressed ? "#DDDDDD":ternaryThemeColor,marginTop:10}}>
-        <PoppinsTextMedium content={uploadImageData ? "Recapture":"Capture"} style={{color:'white', fontSize:18}}></PoppinsTextMedium>
+        <PoppinsTextMedium content={(uploadImageData || image) ? "Recapture":"Capture"} style={{color:'white', fontSize:18}}></PoppinsTextMedium>
+    </TouchableOpacity>}
+    {showButton && theme == "new"  && <TouchableOpacity onPress={async()=>{
+      //   setCapturePressed(true)
+      //  setTimeout(() => {
+      //   captureImage()
+      //   setCapturePressed(false)
+      //  }, 2000);
+      
+       navigation.navigate("CameraCapture")
+    }} >
     </TouchableOpacity>}
     
     </View>

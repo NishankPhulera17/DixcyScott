@@ -63,12 +63,13 @@ const Introduction = ({navigation}) => {
     }
 
     return (
-        <ImageBackground source={descriptionImages[imageIndex]} resizeMode='stretch' style={{backgroundColor:"#F2F2F2",height:'100%',width:'100%',flex:1,}}>
+        <View style={{backgroundColor:'#FFFFFF',height:'100%',width:'100%'}}>
+        <ImageBackground source={descriptionImages[imageIndex]} resizeMode='stretch' style={{backgroundColor:"#FFFFFF",height:'90%',width:'100%',flex:1,}}>
             
             {/* <View style={{width:'100%',height:'60%'}}>
                 <Image style={{height:"100%",width:"100%"}} source={descriptionImages[imageIndex]}></Image>
             </View> */}
-            <View style={{width:'100%',position:'absolute',bottom:30}}>
+            <View style={{width:'100%',position:'absolute',bottom:30,backgroundColor:'#FFFFFF'}}>
             <DotHorizontalList no = {descriptionImages?.length} primaryColor="white" secondaryColor="#0085A2" selectedNo = {imageIndex} ></DotHorizontalList>
             
             <View style={{width:"100%",height:'100%',marginTop:20}}>
@@ -80,6 +81,8 @@ const Introduction = ({navigation}) => {
             </View>
             </View>
         </ImageBackground>
+        
+        </View>
     );
 }
 

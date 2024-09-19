@@ -38,6 +38,7 @@ import { setPolicy,setTerms } from '../../../redux/slices/termsPolicySlice';
 import { useGetAppMenuDataMutation } from '../../apiServices/dashboard/AppUserDashboardMenuAPi.js';
 import { setDrawerData } from '../../../redux/slices/drawerDataSlice';
 import { ActivityIndicator, MD2Colors } from 'react-native-paper';
+import { useGetNameMutation } from '../../apiServices/login/GetNameByMobile';
 
 
 // import * as Keychain from 'react-native-keychain';  
@@ -50,6 +51,7 @@ const PasswordLogin = ({ navigation, route }) => {
   const [error, setError] = useState(false)
   const [message, setMessage] = useState("")
   const [isChecked, setIsChecked] = useState("")
+  const [name, setName] = useState("")
 
   //modal
   const [openModalWithBorder, setModalWithBorder] = useState(false);
@@ -97,7 +99,15 @@ const PasswordLogin = ({ navigation, route }) => {
 
   // initializing mutations --------------------------------
 
-
+  const [
+    getNameFunc,
+    {
+      data: getNameData,
+      error: getNameError,
+      isLoading: getLoading,
+      isError: getIsError
+    }
+  ] = useGetNameMutation()
   
   const [getPolicies, {
     data: getPolicyData,
@@ -196,6 +206,17 @@ const PasswordLogin = ({ navigation, route }) => {
     }
   }, [getDashboardData, getDashboardError])
 
+  useEffect(() => {
+    if (getNameData) {
+      console.log("getNameData", getNameData)
+      if (getNameData?.success) {
+      }
+    }
+    else if (getNameError) {
+      console.log("getNameError", getNameError)
+
+    }
+  }, [getNameData, getNameError])
 
   useEffect(() => {
     if (getWorkflowData) {
@@ -441,7 +462,14 @@ const PasswordLogin = ({ navigation, route }) => {
 
     await Keychain.setGenericPassword(token, password);
   }
+  const getUid = data => {
+    console.log("UID DATA",data)
+    setName(data)
+   
+          if(data.length===6)
+          getNameFunc({ uid: data })
 
+  };
 
 
   const modalClose = () => {
@@ -562,7 +590,7 @@ const PasswordLogin = ({ navigation, route }) => {
 
 
             }}
-            source={require('../../../assets/images/ozoneWhiteLogo.png')}></Image>
+            source={require('../../../assets/images/modenikLogo.png')}></Image>
           {/* ozone change */}
          
 
@@ -633,11 +661,11 @@ const PasswordLogin = ({ navigation, route }) => {
             <CustomTextInput sendData={getPassword} title="Password" image={require('../../../assets/images/whitePassword.png')}></CustomTextInput> */}
 
 
-          <TextInputRectangularWithPlaceholder
-            placeHolder={t("UserName")}
-            handleData={getUserId}
-          // maxLength={10}
-          ></TextInputRectangularWithPlaceholder>
+            <TextInputRectangularWithPlaceholder
+              placeHolder={t("UID")}
+              handleData={getUid}
+              value = {name}
+            ></TextInputRectangularWithPlaceholder> 
 
 
 

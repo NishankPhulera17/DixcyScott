@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState,useCallback } from "react";
 import {
   View,
   StyleSheet,
@@ -8,6 +8,7 @@ import {
   Dimensions,
   Linking,
   Text,
+  Touchable,
 } from "react-native";
 import Video from "react-native-video";
 import { useSelector } from "react-redux";
@@ -18,11 +19,13 @@ import Logo from "react-native-vector-icons/AntDesign";
 import moment from "moment";
 import DatePicker from "react-native-date-picker";
 import PoppinsTextLeftMedium from "../../components/electrons/customFonts/PoppinsTextLeftMedium";
+import { useGetAllSalesBoosterMutation } from "../../apiServices/salesBooster/salesBoosterApi";
 export default function Scheme({ navigation }) {
   const [scheme, setScheme] = useState([]);
   const [getAllScheme, setGetAllScheme] = useState([])
   const [gifts, setGifts] = useState([]);
   const [activeScheme, setActiveScheme] = useState()
+  const [selectedDataStart, setSelectedDataStart] = useState(new Date());
   const [selectedGifts, setSelectedGifts] = useState();
   const [categories, setCategories] = useState();
   const [highlightWidthPrevious, setHighlightWidthPrevious] = useState(false);
@@ -36,13 +39,24 @@ export default function Scheme({ navigation }) {
   const location = useSelector((state) => state.userLocation.location);
     console.log("Location Data from redux state", location)
   const height = Dimensions.get("window").height;
-
+  const userData = useSelector(state => state.appusersdata.userData)
+  console.log("userdata",userData)
   const [checkAllSchemeFunc,{
     data:checkAllSchemeData,
     error:checkAllSchemeError,
     isLoading:checkAllSchemeIsLoading,
     isError:checkAllSchemeIsError
   }] = useCheckAllSchemeMutation()
+
+
+  const [
+    getAllSalesBoosterFunc,{
+      data:getAllSalesBoosterData,
+      error:getAllSalesBoosterError,
+      isLoading:getAllSalesBoosterIsLoading,
+      isError:getAllSalesBoosterIsError
+    }
+  ] = useGetAllSalesBoosterMutation()
 
   const [
     checkActiveSchemeFunc,
@@ -53,6 +67,23 @@ export default function Scheme({ navigation }) {
       isError: checkActiveSchemeIsError,
     },
   ] = useCheckActiveSchemeMutation();
+
+  const years = [2024, 2025, 2026, 2027, 2028, 2029, 2030, 2031, 2032, 2033, 2034, 2035, 2036, 2037, 2038, 2039, 2040]
+
+  const months = [
+    "January",
+    "February",
+    "March",
+    "April",
+    "May",
+    "June",
+    "July",
+    "August",
+    "September",
+    "October",
+    "November",
+    "December"
+]
 
   const schemeData = {
     status: 200,
@@ -390,29 +421,6 @@ export default function Scheme({ navigation }) {
     ],
   };
   
-
-  useEffect(()=>{
-    if(checkActiveSchemeData)
-    {
-      console.log("checkActiveSchemeData",checkActiveSchemeData)
-    }
-    else if(checkActiveSchemeError)
-    {
-      console.log("checkActiveSchemeError",checkActiveSchemeError)
-    }
-  },[checkAllSchemeData,checkAllSchemeError])
-
-
-  useEffect(()=>{
-    
-      const currentScheme = schemeData?.body?.filter((item,index)=>{
-        if(((new Date(item.scheme_start).getTime()< new Date().getTime()) && ( new Date().getTime()< new Date(item.scheme_end).getTime())))
-        return item
-      })
-      setActiveScheme(currentScheme)
-      console.log("current scheme", currentScheme)
-  },[checkActiveSchemeError,checkActiveSchemeData])
-
   useEffect(() => {
     const getToken = async () => {
       const credentials = await Keychain.getGenericPassword();
@@ -421,28 +429,47 @@ export default function Scheme({ navigation }) {
           "Credentials successfully loaded for user " + credentials.username
         );
         const token = credentials.username;
-        checkActiveSchemeFunc(token);
+        const params = {appUserID:userData.id, token:token}
+        getAllSalesBoosterFunc(params);
       }
     };
     getToken();
   }, []);
 
   useEffect(() => {
-    if (checkActiveSchemeData) {
+    if (getAllSalesBoosterData) {
       console.log(
-        "checkActiveSchemeData",
-        JSON.stringify(checkActiveSchemeData)
+        "getAllSalesBoosterData",
+        JSON.stringify(getAllSalesBoosterData)
       );
-      if (checkActiveSchemeData.success) {
-        setScheme(checkActiveSchemeData.body.scheme);
-        setGifts(checkActiveSchemeData.body.gifts);
-        getCategories(checkActiveSchemeData.body.gifts);
-        setSelectedGifts(checkActiveSchemeData.body.gifts);
+      if (getAllSalesBoosterData.success) {
+        setScheme(getAllSalesBoosterData?.body);
+        setActiveScheme(getAllSalesBoosterData?.body)
+        // setGifts(getAllSalesBoosterData.body.gifts);
+        // getCategories(getAllSalesBoosterData.body.gifts);
+        // setSelectedGifts(getAllSalesBoosterData.body.gifts);
       }
-    } else if (checkActiveSchemeError) {
-      console.log("checkActiveSchemeError", checkActiveSchemeError);
+    } else if (getAllSalesBoosterError) {
+      console.log("getAllSalesBoosterError", getAllSalesBoosterError);
     }
-  }, [checkActiveSchemeData, checkActiveSchemeError]);
+  }, [getAllSalesBoosterData, getAllSalesBoosterError]);
+
+  const getSelectedDates = useCallback((startDate) => {
+    // Convert the input start date to a JavaScript Date object
+    const inputStartDate = new Date(startDate);
+  
+    // Filter the data based on the start date
+    const filteredData = scheme?.filter(item => {
+      const itemStartDate = new Date(item.start_date);
+      console.log("getSelectedDate function", itemStartDate,inputStartDate)
+  
+      // Check if the item's start date is greater than or equal to the input start date
+      return itemStartDate >= inputStartDate;
+    });
+  
+    console.log("filteredData", filteredData, startDate);
+    setActiveScheme(filteredData);
+  }, [setActiveScheme]);
 
   const getCategories = (data) => {
     const categoryData = data.map((item, index) => {
@@ -458,119 +485,172 @@ export default function Scheme({ navigation }) {
     setSelected(true);
   };
 
-  const FilterSchemeComponent = () => {
-    const [selectedDataStart, setSelectedDataStart] = useState(new Date());
-    const [selectedDataEnd, setSelectedDataEnd] = useState(new Date());
-
+  const FilterSchemeComponent = React.memo((props) => {
     const [openStart, setOpenStart] = useState(false);
-    const [openEnd, setOpenEnd] = useState(false);
+    
 
+    const handleDateChange = (date) => {
+      setOpenStart(false);
+      setSelectedDataStart(date);
+      props.getDate(selectedDataStart);
 
+    }
+  
     return (
-      <View style={{alignItems:'center',justifyContent:'center' ,width:'100%',flexDirection:'row',marginBottom:10}}>
+      <View style={{ alignItems: 'center', justifyContent: 'flex-start', width: '100%', flexDirection: 'row', marginBottom: 10 }}>
         <View
           style={{
-           padding:10,
-            width: "44%",
+            padding: 10,
+            width: "90%",
             alignItems: "center",
-            justifyContent: "space-between",
-            flexDirection:'row'
+            justifyContent: "flex-start",
+            flexDirection: 'row',
+            marginLeft: 20
           }}
         >
           <PoppinsTextMedium
-            content={`Start Date ${moment(selectedDataStart).format("MM/YYYY")}`}
-            style={{ width: "60%", fontSize: 16, fontWeight: "700" }}
-          ></PoppinsTextMedium>
+            content={`${moment(selectedDataStart).format("MM/YYYY")}`}
+            style={{ fontSize: 16, fontWeight: "700" }}
+          />
           <TouchableOpacity
             style={{
               backgroundColor: ternaryThemeColor,
               paddingLeft: 10,
               borderRadius: 6,
-              paddingRight: 10,
               padding: 6,
-              marginTop:10,
-              marginLeft:10
+              marginLeft: 10
             }}
-            onPress={() => {
-              setOpenStart(!openStart);
-            }}
+            onPress={() => setOpenStart(!openStart)}
           >
             <DatePicker
               modal
               mode="date"
               open={openStart}
               date={selectedDataStart}
-              onConfirm={(date) => {
-                setOpenStart(false);
-                setSelectedDataStart(date);
-              }}
-              onCancel={() => {
-                setOpenStart(false);
-              }}
+              onConfirm={handleDateChange}
+              onCancel={() => setOpenStart(false)}
             />
             <PoppinsTextMedium
               style={{ color: "white", fontWeight: "700" }}
               content=" Select"
-            ></PoppinsTextMedium>
-          </TouchableOpacity>
-        </View>
-        <View
-          style={{
-            padding:10,
-            width: "44%",
-            alignItems: "center",
-            justifyContent: "space-between",
-            flexDirection:'row',
-            borderLeftWidth:1,
-            marginLeft:10
-          }}
-        >
-          <PoppinsTextMedium
-            content={`End Date ${moment(selectedDataEnd).format("MM/YYYY")}`}
-            style={{ width: "60%", fontSize: 16, fontWeight: "700" }}
-          ></PoppinsTextMedium>
-          <TouchableOpacity
-            style={{
-              backgroundColor: ternaryThemeColor,
-              paddingLeft: 10,
-              borderRadius: 6,
-              paddingRight: 10,
-              padding: 6,
-              marginTop:10,
-              marginLeft:10
-            }}
-            onPress={() => {
-              setOpenEnd(!openEnd);
-            }}
-          >
-            <DatePicker
-              modal
-              mode="date"
-              open={openEnd}
-              date={selectedDataEnd}
-              onConfirm={(date) => {
-                setOpenEnd(false);
-                setSelectedDataEnd(date);
-              }}
-              onCancel={() => {
-                setOpenEnd(false);
-              }}
             />
-            <PoppinsTextMedium
-              style={{ color: "white", fontWeight: "700" }}
-              content=" Select"
-            ></PoppinsTextMedium>
           </TouchableOpacity>
         </View>
       </View>
     );
-  };
+  });
+
+  
+
+  const NewSchemeComponent =(props)=>{
+    const image = props.image;
+    const name = props.name;
+    const worth = props.worth;
+    const earnedPoints = props?.data?.point_earned ? props?.data?.point_earned : 0;
+    const coin = props.coin;
+    const type = props.data.trigger_key
+    return (
+      <View style={{height:180,width:'90%',alignItems:'center',justifyContent:'flex-start',backgroundColor:secondaryThemeColor,borderRadius:20,marginTop:20}}>
+        <View style={{height:'60%',width:'100%',flexDirection:'row',alignItems:'flex-start',justifyContent:'flex-start',marginTop:10}}>
+        <View
+            style={{
+              height: 100,
+              width: '25%',
+              borderRadius: 10,
+              alignItems: "center",
+              justifyContent: "center",   
+            }}
+          >
+            <View
+            style={{
+              height: 65,
+              width: 65,
+              borderRadius: 10,
+              alignItems: "center",
+              justifyContent: "center",
+              borderWidth: 1,
+              borderColor: "white",
+            }}
+          >
+            <Image
+              style={{
+                height: 65,
+                width: 65,
+                resizeMode: "contain",
+                borderRadius: 10,
+              }}
+              source={{ uri: props.data?.image }}
+            ></Image>
+            </View>
+          </View>
+         <View style={{width:'70%',alignItems:'flex-start',justifyContent:'center'}}>
+          <View style={{width:'100%',borderColor:'white',borderBottomWidth:1,alignItems:'flex-start',paddingBottom:4}}>
+          <PoppinsTextMedium
+            style={{ color: "white", fontSize: 18, fontWeight: "700" }}
+            content={name}
+          ></PoppinsTextMedium>
+          </View>
+          <View style={{width:'100%',borderColor:'white',borderBottomWidth:1,alignItems:'flex-start',flexDirection:'row',marginTop:10,paddingBottom:6}}>
+          <PoppinsTextMedium
+            style={{ color: "white", fontSize: 12, fontWeight: "500" }}
+            content={"Total Earn Points"}
+          ></PoppinsTextMedium>
+          <PoppinsTextMedium
+            style={{ color: "white", fontSize: 12, fontWeight: "500",marginLeft:'60%' }}
+            content={earnedPoints}
+          ></PoppinsTextMedium>
+          </View>
+          <View style={{width:'100%',alignItems:'flex-start',paddingBottom:6,flexDirection:"row",marginTop:4}}>
+            <View style={{alignItems:'flex-start',justifyContent:'center',width:'50%'}}>
+            <PoppinsTextMedium
+            style={{ color: "white", fontSize: 12, fontWeight: "600" }}
+            content={"Start Date"}
+          ></PoppinsTextMedium>
+           <PoppinsTextMedium
+            style={{ color: "white", fontSize: 12, fontWeight: "600" }}
+            content={props.data.start_date}
+          ></PoppinsTextMedium>
+            </View>
+            <View style={{alignItems:'flex-end',justifyContent:'center',width:'50%'}}>
+            <PoppinsTextMedium
+            style={{ color: "white", fontSize: 12, fontWeight: "600" }}
+            content={"End Date"}
+          ></PoppinsTextMedium>
+           <PoppinsTextMedium
+            style={{ color: "white", fontSize: 12, fontWeight: "600" }}
+            content={props.data.end_date}
+          ></PoppinsTextMedium>
+            </View>
+          </View>
+         </View>
+        </View>
+        <View style={{width:'96%',height:1,backgroundColor:'white'}}></View>
+        <View style={{width:'100%',flexDirection:'row',alignItems:'center',justifyContent:'space-between',marginTop:10,padding:6}}>
+          <TouchableOpacity onPress={()=>{
+           
+            navigation.navigate("SchemePointDetails",{type:type,data:props.data})
+            }} style={{height:30,width:100,alignItems:'center',justifyContent:'center',backgroundColor:'#171717',borderRadius:10,marginLeft:4}}>
+            <PoppinsTextMedium content="View Points" style={{color:'white'}}></PoppinsTextMedium>
+          </TouchableOpacity>
+          <TouchableOpacity style={{height:30,width:100,alignItems:'center',justifyContent:'center',backgroundColor:'#C6280A',borderRadius:10,marginLeft:4}}>
+            <PoppinsTextMedium content="Redeem" style={{color:'white'}}></PoppinsTextMedium>
+          </TouchableOpacity>
+          <TouchableOpacity style={{height:30,width:100,alignItems:'center',justifyContent:'center',backgroundColor:'#2F40DE',borderRadius:10,marginLeft:4}}>
+            <PoppinsTextMedium content="View PDF" style={{color:'white'}}></PoppinsTextMedium>
+          </TouchableOpacity>
+        </View>
+        
+      </View>
+    )
+
+
+  }
 
   const SchemeComponent = (props) => {
     const image = props.image;
     const name = props.name;
     const worth = props.worth;
-    const earnedPoints = props?.data?.point_earned;
+    const earnedPoints = props?.data?.point_earned ? props?.data?.point_earned : 0;
     const coin = props.coin;
     return (
       <View
@@ -579,26 +659,41 @@ export default function Scheme({ navigation }) {
           borderWidth: 0.2,
           borderColor: "#DDDDDD",
           elevation: 10,
-          height: 240,
+          
           backgroundColor: secondaryThemeColor,
           borderRadius: 20,
           marginTop: 20,
           alignItems: "center",
           justifyContent: "center",
-          flexDirection: "row",
+          height:300,
+          
         }}
       >
         <View
           style={{
-            width: "36%",
-            height: "100%",
             borderBottomWidth: 1,
-            borderColor: "#DDDDDD",
+            borderColor: "white",
+            width: "100%",
+            height: "40%",
             alignItems: "center",
-            justifyContent: 'flex-start',
+            justifyContent: 'center',
+            flexDirection:"row",
+            padding:4,
+            
           }}
         >
           <View
+            style={{
+              height: 100,
+              width: '40%',
+              borderRadius: 10,
+              alignItems: "center",
+              justifyContent: "center",
+            
+              
+            }}
+          >
+            <View
             style={{
               height: 100,
               width: 100,
@@ -607,7 +702,8 @@ export default function Scheme({ navigation }) {
               justifyContent: "center",
               borderWidth: 1,
               borderColor: "white",
-              marginTop:20
+              
+              
             }}
           >
             <Image
@@ -619,121 +715,48 @@ export default function Scheme({ navigation }) {
               }}
               source={{ uri: props.data?.image }}
             ></Image>
+            </View>
           </View>
-          <View
-            style={{
-              alignItems: "center",
-              justifyContent: "center",
-              width:'100%',
-              marginTop: 20,
-             
-            }}
-          >
-            <TouchableOpacity
-              disabled = {!props.data.states?.includes(location.state)}
-              onPress={() => {
-                if((new Date(props.data.redeem_start).getTime() <= new Date().getTime()) && (new Date().getTime() <= new Date(props.data.redeem_end).getTime()))
-                {
-                  navigation.navigate("RedeemGifts",{
-                    schemeType:'quaterly',
-                    schemeGiftCatalogue:props.data?.gift_catalogue,
-                    schemeID:props.data?.id
-                  })
-                }
-                else { 
-                  console.log("redemption window is not open", new Date(props.data.redeem_start).getTime(), new Date().getTime(), )
-                  alert(`Redemption window will start at ${props.data.redeem_start} and will end at ${props.data.redeem_end}`)
-                }
+          <View style={{alignItems: "center",
+              justifyContent: "center",width:'60%'}}>
+          
+
+          
+            <PoppinsTextMedium
+            style={{ color: "black", fontSize: 16, fontWeight: "700" }}
+            content={name}
+          ></PoppinsTextMedium>
+            <PoppinsTextLeftMedium
+              style={{
+                color: "black",
+                fontSize: 14,
+                fontWeight: "500",
                 
+                textAlign: "left",
               }}
-              style={{
-                height: 40,
-                width: "90%",
-                alignItems: "center",
-                justifyContent: "center",
-                backgroundColor: props.data.states?.includes(location.state) ? "#D4B01C" : "#D5D4D3",
-                borderRadius: 20,
-              }}
-            >
-              <PoppinsTextMedium
-                content="Redeem"
-                style={{ color: props.data.states?.includes(location.state)? "white" : 'black', fontWeight: "800", fontSize: 15 }}
-              ></PoppinsTextMedium>
-            </TouchableOpacity>
-            <TouchableOpacity
-              onPress={() => { navigation.navigate("PdfComponent", { pdf: props.data?.pdf })}}
-              style={{
-                height: 40,
-                width: "90%",
-                alignItems: "center",
-                justifyContent: "center",
-                backgroundColor: ternaryThemeColor,
-                borderRadius: 20,
-                marginLeft: 10,
-                marginTop:10
-              }}
-            >
-              <PoppinsTextMedium
-                content="View"
-                style={{ color: "white", fontWeight: "800", fontSize: 15 }}
-              ></PoppinsTextMedium>
-            </TouchableOpacity>
+              content={`${name} Earned Points : ${earnedPoints} `}
+            ></PoppinsTextLeftMedium>
+           
           </View>
         </View>
         <View
           style={{
-            width: "60%",
-            height: "100%",
+            width: "100%",
+            height: "60%",
             alignItems: "flex-start",
             justifyContent: "flex-start",
-            marginTop: 30,
+            marginTop: 10,
             marginLeft: 10,
           }}
         >
-          <PoppinsTextMedium
-            style={{ color: "white", fontSize: 16, fontWeight: "700" }}
-            content={name}
-          ></PoppinsTextMedium>
-
-          <View
-            style={{
-              width: "90%",
-              marginTop: 20,
-              alignItems: "flex-start",
-              justifyContent: "flex-start",
-              borderBottomWidth: 1,
-              borderColor: "white",
-              flexDirection: "row",
-            }}
-          >
-            <PoppinsTextLeftMedium
-              style={{
-                color: "white",
-                fontSize: 14,
-                fontWeight: "500",
-                width: "70%",
-                textAlign: "left",
-              }}
-              content={`${name} Earned Points `}
-            ></PoppinsTextLeftMedium>
-            <Text style={{ textAlign: "left" }}></Text>
-            <PoppinsTextMedium
-              style={{
-                color: "white",
-                fontSize: 14,
-                fontWeight: "500",
-                width: "30%",
-              }}
-              content={earnedPoints}
-            ></PoppinsTextMedium>
-          </View>
+          
           <View
             style={{
               width: "90%",
               marginTop: 10,
               alignItems: "flex-start",
               justifyContent: "flex-start",
-              flexDirection: "row",
+              flexDirection:'row'
             }}
           >
             <PoppinsTextLeftMedium
@@ -753,7 +776,7 @@ export default function Scheme({ navigation }) {
                 fontWeight: "500",
                 marginLeft:10
               }}
-              content={props.data?.scheme_start}
+              content={props.data?.start_date}
             ></PoppinsTextMedium>
           </View>
           <View
@@ -782,68 +805,11 @@ export default function Scheme({ navigation }) {
                 fontWeight: "500",
                 marginLeft:10
               }}
-              content={props.data?.scheme_end}
+              content={props.data?.end_date}
             ></PoppinsTextMedium>
           </View>
-          <View
-            style={{
-              width: "90%",
-              marginTop: 10,
-              alignItems: "flex-start",
-              justifyContent: "flex-start",
-              flexDirection: "row",
-            }}
-          >
-            <PoppinsTextLeftMedium
-              style={{
-                color: "white",
-                fontSize: 12,
-                fontWeight: "500",
-                
-                textAlign: "left",
-              }}
-              content={"Redemption Start Date"}
-            ></PoppinsTextLeftMedium>
-            <PoppinsTextMedium
-              style={{
-                color: "white",
-                fontSize: 12,
-                fontWeight: "500",
-                marginLeft:10
-              }}
-              content={props.data?.redeem_start}
-            ></PoppinsTextMedium>
-          </View>
-          <View
-            style={{
-              width: "90%",
-              marginTop: 10,
-              alignItems: "flex-start",
-              justifyContent: "flex-start",
-              flexDirection: "row",
-            }}
-          >
-            <PoppinsTextLeftMedium
-              style={{
-                color: "white",
-                fontSize: 12,
-                fontWeight: "500",
-               
-                textAlign: "left",
-              }}
-              content={"Redemption End Date"}
-            ></PoppinsTextLeftMedium>
-            <PoppinsTextMedium
-              style={{
-                color: "white",
-                fontSize: 12,
-                fontWeight: "500",
-                marginLeft:10
-              }}
-              content={props.data?.redeem_end}
-            ></PoppinsTextMedium>
-          </View>
-          <View style={{width:'100%',height:40,alignItems:'flex-start',justifyContent:'flex-start',flexDirection:'row',marginTop:10}}>
+       
+          <View style={{height:40,alignItems:'flex-start',justifyContent:'flex-start',flexDirection:'row',marginTop:10,flexWrap:"wrap"}}>
           <PoppinsTextMedium content="Applicable States :" style={{color:'white',fontSize:10}}></PoppinsTextMedium>
 
             {props?.data?.states?.map((item,index)=>{
@@ -860,6 +826,61 @@ export default function Scheme({ navigation }) {
               }
               
             })}
+          </View>
+          <View
+            style={{
+              alignItems: "center",
+              justifyContent: "center",
+              width:'100%',
+              marginTop: 20,
+              flexDirection:'row'
+            }}
+          >
+            <TouchableOpacity
+              disabled = {!props.data.states?.includes(location.state)}
+              onPress={() => {
+                if((new Date(props.data.redeem_start).getTime() <= new Date().getTime()) && (new Date().getTime() <= new Date(props.data.redeem_end).getTime()))
+                {
+                  navigation.navigate("RedeemGifts")
+                }
+                else { 
+                  console.log("redemption window is not open", new Date(props.data.redeem_start).getTime(), new Date().getTime(), )
+                  alert(`Redemption window will start at ${props.data.redeem_start} and will end at ${props.data.redeem_end}`)
+                }
+                
+              }}
+              style={{
+                height: 40,
+                width: "30%",
+                alignItems: "center",
+                justifyContent: "center",
+                backgroundColor: props.data.states?.includes(location.state) ? "#D4B01C" : "#D5D4D3",
+                borderRadius: 20,
+              }}
+            >
+              <PoppinsTextMedium
+                content="Redeem"
+                style={{ color: props.data.states?.includes(location.state)? "white" : 'black', fontWeight: "800", fontSize: 15 }}
+              ></PoppinsTextMedium>
+            </TouchableOpacity>
+            <TouchableOpacity
+              onPress={() => { navigation.navigate("PdfComponent", { pdf: props.data?.pdf })}}
+              style={{
+                height: 40,
+                width: "30%",
+                alignItems: "center",
+                justifyContent: "center",
+                backgroundColor: ternaryThemeColor,
+                borderRadius: 20,
+                marginLeft: 10,
+                marginTop:10
+              }}
+            >
+              <PoppinsTextMedium
+                content="View"
+                style={{ color: "white", fontWeight: "800", fontSize: 15 }}
+              ></PoppinsTextMedium>
+            </TouchableOpacity>
           </View>
           
         </View>
@@ -883,58 +904,59 @@ export default function Scheme({ navigation }) {
     console.log("current scheme", currentScheme)
   }
 
-  const FilterComp = (props) => {
-    const [color, setColor] = useState("#F0F0F0");
-    const [selected, setSelected] = useState(props.selected);
-    const title = props.title;
-    const togglebox = () => {
-      setSelected(!selected);
-      console.log("selected", selected);
+  // const FilterComp = (props) => {
+  //   const [color, setColor] = useState("#F0F0F0");
+  //   const [selected, setSelected] = useState(props.selected);
+  //   const title = props.title;
+  //   const togglebox = () => {
+  //     setSelected(!selected);
+  //     console.log("selected", selected);
 
-      if (!selected) {
-        const temp = [...gifts];
-        const filteredArray = temp.filter((item, index) => {
-          console.log("From filter", item.brand, title);
-          return item.brand === title;
-        });
-        console.log("filteredArray", filteredArray);
-        // setSelectedGifts(filteredArray)
-        props.handlePress(filteredArray);
-      }
-    };
-    console.log("selected", selected);
-    return (
-      <TouchableOpacity
-        onPress={() => {
-          togglebox();
-        }}
-        style={{
-          minWidth: 60,
-          height: 40,
-          padding: 10,
-          backgroundColor: selected ? secondaryThemeColor : "#F0F0F0",
-          alignItems: "center",
-          justifyContent: "center",
-          margin: 10,
-          borderRadius: 4,
-        }}
-      >
-        <PoppinsTextMedium
-          style={{ fontSize: 12, color: selected ? "white" : "black" }}
-          content={title}
-        ></PoppinsTextMedium>
-      </TouchableOpacity>
-    );
-  };
+  //     if (!selected) {
+  //       const temp = [...gifts];
+  //       const filteredArray = temp.filter((item, index) => {
+  //         console.log("From filter", item.brand, title);
+  //         return item.brand === title;
+  //       });
+  //       console.log("filteredArray", filteredArray);
+  //       // setSelectedGifts(filteredArray)
+  //       props.handlePress(filteredArray);
+  //     }
+  //   };
+  //   console.log("selected", selected);
+  //   return (
+  //     <TouchableOpacity
+  //       onPress={() => {
+  //         togglebox();
+  //       }}
+  //       style={{
+  //         minWidth: 60,
+  //         height: 40,
+  //         padding: 10,
+  //         backgroundColor: selected ? secondaryThemeColor : "#F0F0F0",
+  //         alignItems: "center",
+  //         justifyContent: "center",
+  //         margin: 10,
+  //         borderRadius: 4,
+  //       }}
+  //     >
+  //       <PoppinsTextMedium
+  //         style={{ fontSize: 12, color: selected ? "white" : "black" }}
+  //         content={title}
+  //       ></PoppinsTextMedium>
+  //     </TouchableOpacity>
+  //   );
+  // };
 
   return (
     <View
       style={{
         alignItems: "center",
-        justifyContent: "flex-start",
+        justifyContent: "center",
         width: "100%",
         backgroundColor: ternaryThemeColor,
-        height: "100%",
+        height:'100%'
+        
       }}
     >
       <View
@@ -944,7 +966,7 @@ export default function Scheme({ navigation }) {
           flexDirection: "row",
           width: "100%",
           marginTop: 10,
-          height: 30,
+          height: '6%',
           marginLeft: 20,
         }}
       >
@@ -979,72 +1001,22 @@ export default function Scheme({ navigation }) {
           borderTopRightRadius: 30,
           borderTopLeftRadius: 30,
           backgroundColor: "white",
-          minHeight: height - 30,
           marginTop: 10,
           alignItems: "center",
-          justifyContent: "center",
+          justifyContent: "flex-start",
           width: "100%",
           paddingBottom: 10,
+          height:'90%'
         }}
       >
-        <View
-          style={{
-            height: 50,
-            width: "90%",
-            alignItems: "center",
-            justifyContent: "center",
-            flexDirection: "row",
-            borderBottomWidth: 1,
-            borderColor: "#DDDDDD",
-          }}
-        >
-          <TouchableOpacity
-            onPress={() => {
-              setHighlightWidthPrevious(false);
-              handleCurrentData()
-            }}
-            style={{
-              width: "50%",
-              height: "100%",
-              alignItems: "center",
-              justifyContent: "center",
-              borderBottomWidth: highlightWidthPrevious ? 0 : 3,
-              borderColor: ternaryThemeColor,
-            }}
-          >
-            <PoppinsTextMedium
-              style={{ color: "grey", fontSize: 16, fontWeight: "600" }}
-              content="Current"
-            ></PoppinsTextMedium>
-          </TouchableOpacity>
-          <TouchableOpacity
-            onPress={() => {
-              setHighlightWidthPrevious(true);
-              handlePreviousData()
-            }}
-            style={{
-              width: "50%",
-              height: "100%",
-              alignItems: "center",
-              justifyContent: "center",
-              borderBottomWidth: highlightWidthPrevious ? 3 : 0,
-              borderColor: ternaryThemeColor,
-            }}
-          >
-            <PoppinsTextMedium
-              style={{ color: "grey", fontSize: 16, fontWeight: "600" }}
-              content="Previous"
-            ></PoppinsTextMedium>
-          </TouchableOpacity>
-        </View>
+       
         
-        {/* <FilterSchemeComponent></FilterSchemeComponent> */}
-        <ScrollView style={{ width: "100%",marginBottom:100 }}>
+        {getAllSalesBoosterData && <FilterSchemeComponent getDate = {getSelectedDates}></FilterSchemeComponent>}
+        <ScrollView style={{ width: "100%" }}>
           <View
             style={{
               width: "100%",
-              flexDirection: "row",
-              flexWrap: "wrap",
+              
               alignItems: "center",
               justifyContent: "center",
             }}
@@ -1064,7 +1036,7 @@ export default function Scheme({ navigation }) {
             {activeScheme &&
               activeScheme.map((item, index) => {
                 return (
-                  <SchemeComponent
+                  <NewSchemeComponent
                     data = {item}
                     key={index}
                     name={item.name}
@@ -1072,7 +1044,7 @@ export default function Scheme({ navigation }) {
                     coin={10}
                     image={""}
                     earnedPoints={100}
-                  ></SchemeComponent>
+                  ></NewSchemeComponent>
                 );
               })}
           </View>

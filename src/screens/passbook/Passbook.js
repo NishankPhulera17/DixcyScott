@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { View, StyleSheet, Image, ScrollView, TouchableOpacity, Text } from 'react-native';
+import { View, StyleSheet, Image, ScrollView, TouchableOpacity, Text,Modal, TouchableWithoutFeedback } from 'react-native';
 import PoppinsTextMedium from '../../components/electrons/customFonts/PoppinsTextMedium';
 import { useSelector } from 'react-redux';
 import PoppinsText from '../../components/electrons/customFonts/PoppinsText';
@@ -11,16 +11,29 @@ import { useGetPointSharingDataMutation } from '../../apiServices/pointSharing/p
 import PoppinsTextLeftMedium from '../../components/electrons/customFonts/PoppinsTextLeftMedium';
 import { useTranslation } from 'react-i18next';
 import { neededHistory } from '../../utils/HandleClientSetup';
+import { useCashPerPointMutation, useFetchUserPointsMutation } from '../../apiServices/workflow/rewards/GetPointsApi';
+import { useGetkycStatusMutation } from '../../apiServices/kyc/KycStatusApi';
+import ErrorModal from '../../components/modals/ErrorModal';
+import MessageModal from '../../components/modals/MessageModal';
 
 const Passbook = ({ navigation }) => {
     const [warrantyOptionEnabled, setWarrantyOptionEnabled] = useState(false)
+    const [showKyc, setShowKyc] = useState(true)
+    const [modalVisible, setModalVisible] = useState(false);
+    const [redemptionStartData, setRedemptionStartDate]  = useState()
+  const [redemptionEndDate, setRedemptionEndDate] = useState()
+  const [minRedemptionPoints, setMinRedemptionPoints] = useState()
     const [couponOptionEnabled, setCouponOptionEnabled] = useState(false)
     const [cashbackOptionEnabled, setCashbackOptionEnabled] = useState(false)
     const [wheelOptionEnabled, setWheelOptionEnabled] = useState(false)
     const [pointsOptionEnabled, setPointsOptionEnabled] = useState(false)
     const [PlatinumModalOpen, setPlatinumModal] = useState(false)
     const [listView, setListView] = useState(true)
-
+    const [navigateTo, setNavigateTo] = useState()
+    const [pointBalance, setPointBalance] = useState()
+    const [error, setError] = useState(false)
+    const [success, setSuccess] = useState(false)
+    const [message, setMessage] = useState()
     const shouldSharePoints = useSelector(state => state.pointSharing.shouldSharePoints)
 
     const { t } = useTranslation();
@@ -32,7 +45,27 @@ const Passbook = ({ navigation }) => {
         isError: getPointSharingIsError
     }] = useGetPointSharingDataMutation()
 
+    const [getKycStatusFunc, {
+        data: getKycStatusData,
+        error: getKycStatusError,
+        isLoading: getKycStatusIsLoading,
+        isError: getKycStatusIsError
+      }] = useGetkycStatusMutation()
 
+      
+    const [userPointFunc, {
+        data: userPointData,
+        error: userPointError,
+        isLoading: userPointIsLoading,
+        isError: userPointIsError
+      }] = useFetchUserPointsMutation()
+
+    const [cashPerPointFunc,{
+        data:cashPerPointData,
+        error:cashPerPointError,
+        isLoading:cashPerPointIsLoading,
+        isError:cashPerPointIsError
+      }] = useCashPerPointMutation()
 
 
     const [getActiveMembershipFunc, {
@@ -62,27 +95,78 @@ const Passbook = ({ navigation }) => {
 
 
     const getOptionsAccordingToWorkflow = () => {
-        if (workflowProgram.includes('Warranty')) {
+        if (workflowProgram?.includes('Warranty')) {
             setWarrantyOptionEnabled(true)
         }
-        if (workflowProgram.includes('Static Coupon')) {
+        if (workflowProgram?.includes('Static Coupon')) {
             setCouponOptionEnabled(true)
         }
-        if (workflowProgram.includes('Points On Product')) {
+        if (workflowProgram?.includes('Points On Product')) {
             setPointsOptionEnabled(true)
         }
-        if (workflowProgram.includes('Cashback')) {
+        if (workflowProgram?.includes('Cashback')) {
             setCashbackOptionEnabled(true)
         }
-        if (workflowProgram.includes('Wheel')) {
+        if (workflowProgram?.includes('Wheel')) {
             setWheelOptionEnabled(true)
         }
 
     }
     useEffect(() => {
+        (async () => {
+          const credentials = await Keychain.getGenericPassword();
+          const token = credentials.username;
+          const userId = userData.id
+          cashPerPointFunc(token)
+          getKycStatusFunc(token)
+
+          
+        })();
+      }, []);
+
+    useEffect(() => {
         getOptionsAccordingToWorkflow()
         getMembership()
+        fetchPoints()
     }, [])
+
+    useEffect(()=>{
+        if(cashPerPointData)
+        {
+            console.log("cashPerPointData",cashPerPointData)
+            if(cashPerPointData.success)
+    
+            {
+              const temp = cashPerPointData?.body
+              setRedemptionStartDate(temp?.redeem_start_date)
+              setRedemptionEndDate(temp?.redeem_end_date)
+              setMinRedemptionPoints(temp?.min_point_redeem)
+            }
+        }
+        else if(cashPerPointError){
+            console.log("cashPerPointError",cashPerPointError)
+            
+        }
+      },[cashPerPointData,cashPerPointError])
+
+    useEffect(()=>{
+        if(cashPerPointData)
+        {
+            console.log("cashPerPointData",cashPerPointData)
+            if(cashPerPointData.success)
+    
+            {
+              const temp = cashPerPointData?.body
+              setRedemptionStartDate(temp?.redeem_start_date)
+              setRedemptionEndDate(temp?.redeem_end_date)
+              setMinRedemptionPoints(temp?.min_point_redeem)
+            }
+        }
+        else if(cashPerPointError){
+            console.log("cashPerPointError",cashPerPointError)
+            
+        }
+      },[cashPerPointData,cashPerPointError])
 
     useEffect(() => {
         (async () => {
@@ -98,7 +182,27 @@ const Passbook = ({ navigation }) => {
         })();
     }, []);
 
-
+    useEffect(() => {
+        if (getKycStatusData) {
+          console.log("getKycStatusData", getKycStatusData)
+          if (getKycStatusData.success) {
+            const tempStatus = Object.values(getKycStatusData.body)        
+            setShowKyc(tempStatus.includes(false))
+            if(getKycStatusData.body.gstin == true)
+            {
+              setShowKyc(false)
+            }
+            if(getKycStatusData.body.pan ==true && getKycStatusData.body.aadhar ==true)
+            {
+              setShowKyc(false)
+    
+            }
+          }
+        }
+        else if (getKycStatusError) {
+          console.log("getKycStatusError", getKycStatusError)
+        }
+      }, [getKycStatusData, getKycStatusError])
     useEffect(() => {
         if (getPointSharingData) {
             console.log("getPointSharingData", JSON.stringify(getPointSharingData))
@@ -109,7 +213,22 @@ const Passbook = ({ navigation }) => {
         }
     }, [getPointSharingData, getPointSharingError])
 
+    const fetchPoints = async () => {
+        const credentials = await Keychain.getGenericPassword();
+        const token = credentials.username;
+        const params = {
+          userId: userData.id,
+          token: token
+        }
+        userPointFunc(params)
 
+    
+      }
+      const modalClose = () => {
+        setError(false);
+        setSuccess(false)
+        
+      };
     const checkForPointSharing = () => {
         if (pointSharingData.is_point_sharing_bw_user) {
             setPointSharing(Object.keys(pointSharingData.point_sharing_bw_user.user).includes(userData.user_type))
@@ -137,6 +256,22 @@ const Passbook = ({ navigation }) => {
     }, [])
 
     useEffect(() => {
+        if (userPointData) {
+        //   console.log("userPointData", userPointData)
+          if(userPointData.success)
+          {
+            console.log("userPointData dashboard",userPointData.body.point_balance)
+          setPointBalance(userPointData.body.point_balance)
+          }
+        }
+        else if (userPointError) {
+          console.log("userPointError", userPointError)
+        }
+    
+      }, [userPointData, userPointError])
+    
+
+    useEffect(() => {
         if (getActiveMembershipData) {
             console.log("getActiveMembershipData", JSON.stringify(getActiveMembershipData))
         }
@@ -144,6 +279,48 @@ const Passbook = ({ navigation }) => {
             console.log("getActiveMembershipError", getActiveMembershipError)
         }
     }, [getActiveMembershipData, getActiveMembershipError])
+
+    const handleRedeemButtonPress = () => {
+      console.log("handleRedeemButtonPress",Number(pointBalance))
+        if (Number(pointBalance) <= 0 ) {
+          setError(true)
+          setMessage("Sorry you don't have enough points.")
+        //   setNavigateTo("RedeemedHistory")
+        }
+        else if(Number(minRedemptionPoints)>Number(pointBalance))
+        {
+          console.log("Minimum Point required to redeem is : ",minRedemptionPoints)
+          setError(true)
+          setMessage(`Minimum Point required to redeem is : ${minRedemptionPoints}`)
+        //   setNavigateTo("RedeemedHistory")
+        }
+        else {
+          if(redemptionEndDate && redemptionStartData)
+          if((new Date(redemptionStartData).getTime() <= (new Date()).getTime())  &&  ( (new Date()).getTime()) <= (new Date(redemptionEndDate).getTime()))
+          {
+            console.log("show kyc status", showKyc)
+            console.log("correct redemption date",new Date().getTime(),new Date(redemptionStartData).getTime(),new Date(redemptionEndDate).getTime())
+          if(!showKyc)
+          {
+            setModalVisible(true)
+          }
+          else{
+            setError(true)
+            setMessage("Kyc not completed yet")
+            // setNavigateTo("Verification")
+          }
+          }
+          else{
+            setError(true)
+            setMessage("Redemption window starts from "+ moment(redemptionStartData).format("DD-MMM-YYYY") + " and ends on " +  moment(redemptionEndDate).format("DD-MMM-YYYY"))
+            // setNavigateTo("RedeemedHistory")
+  
+          }
+          else{
+            alert("Redemption start and end date have not been set yet!!")
+          }
+        } 
+      }
 
     const NavigateTO = (props) => {
         const title = props.title
@@ -170,6 +347,10 @@ const Passbook = ({ navigation }) => {
             }
             else if (data === "Coupon History") {
                 navigation.navigate('CouponHistory')
+
+            }
+            else if (data === "Order History") {
+                navigation.navigate('OrderHistory')
 
             }
             else if (data === "Wheel History") {
@@ -241,6 +422,10 @@ const Passbook = ({ navigation }) => {
                 navigation.navigate('CouponHistory')
 
             }
+            else if (data === "Order History") {
+                navigation.navigate('OrderHistory')
+
+            }
             else if (data === "Wheel History") {
                 navigation.navigate('WheelHistory')
 
@@ -281,11 +466,53 @@ const Passbook = ({ navigation }) => {
 
 
     return (
-        <ScrollView style={{ height: '100%', width: '100%', flex: 1 }}>
-            <View style={{ alignItems: "center", height: '100%', width: "100%", backgroundColor: "white", paddingBottom: 100, }}>
+        <ScrollView style={{ height: '100%', width: '100%', flex: 1, backgroundColor: "white" }}>
+            <View style={{ alignItems: "center", height: '100%', width: "100%", }}>
+            <Modal
+          animationType="slide"
+          transparent={true}
+          visible={modalVisible}
+          onRequestClose={() => {
+            setModalVisible(!modalVisible);
+          }}>
+          <TouchableOpacity activeOpacity={1} onPress={()=>{setModalVisible(!modalVisible)}} style={styles.centeredView}>
+            <View style={styles.modalView}>
+              <Image style={{ height: 80, width: 80, marginTop: 20 }} source={require('../../../assets/images/gift1.png')}></Image>
+              <PoppinsTextMedium style={{ color: 'black', width: 300, marginTop: 20 }} content="Do you want redeem your point with amazing gift or cashback"></PoppinsTextMedium>
+              <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'center', padding: 20,width:'100%'}}>
+                <TouchableOpacity onPress={() => {
+                  console.log("gift")
+                  setModalVisible(false)
+                  navigation.navigate('RedeemGifts',{schemeType : "yearly"})
 
+                }} style={{ alignItems: "center", justifyContent: "center", backgroundColor: '#0E2659', flexDirection: "row", height: 40, width: 100, borderRadius: 10 }}>
+                  <Image style={{ height: 20, width: 20, resizeMode: "contain" }} source={require('../../../assets/images/giftWhite.png')}></Image>
+                  <PoppinsTextMedium style={{ color: 'white', marginLeft: 10 }} content="Gift"></PoppinsTextMedium>
+                </TouchableOpacity>
+                {/* <TouchableOpacity onPress={() => {
+                  console.log("Coupons")
+                  setModalVisible(false)
+                  navigation.navigate('RedeemCoupons')
+
+                }} style={{ alignItems: "center", justifyContent: "center", backgroundColor: ternaryThemeColor, flexDirection: "row", height: 40, width: 100, borderRadius: 10 }}>
+                  <Image style={{ height: 20, width: 20, resizeMode: "contain" }} source={require('../../../assets/images/giftWhite.png')}></Image>
+                  <PoppinsTextMedium style={{ color: 'white', marginLeft: 10 }} content="Coupons"></PoppinsTextMedium>
+                </TouchableOpacity>
+                <TouchableOpacity onPress={() => {
+                  console.log("cashback")
+                  setModalVisible(false)
+                  navigation.navigate('RedeemCashback')
+                }} style={{ alignItems: "center", justifyContent: "center", backgroundColor: '#0E2659', flexDirection: "row", height: 40, width: 120, borderRadius: 10 }}>
+                  <Image style={{ height: 20, width: 20, resizeMode: "contain" }} source={require('../../../assets/images/giftWhite.png')}></Image>
+                  <PoppinsTextMedium style={{ color: 'white', marginLeft: 10 }} content="Cashback"></PoppinsTextMedium>
+                </TouchableOpacity> */}
+              </View>
+
+            </View>
+          </TouchableOpacity>
+        </Modal>
                 {/* coloured header */}
-                <View style={{ height: 250, width: '100%', backgroundColor: ternaryThemeColor, alignItems: "flex-start", justifyContent: 'flex-start' }}>
+                <View style={{ width: '100%', backgroundColor: ternaryThemeColor, alignItems: "center", justifyContent: 'center',paddingBottom:16 }}>
 
                     <View style={{ alignItems: "center", justifyContent: "flex-start", flexDirection: "row", width: '100%', marginTop: 10, height: 40, marginLeft: 20 }}>
                         <TouchableOpacity onPress={() => { navigation.goBack() }}>
@@ -300,46 +527,46 @@ const Passbook = ({ navigation }) => {
                     {/* --------------------------- */}
                     <View style={{ flexDirection: "row", height: 50, width: '100%', alignItems: "center", justifyContent: "flex-start" }}>
                         <PoppinsText content={name} style={{ color: 'white', fontSize: 20, marginLeft: 20 }}></PoppinsText>
-                        <View style={{ height: 20, width: 2, backgroundColor: "white", marginLeft: 10 }}></View>
+                        {/* <View style={{ height: 20, width: 2, backgroundColor: "white", marginLeft: 10 }}></View>
 
                         <TouchableOpacity style={{ flexDirection: 'row' }} onPress={() => {
                             setPlatinumModal(true)
                         }}>
                             <Image style={{ height: 20, width: 20, resizeMode: 'contain', marginLeft: 10 }} source={require('../../../assets/images/reward.png')}></Image>
                             <PoppinsTextMedium style={{ color: "white" }} content={membership}></PoppinsTextMedium>
-                        </TouchableOpacity>
+                        </TouchableOpacity> */}
 
                     </View>
-                    {workflowProgram?.length !== 0 && <View style={{ alignItems: "center", justifyContent: "center", width: '100%', }}>
+                    <View style={{ alignItems: "center", justifyContent: "center", width: '90%',backgroundColor:'' }}>
                         <RewardBox ></RewardBox>
 
-                    </View>}
-                    <View style={{ width: '100%', alignItems: 'center', justifyContent: 'center', marginTop: 20 }}>
+                    </View>
+                    
+                </View>
+
+                <View style={{ width: '100%', alignItems: 'center', justifyContent: 'center', marginTop: 10 }}>
                         <View style={{ backgroundColor: 'white' }}>
-                            {userData && <TouchableOpacity style={{ backgroundColor: ternaryThemeColor, padding: 10, borderRadius: 5, width: 120, alignItems: 'center', }} onPress={() => { navigation.navigate("RedeemedHistory") }}>
+                            {userData && <TouchableOpacity style={{ backgroundColor: ternaryThemeColor, padding: 10, borderRadius: 5, width: 120, alignItems: 'center', }} onPress={() => { handleRedeemButtonPress() }}>
                                 <PoppinsTextLeftMedium style={{ color: 'white', fontWeight: '800' }} content={t("redeem")}  ></PoppinsTextLeftMedium>
                             </TouchableOpacity>}
                         </View>
                     </View>
-                </View>
-
-
 
 
                 {/* options----------------------------- */}
 
                 {
                     listView &&
-                    <View style={{ width: '90%', alignItems: "center", justifyContent: "center", borderWidth: 1, borderColor: '#EEEEEE', borderRadius: 20, marginTop: 100 }}>
+                    <View style={{ width: '90%', alignItems: "center", justifyContent: "center", borderWidth: 1, borderColor: '#EEEEEE', borderRadius: 20, marginTop: 20 }}>
 
                         <View style={{ width: '100%', height: 50, flexDirection: "row", alignItems: "center", justifyContent: 'space-between', borderBottomWidth: 1, borderColor: '#EEEEEE' }}>
-                            <View style={{width:'70%',height:'100%',alignItems:'center',justifyContent:'center'}}>
-                            {(getPointSharingData?.body?.total !== "0") ? <PoppinsTextMedium style={{ color: ternaryThemeColor, fontWeight: 'bold', position: 'absolute', left: 10 }} content={`${t("registration bonus")}: ${getPointSharingData?.body?.data?.[0]?.points ? getPointSharingData?.body?.data?.[0]?.points + "Points" : "loading"} `}></PoppinsTextMedium >
-                                : <PoppinsTextMedium style={{ fontWeight: 'bold', position: 'absolute', left: 10 }} content={t("what do you want to do")}></PoppinsTextMedium>
+                            <View style={{width:'70%',height:'100%',alignItems:'flex-start',justifyContent:'center',margin:14}}>
+                            {(getPointSharingData?.body?.total !== "0") ? <PoppinsTextMedium style={{ color: ternaryThemeColor, fontWeight: 'bold' }} content={`${t("registration bonus")}: ${getPointSharingData?.body?.data?.[0]?.points ? getPointSharingData?.body?.data?.[0]?.points + "Points" : "loading"} `}></PoppinsTextMedium >
+                                : <PoppinsTextMedium style={{ fontWeight: 'bold' }} content={t("what do you want to do")}></PoppinsTextMedium>
                             }
                             </View>
                             
-                            <View style={{ flexDirection: 'row', position: 'absolute', right: 20,width:'20%'}}>
+                            <View style={{ flexDirection: 'row',width:'20%'}}>
 
                                 <TouchableOpacity style={{ backgroundColor: listView ? ternaryThemeColor : 'white', marginRight: 10, paddingHorizontal: 7, paddingVertical: 4 }} onPress={() => {
                                     setListView(true)
@@ -357,6 +584,7 @@ const Passbook = ({ navigation }) => {
 
                             </View>
                         </View>
+                        <ScrollView>
 
                         {
                             pointsOptionEnabled && neededHistory.includes("points") &&
@@ -365,7 +593,8 @@ const Passbook = ({ navigation }) => {
 
                         {/* ozone change */}
                         {userData.user_type !== "dealer" && neededHistory.includes("scanned") &&  <NavigateTO visibleTitle={t("scanned history")} title={"Scanned History"} discription={t('list of products scanned by you')} image={require('../../../assets/images/scannedHistory.png')}></NavigateTO>}
-
+                        {neededHistory.includes("order") &&   <NavigateTO visibleTitle={t("Order history")} title="Order History" discription={t("list of products ordered by you")} image={require('../../../assets/images/redeemed_icon.png')}></NavigateTO>}
+                       
                       {neededHistory.includes("redeemed") &&   <NavigateTO visibleTitle={t("redeemed history")} title="Redeemed History" discription={t("list of products redeemed by you")} image={require('../../../assets/images/redeemed_icon.png')}></NavigateTO>}
                         { neededHistory.includes("cashback") &&<NavigateTO visibleTitle={t("cashback history")} title="Cashback History" discription={t("list of cashback claimed by you")} image={require('../../../assets/images/cashbackBlack.png')}></NavigateTO>}
                         {
@@ -392,8 +621,8 @@ const Passbook = ({ navigation }) => {
                             neededHistory.includes("shared") &&
                             pointSharing && <NavigateTO visibleTitle={t("shared point history")} title="Shared Point History" discription=" list of shared points recieved by you" image={require('../../../assets/images/shared_point.png')}></NavigateTO>
                         }
-                        <NavigateTO visibleTitle={t("previous transaction history")} title="Previous Transaction History" discription=" Previous transaction done by you" image={require('../../../assets/images/coinStack.png')}></NavigateTO>
-
+                        {neededHistory.includes("previousTransactions") &&  <NavigateTO visibleTitle={t("previous transaction history")} title="Previous Transaction History" discription=" Previous transaction done by you" image={require('../../../assets/images/coinStack.png')}></NavigateTO>}
+                        </ScrollView>
                     </View>
                 }
 
@@ -401,18 +630,18 @@ const Passbook = ({ navigation }) => {
                 {
                     !listView &&
 
-                    <View style={{ width: '90%', borderWidth: 1, borderColor: '#EEEEEE', borderRadius: 20, marginTop: 100, alignItems: 'center' }}>
+                    <View style={{ width: '90%', borderWidth: 1, borderColor: '#EEEEEE', borderRadius: 20, marginTop: 20, alignItems: 'center' }}>
 
                         <View style={{ width: '100%', height: 50, flexDirection: "row", alignItems: "center", justifyContent: 'space-between', borderBottomWidth: 1, borderColor: '#EEEEEE' }}>
-                            {(getPointSharingData?.body?.total !== "0") ? <PoppinsTextMedium style={{ color: ternaryThemeColor, fontWeight: 'bold', position: 'absolute', left: 20 }} content={`Registration Bonus : ${getPointSharingData?.body?.data?.[0]?.points ? getPointSharingData?.body?.data?.[0]?.points + "Points" : "loading"} `}></PoppinsTextMedium >
-                                : <PoppinsTextMedium style={{ fontWeight: 'bold', position: 'absolute', left: 20 }} content="What do you want to do?"></PoppinsTextMedium>
+                            {(getPointSharingData?.body?.total !== "0") ? <PoppinsTextMedium style={{ color: ternaryThemeColor, fontWeight: 'bold',marginLeft:14,width:'70%'}} content={`Registration Bonus : ${getPointSharingData?.body?.data?.[0]?.points ? getPointSharingData?.body?.data?.[0]?.points + "Points" : "loading"} `}></PoppinsTextMedium >
+                                : <PoppinsTextMedium style={{ fontWeight: 'bold',marginLeft:14}} content="What do you want to do ?"></PoppinsTextMedium>
                             }
-                            <View style={{ flexDirection: 'row', position: 'absolute', right: 20 }}>
+                            <View style={{ flexDirection: 'row',alignItems:'center',justifyContent:'center',width:'20%'}}>
 
                                 <TouchableOpacity style={{ backgroundColor: listView ? ternaryThemeColor : 'white', marginRight: 10 }} onPress={() => {
                                     setListView(true)
                                 }}>
-                                    <Image style={{ height: 20, width: 20, resizeMode: 'contain', paddingHorizontal: 10 }} source={require('../../../assets/images/list.png')}></Image>
+                                    <Image style={{ height: 20, width: 20, resizeMode: 'contain' }} source={require('../../../assets/images/list.png')}></Image>
 
                                 </TouchableOpacity>
 
@@ -427,43 +656,45 @@ const Passbook = ({ navigation }) => {
                         </View>
 
                         <View style={{ flexDirection: 'row', width: '100%', flexWrap: 'wrap', alignItems: 'center', justifyContent: 'center' }}>
-                            {
+                            {/* {
                                 pointsOptionEnabled &&
                                 <GridVIew title={t("points history")} discription=" list of points redeemed by you" image={require('../../../assets/images/coinStack.png')}></GridVIew>
 
-                            }
+                            } */}
                             {/* ozone change */}
 
-                            {userData.user_type !== "dealer" && <GridVIew title={t("scanned history")} discription="" image={require('../../../assets/images/scannedHistory.png')}></GridVIew>}
+                            {/* {userData.user_type !== "dealer" && <GridVIew title={t("scanned history")} discription="" image={require('../../../assets/images/scannedHistory.png')}></GridVIew>} */}
+                            <GridVIew title={t("Order history")}  discription=" list of products ordered by you" image={require('../../../assets/images/redeemed_icon.png')}></GridVIew>
+                            
                             <GridVIew title={t("redeemed history")}  discription=" list of products redeemed by you" image={require('../../../assets/images/redeemed_icon.png')}></GridVIew>
-                            <GridVIew title={t("cashback history")} discription=" list of cashback redeemed by you" image={require('../../../assets/images/cashbackBlack.png')}></GridVIew>
-                            {
+                            {/* <GridVIew title={t("cashback history")} discription=" list of cashback redeemed by you" image={require('../../../assets/images/cashbackBlack.png')}></GridVIew> */}
+                            {/* {
                                 couponOptionEnabled &&
                                 <GridVIew title={t("Coupon History")} discription=" list of coupons redeemed by you" image={require('../../../assets/images/scannedHistory.png')}></GridVIew>
-                            }
+                            } */}
                             {/* {
                 warrantyOptionEnabled &&  */}
-                            <GridVIew title={t("warranty history")} discription=" list of warranty redeemed by you" image={require('../../../assets/images/warranty_icon.png')}></GridVIew>
+                            {/* <GridVIew title={t("warranty history")} discription=" list of warranty redeemed by you" image={require('../../../assets/images/warranty_icon.png')}></GridVIew> */}
                             {/* } */}
                            
-                            {
+                            {/* {
                                 cashbackOptionEnabled &&
                                 <GridVIew title={t("cashback history")} discription=" list of cashback redeemed by you" image={require('../../../assets/images/scannedHistory.png')}></GridVIew>
 
-                            }
-                            {
+                            } */}
+                            {/* {
                                 // couponOptionEnabled &&
                                 <GridVIew title={t("Coupon History")} discription=" list of coupons redeemed by you" image={require('../../../assets/images/scannedHistory.png')}></GridVIew>
-                            }
-                            {
+                            } */}
+                            {/* {
                                 wheelOptionEnabled &&
                                 <GridVIew title="Wheel History" discription=" list of wheel spinned by you" image={require('../../../assets/images/scannedHistory.png')}></GridVIew>
 
-                            }
-                            {
+                            } */}
+                            {/* {
                                 pointSharing && <GridVIew title="Shared Point History" discription=" list of shared points recieved by you" image={require('../../../assets/images/shared_point.png')}></GridVIew>
                             }
-                            <GridVIew title={t("Previous Transaction History")} discription=" list of previous transaction done by you" image={require('../../../assets/images/coinStack.png')}></GridVIew>
+                            {neededHistory.includes("previousTransactions") && <GridVIew title={t("Previous Transaction History")} discription=" list of previous transaction done by you" image={require('../../../assets/images/coinStack.png')}></GridVIew>} */}
 
                         </View>
                     </View>
@@ -472,13 +703,73 @@ const Passbook = ({ navigation }) => {
                 {/* ----------------------------------- */}
             </View>
             {/* modals */}
-            {PlatinumModalOpen && <PlatinumModal isVisible={PlatinumModalOpen} onClose={closePlatinumModal} getActiveMembershipData={getActiveMembershipData} />}
 
+            {PlatinumModalOpen && <PlatinumModal isVisible={PlatinumModalOpen} onClose={closePlatinumModal} getActiveMembershipData={getActiveMembershipData} />}
+            {error  && (
+        <ErrorModal
+          modalClose={modalClose}
+          message={message}
+          openModal={error}
+          navigateTo={navigateTo}
+          ></ErrorModal>
+      )}
+      {success && (
+        <MessageModal
+          modalClose={modalClose}
+          message={message}
+          openModal={success}></MessageModal>
+      )}
         </ScrollView>
 
     );
 }
 
-const styles = StyleSheet.create({})
+const styles = StyleSheet.create({
+    centeredView: {
+      flex: 1,
+      justifyContent: 'center',
+      alignItems: 'center',
+      
+    },
+    modalView: {
+      position: 'absolute',
+      bottom: 0,
+      width: '100%',
+      height: 240,
+      backgroundColor: 'white',
+      borderTopRightRadius: 40,
+      borderTopLeftRadius: 40,
+  
+      alignItems: 'center',
+      shadowColor: '#000',
+      shadowOffset: {
+        width: 0,
+        height: 2,
+      },
+      shadowOpacity: 0.25,
+      shadowRadius: 4,
+      elevation: 3,
+    },
+    button: {
+      borderRadius: 20,
+      padding: 10,
+      elevation: 2,
+    },
+    buttonOpen: {
+      backgroundColor: '#F194FF',
+    },
+    buttonClose: {
+      backgroundColor: '#2196F3',
+    },
+    textStyle: {
+      color: 'white',
+      fontWeight: 'bold',
+      textAlign: 'center',
+    },
+    modalText: {
+      marginBottom: 15,
+      textAlign: 'center',
+    },
+  });
 
 export default Passbook;

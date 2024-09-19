@@ -84,9 +84,10 @@ import EnableLocationScreen from '../screens/location/EnableLocationScreen';
 import EnableCameraScreen from '../screens/camera/EnableCameraScreen';
 import SchemeItems from '../screens/scheme/SchemeItems';
 import CheckKycOptions from '../screens/kyc/CheckKycOptions';
-import AadharKyc from '../screens/kyc/AadharKyc';
-import GstinKyc from '../screens/kyc/GstinKyc';
-import PanKyc from '../screens/kyc/PanKyc';
+import OrderHistory from '../screens/historyPages/OrderHistory';
+import SchemePointDetails from '../screens/scheme/SchemePointDetails';
+import CameraCapture from '../screens/camera/CameraCapture';
+
 
 const Stack = createNativeStackNavigator()
 
@@ -100,11 +101,27 @@ const StackNavigator = () => {
                         headerShown: false
                     }
                 } name="Splash" component={Splash}></Stack.Screen>
+                
+                <Stack.Screen options={
+                    {
+                        headerShown: false
+                    }
+                } name="CameraCapture" component={CameraCapture}></Stack.Screen>
+                 <Stack.Screen options={
+                    {
+                        headerShown: false
+                    }
+                } name="SchemePointDetails" component={SchemePointDetails}></Stack.Screen>
                 <Stack.Screen options={
                     {
                         headerShown: false
                     }
                 } name="WhatsNew" component={WhatsNew}></Stack.Screen>
+                <Stack.Screen options={
+                    {
+                        headerShown: false
+                    }
+                } name="OrderHistory" component={OrderHistory}></Stack.Screen>
                 <Stack.Screen options={
                     {
                         headerShown: false

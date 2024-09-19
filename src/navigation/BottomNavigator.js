@@ -49,14 +49,17 @@ const {t} = useTranslation()
     <Tab.Navigator tabBar={()=><View style={{alignItems:"center",justifyContent:"center",width:"100%",backgroundColor:"#F7F7F7"}}>
       <Wave style={{top:10}} width={100}></Wave>
     <View style={{alignItems:"center",justifyContent:"center",flexDirection:"row",height:60,backgroundColor:"white",width:'100%'}}>
-    <TouchableOpacity onPress={()=>{navigation.navigate('GiftCatalogue')}} style={{alignItems:"center",position:'absolute', left:30}}>
+    <TouchableOpacity onPress={()=>{navigation.navigate('GiftCatalogue')}} style={{alignItems:"center",position:'absolute', left:80}}>
+    <FlipAnimation direction="horizontal" duration={1400} comp={()=>{
+      return(
     <Gift name="gift" size={24} color={ternaryThemeColor}></Gift>
+    )
+  }} />
     <PoppinsTextMedium style={{marginTop:4,fontSize:12,fontWeight:platformFontWeight,color:'black'}} content={t("Gift Catalogue")}></PoppinsTextMedium>
     </TouchableOpacity>
     {/* ozone change */}
-    { ((userData?.user_type).toLowerCase()!=="dealer"  && (userData?.user_type).toLowerCase()!=="sales") ? <TouchableOpacity onPress={()=>{Platform.OS == 'android' ? navigation.navigate('EnableCameraScreen') : requiresLocation ? navigation.navigate('EnableLocationScreen',{navigateTo:"QrCodeScanner"}) : navigation.navigate("QrCodeScanner")
+    {/* { ((userData?.user_type).toLowerCase()!=="dealer"  && (userData?.user_type).toLowerCase()!=="sales") ? <TouchableOpacity onPress={()=>{Platform.OS == 'android' ? navigation.navigate('EnableCameraScreen') : requiresLocation ? navigation.navigate('EnableLocationScreen',{navigateTo:"QrCodeScanner"}) : navigation.navigate("QrCodeScanner")
 }} style={{alignItems:"center",justifyContent:"center",}}>
-    {/* <Qrcode name="qrcode" size={24} color={ternaryThemeColor}></Qrcode> */}
     <FlipAnimation direction="horizontal" duration={1400} comp={()=>{
       return(
         <Qrcode name="qrcode" size={24} color={ternaryThemeColor}></Qrcode> 
@@ -67,7 +70,6 @@ const {t} = useTranslation()
     </TouchableOpacity>
     :
     workflow?.includes("Genuinity") && <TouchableOpacity onPress={()=>{navigation.navigate('ScanAndRedirectToGenuinity')}} style={{alignItems:"center",justifyContent:"center",}}>
-    {/* <Qrcode name="qrcode" size={24} color={ternaryThemeColor}></Qrcode> */}
     <FlipAnimation direction="horizontal" duration={1400} comp={()=>{
       return(
         <Qrcode name="qrcode" size={24} color={ternaryThemeColor}></Qrcode> 
@@ -76,10 +78,14 @@ const {t} = useTranslation()
     }} />
     <PoppinsTextMedium style={{marginTop:4,fontSize:12,fontWeight:platformFontWeight,color:'black'}} content="Check Genuinity"></PoppinsTextMedium>
     </TouchableOpacity>
-    }
+    } */}
     {(userData?.user_type).toLowerCase()!=="sales" &&
-      <TouchableOpacity onPress={()=>{navigation.navigate('Passbook')}} style={{alignItems:"center",justifyContent:"center",position:'absolute',right:30}}>
+      <TouchableOpacity onPress={()=>{navigation.navigate('Passbook')}} style={{alignItems:"center",justifyContent:"center",position:'absolute',right:80}}>
+     <FlipAnimation direction="horizontal" duration={1400} comp={()=>{
+      return(
     <Book name="book" size={24} color={ternaryThemeColor}></Book>
+    )
+  }} />
     <PoppinsTextMedium style={{marginTop:4,fontSize:12,fontWeight:platformFontWeight,color:'black'}} content={t("passbook")}></PoppinsTextMedium>
     </TouchableOpacity>
     }

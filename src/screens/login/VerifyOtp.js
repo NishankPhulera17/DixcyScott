@@ -43,10 +43,15 @@ import { setPolicy,setTerms } from '../../../redux/slices/termsPolicySlice';
 import { useGetAppMenuDataMutation } from '../../apiServices/dashboard/AppUserDashboardMenuAPi.js';
 import { setDrawerData } from '../../../redux/slices/drawerDataSlice';
 import { ActivityIndicator, MD2Colors } from 'react-native-paper';
+import { kycOption1, kycOption2 } from '../../utils/HandleClientSetup';
+import LeftIcon from 'react-native-vector-icons/AntDesign'
 
 const VerifyOtp = ({ navigation, route }) => {
   const [mobile, setMobile] = useState(route.params.navigationParams.mobile);
   const [otp, setOtp] = useState('');
+  const [checkForKyc, setCheckForKyc] = useState()
+  const [checkKycOption1, setCheckKycOption1] = useState()
+  const [checkKycOption2, setCheckKycOption2] = useState()
   const [parsedJsonValue,setParsedJsonValue] = useState();
   const [message, setMessage] = useState();
   const [error, setError] = useState(false);
@@ -88,8 +93,8 @@ const VerifyOtp = ({ navigation, route }) => {
   const fcmToken = useSelector(state => state.fcmToken.fcmToken)
 
   // console.log("fcmToken from login", fcmToken)
-  const icon = useSelector(state => state.apptheme.icon)
-    ? useSelector(state => state.apptheme.icon)
+  const icon = useSelector(state => state.apptheme.icon1)
+    ? useSelector(state => state.apptheme.icon1)
     : require('../../../assets/images/demoIcon.png');
 
   // ------------------------------------------------
@@ -187,6 +192,8 @@ const VerifyOtp = ({ navigation, route }) => {
 
   // console.log("Navigation Params are", route.params.navigationParams)
   const navigationParams = route?.params?.navigationParams;
+  const kycData = route.params.kycData
+  console.log("KYC DATA IN OTP VERIFICATION PAGE", kycData)
   //   const needsApproval = route.params.navigationParams.needsApproval;
   //   const userType = route.params.navigationParams.userType;
   //   const userId = route.params.navigationParams.userId;
@@ -443,7 +450,124 @@ const VerifyOtp = ({ navigation, route }) => {
     }
   }, [verifyLoginOtpData, verifyLoginOtpError]);
 
+  useEffect(()=>{
+    if(checkKycOption1)
+    {
+       navigation.reset({ index: '0', routes: [{ name: 'Dashboard' }] })
+    // !checkForKyc && navigation.navigate("CheckKycOptions")
+
+    }
+    else if(checkKycOption2)
+    {
+      navigation.reset({ index: '0', routes: [{ name: 'Dashboard' }] })
+
+    }
+    else if(checkKycOption1 == false && checkKycOption2 == false){
+    navigation.reset({ index: '0', routes: [{ name: 'CheckKycOptions' }] })
+
+    }
+    
+  },[checkKycOption1,checkKycOption2])
+
   // -------------------------------------------------
+
+
+  const checkKYCDoneStatus =(kycData)=>{
+
+    const kycCompletedCount = []
+    
+      for(var i=0;i<kycOption1.length;i++)
+      {
+        if(kycOption1.includes("aadhar"))
+        {
+          if(kycData.is_valid_aadhar)
+          {
+            kycCompletedCount.push("aadhar")
+          }
+        }
+        if(kycOption1.includes("gstin"))
+        {
+          if(kycData.is_valid_gstin)
+          {
+            kycCompletedCount.push("gstin")
+          }
+        } 
+        if(kycOption1.includes("pan"))
+        {
+          if(kycData.is_valid_pan)
+          {
+            kycCompletedCount.push("pan")
+          }
+        }
+      }
+    
+      var count1 =0;
+    for(var i=0;i<kycCompletedCount.length;i++)
+    {
+      if(kycOption1.includes(kycCompletedCount[i]))
+      {
+        count1 ++;
+      }
+    }
+    console.log("count", count1,kycOption1.length)
+    if(count1 == kycOption1.length)
+    {
+      setCheckKycOption1(true)
+    }
+    else{
+      setCheckKycOption1(false)
+    }
+    console.log("new clg",kycCompletedCount.length,kycOption1.length)    
+    
+    if(!checkKycOption1)
+    {
+      for(var i=0;i<kycOption2.length;i++)
+      {
+        if(kycOption2.includes("aadhar"))
+        {
+          if(kycData.is_valid_aadhar)
+          {
+            kycCompletedCount.push("aadhar")
+          }
+        }
+        if(kycOption2.includes("gstin"))
+        {
+          if(kycData.is_valid_gstin)
+          {
+            kycCompletedCount.push("gstin")
+          }
+        }
+        if(kycOption2.includes("pan"))
+        {
+          if(kycData.is_valid_pan)
+          {
+            kycCompletedCount.push("pan")
+          }
+        }
+      }
+      var count2 =0;
+    for(var i=0;i<kycCompletedCount.length;i++)
+    {
+      if(kycOption2.includes(kycCompletedCount[i]))
+      {
+        count2 ++;
+      }
+    }
+    if(count2 == kycOption2.length)
+    {
+      setCheckKycOption2(true)
+    }
+    else{
+      setCheckKycOption2(false)
+    }
+    }
+    
+
+    }
+
+
+    console.log("checksadgsagjhdghjsa",checkKycOption1,checkKycOption2)
+  
 
   //function for modal
 
@@ -451,7 +575,8 @@ const VerifyOtp = ({ navigation, route }) => {
   const modalWithBorderClose = () => {
     setModalWithBorder(false);
     setMessage('')
-  navigation.reset({ index: '0', routes: [{ name: 'CheckKycOptions' }] })
+    checkKYCDoneStatus(kycData)
+    
   };
 
   const ModalContent = () => {
@@ -583,9 +708,8 @@ const VerifyOtp = ({ navigation, route }) => {
             onPress={() => {
               navigation.goBack();
             }}>
-            <Image
-              style={{ height: 20, width: 20, resizeMode: 'contain' }}
-              source={require('../../../assets/images/blackBack.png')}></Image>
+                          <LeftIcon name="arrowleft" size={24} color={"white"}></LeftIcon>
+
           </TouchableOpacity>
           <Image
             style={{
@@ -595,11 +719,8 @@ const VerifyOtp = ({ navigation, route }) => {
               top: 20,
               position: "absolute",
               left: 50,
-              
-
-
             }}
-            source={require('../../../assets/images/ozoneWhiteLogo.png')}></Image>
+            source={{uri:icon}}></Image>
         </View>
         <View
           style={{

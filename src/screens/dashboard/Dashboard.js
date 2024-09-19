@@ -172,7 +172,7 @@ const Dashboard = ({ navigation }) => {
   useEffect(()=>{
     if(userPointData)
     {
-      // console.log("userPointData",userPointData)
+      console.log("userPointData",userPointData)
     }
     else if(userPointError){
       setError(true)
@@ -252,19 +252,25 @@ const Dashboard = ({ navigation }) => {
 
   useEffect(() => {
     if (getKycStatusData) {
-      // console.log("getKycStatusData", getKycStatusData)
-      if (getKycStatusData?.success) {
-        const tempStatus = Object.values(getKycStatusData?.body)
-        
-        setShowKyc(tempStatus.includes(false))
-
+      console.log("getKycStatusData", getKycStatusData)
+      if (getKycStatusData.success) {
         dispatch(
           setKycData(getKycStatusData?.body)
         )
+        const tempStatus = Object.values(getKycStatusData.body)        
+        setShowKyc(tempStatus.includes(false))
+        if(getKycStatusData.body.gstin == true)
+        {
+          setShowKyc(false)
+        }
+        if(getKycStatusData.body.pan ==true && getKycStatusData.body.aadhar ==true)
+        {
+          setShowKyc(false)
 
-
+        }
       }
     }
+  
     else if (getKycStatusError) {
       if(getKycStatusError.status == 401)
       {
@@ -489,10 +495,8 @@ const Dashboard = ({ navigation }) => {
           }} />
           }  
           </View>
-         {/* Ozone specific change do not show for sales */}
-         {
-            userData?.user_type_id !== 13 && 
-            <View style={{ width: "90%",  backgroundColor: 'white', marginBottom: 20, flexDirection: 'row', alignItems: 'center', borderColor: '#808080', borderWidth: 0.3, borderRadius: 10,paddingBottom:10,justifyContent:'center' }}>
+         
+            <View style={{ width: "90%",  backgroundColor: 'white', marginBottom: 20, flexDirection: 'row', alignItems: 'center', borderColor: '#808080', borderWidth: 0.3, borderRadius: 10,paddingBottom:10,justifyContent:'center',paddingTop:10,minHeight:50 }}>
 
             <View style={{ backgroundColor: 'white', width: '42%', marginHorizontal: 20,alignItems:'center',justifyContent:'center' }}>
              {userPointData?.body?.point_balance ? <PoppinsText content={`${t("balance points")} ${userPointData?.body?.point_balance ? userPointData?.body?.point_balance : "loading"}`} style={{ color: 'black', fontWeight: 'bold' }}></PoppinsText> : <AnimatedDots color={'black'}/>} 
@@ -502,14 +506,13 @@ const Dashboard = ({ navigation }) => {
             <View style={{ height: '100%', borderWidth: 0.4, color: "#808080", opacity: 0.3,  }}>
             </View>
 
-            {userData && !userPointIsLoading &&<View  style={{ backgroundColor: "white",width:'46%',alignItems:'center',justifyContent:'center' }}>
-               <TouchableOpacity onPress={() => { navigation.navigate("RedeemedHistory") }} style={{ backgroundColor: ternaryThemeColor, borderRadius: 10, width: '90%', alignItems: 'center',justifyContent:'center',padding:6 }} >
+            {userData && !userPointIsLoading &&<View  style={{ backgroundColor: "white",width:'46%',alignItems:'center',justifyContent:'center', }}>
+               <TouchableOpacity onPress={() => { navigation.navigate("Passbook") }} style={{ backgroundColor: ternaryThemeColor, borderRadius: 10, width: '90%', alignItems: 'center',justifyContent:'center',padding:10 }} >
                 <PoppinsTextLeftMedium style={{ color: 'white', fontWeight: '800',fontSize:16 }} content={t("redeem")} ></PoppinsTextLeftMedium>
               </TouchableOpacity>
             </View>}
 
           </View>
-          }
          {(userData?.user_type).toLowerCase() !== "dealer" ? (userData?.user_type).toLowerCase() !== "sales" ? scanningDetails && scanningDetails?.data.length!==0 &&  <ScannedDetailsBox lastScannedDate={moment(scanningDetails?.data[0]?.created_at).format("DD MMM YYYY")} scanCount={scanningDetails.total}></ScannedDetailsBox>:<></> :<></>}
           {/* <ScrollView showsHorizontalScrollIndicator={false} horizontal={true} style={{ paddingLeft: 10, paddingRight: 10, paddingBottom: 4 }}>
             <DashboardDataBox header="Total Points"  data="5000" image={require('../../../assets/images/coin.png')} ></DashboardDataBox>

@@ -88,12 +88,30 @@ const RedeemedHistory = ({ navigation }) => {
 
   const {t} = useTranslation();
 
+  useEffect(()=>{
+    if(redemptionStartData)
+    {
+      console.log("redemptionStartData", (redemptionStartData))
+      console.log("redemptionStartDataSplited", (String(redemptionStartData)).split('T'),moment(new Date()).format('dd'))
+
+    }
+  },[redemptionStartData])
+
   useEffect(() => {
     if (getKycStatusData) {
       console.log("getKycStatusData", getKycStatusData)
       if (getKycStatusData.success) {
         const tempStatus = Object.values(getKycStatusData.body)        
         setShowKyc(tempStatus.includes(false))
+        if(getKycStatusData.body.gstin == true)
+        {
+          setShowKyc(false)
+        }
+        if(getKycStatusData.body.pan ==true && getKycStatusData.body.aadhar ==true)
+        {
+          setShowKyc(false)
+
+        }
       }
     }
     else if (getKycStatusError) {
@@ -104,22 +122,22 @@ const RedeemedHistory = ({ navigation }) => {
 
   useEffect(() => {
     fetchPoints()
-    if(appUserData!==undefined)
-    {
-     const influencerRedemptionCategories =  appUserData.filter((item)=>{
-        return item.name===userData.user_type
-      })
-      console.log("influencerRedemptionCategories",influencerRedemptionCategories)
-      if(influencerRedemptionCategories.length!==0)
-      {
-        setRedemptionStartDate(influencerRedemptionCategories[0].redeem_start_date)
-        setRedemptionEndDate(influencerRedemptionCategories[0].redeem_end_date)
-      }
-      else{
-        setRedemptionWindowEligibility(false)
-      }
+    // if(appUserData!==undefined)
+    // {
+    //  const influencerRedemptionCategories =  appUserData.filter((item)=>{
+    //     return item.name===userData.user_type
+    //   })
+    //   console.log("influencerRedemptionCategories",influencerRedemptionCategories.length)
+    //   if(influencerRedemptionCategories.length!=0)
+    //   {
+    //     setRedemptionStartDate(influencerRedemptionCategories[0].redeem_start_date)
+    //     setRedemptionEndDate(influencerRedemptionCategories[0].redeem_end_date)
+    //   }
+    //   else{
+    //     setRedemptionWindowEligibility(false)
+    //   }
      
-    }
+    // }
   }, [focused])
 
   useEffect(()=>{
@@ -248,23 +266,21 @@ const RedeemedHistory = ({ navigation }) => {
       if (Number(userPointData.body.point_balance) <= 0 ) {
         setError(true)
         setMessage("Sorry you don't have enough points.")
-        setNavigateTo("RedeemedHistory")
+        // setNavigateTo("RedeemedHistory")
       }
-    
       else if(Number(minRedemptionPoints)>Number(pointBalance))
       {
         console.log("Minimum Point required to redeem is : ",minRedemptionPoints)
         setError(true)
         setMessage(`Minimum Point required to redeem is : ${minRedemptionPoints}`)
-        setNavigateTo("RedeemedHistory")
-
+        // setNavigateTo("RedeemedHistory")
       }
       else {
-        
-        if((Number(new Date(redemptionStartData).split('T')[0]) <= Number(new Date().split('T')[0]) ) &&  ( Number(new Date().split('T')[0]) <= Number(new Date(redemptionEndDate).split('T')[0])) )
+        if(redemptionEndDate && redemptionStartData)
+        if((new Date(redemptionStartData).getTime() <= (new Date()).getTime())  &&  ( (new Date()).getTime()) <= (new Date(redemptionEndDate).getTime()))
         {
           
-          console.log("correct redemption date",new Date().split('T')[0],new Date(redemptionStartData).split('T')[0],new Date(redemptionEndDate).split('T')[0])
+          console.log("correct redemption date",new Date().getTime(),new Date(redemptionStartData).getTime(),new Date(redemptionEndDate).getTime())
         if(!showKyc)
         {
           setModalVisible(true)
@@ -272,14 +288,17 @@ const RedeemedHistory = ({ navigation }) => {
         else{
           setError(true)
           setMessage("Kyc not completed yet")
-          setNavigateTo("Verification")
+          // setNavigateTo("Verification")
         }
         }
         else{
           setError(true)
-        setMessage("Redemption window starts from "+ moment(redemptionStartData).format("DD-MMM-YYYY") + " and ends on " +  moment(redemptionEndDate).format("DD-MMM-YYYY"))
-        setNavigateTo("RedeemedHistory")
+          setMessage("Redemption window starts from "+ moment(redemptionStartData).format("DD-MMM-YYYY") + " and ends on " +  moment(redemptionEndDate).format("DD-MMM-YYYY"))
+          // setNavigateTo("RedeemedHistory")
 
+        }
+        else{
+          alert("Redemption start and end date have not been set yet!!")
         }
       }
 
@@ -552,14 +571,14 @@ const RedeemedHistory = ({ navigation }) => {
           //   )
 
           // }) */}
-     {error  && (
+     {/* {error  && (
         <ErrorModal
           modalClose={modalClose}
           message={message}
           openModal={error}
           ></ErrorModal>
-      )}
-      {error && navigateTo && (
+      )} */}
+      {error  && (
         <ErrorModal
           modalClose={modalClose}
           message={message}

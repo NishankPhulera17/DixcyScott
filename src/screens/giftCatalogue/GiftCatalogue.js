@@ -17,6 +17,7 @@ import Logo from "react-native-vector-icons/AntDesign";
 import moment from "moment";
 import { useFetchGiftCatalogueByUserTypeAndCatalogueTypeMutation } from "../../apiServices/gifts/GiftApi";
 import { useTranslation } from "react-i18next";
+import { theme } from "../../utils/HandleClientSetup";
 
 export default function GiftCatalogue({ navigation }) {
   const [scheme, setScheme] = useState([]);
@@ -148,6 +149,9 @@ export default function GiftCatalogue({ navigation }) {
           ></PoppinsTextMedium>
         </View>
       </View>
+      
+      
+     
     );
   };
 

@@ -27,7 +27,8 @@ const SelectUser = ({navigation}) => {
   const [error, setError] = useState(false);
   const [message, setMessage] = useState();
   const [users, setUsers] = useState()
-  
+  const [checkKycOption1, setCheckKycOption1] = useState()
+  const [checkKycOption2, setCheckKycOption2] = useState()
   const primaryThemeColor = useSelector(
     state => state.apptheme.primaryThemeColor,
   )
@@ -187,6 +188,7 @@ const SelectUser = ({navigation}) => {
       console.log("loginData",JSON.parse(jsonValue))
       if(jsonValue!=null)
       {
+      checkKYCDoneStatus(JSON.parse(jsonValue))
       saveUserDetails(JSON.parse(jsonValue))
       }
       
@@ -203,19 +205,113 @@ const SelectUser = ({navigation}) => {
       dispatch(setAppUserType(data?.user_type))
       dispatch(setUserData(data))
       dispatch(setId(data?.id))
-      handleNavigation()
+
     }
     catch (e) {
       console.log("error", e)
     }
     
-  }   
+  }  
+  const checkKYCDoneStatus =(kycData)=>{
+
+    const kycCompletedCount = []
+    
+      for(var i=0;i<kycOption1.length;i++)
+      {
+        if(kycOption1.includes("aadhar"))
+        {
+          if(kycData.is_valid_aadhar)
+          {
+            kycCompletedCount.push("aadhar")
+          }
+        }
+        if(kycOption1.includes("gstin"))
+        {
+          if(kycData.is_valid_gstin)
+          {
+            kycCompletedCount.push("gstin")
+          }
+        } 
+        if(kycOption1.includes("pan"))
+        {
+          if(kycData.is_valid_pan)
+          {
+            kycCompletedCount.push("pan")
+          }
+        }
+      }
+    
+      var count1 =0;
+    for(var i=0;i<kycCompletedCount.length;i++)
+    {
+      if(kycOption1.includes(kycCompletedCount[i]))
+      {
+        count1 ++;
+      }
+    }
+    console.log("count", count1,kycOption1.length)
+    if(count1 == kycOption1.length)
+    {
+      setCheckKycOption1(true)
+    }
+    else{
+      setCheckKycOption1(false)
+    }
+    console.log("new clg",kycCompletedCount.length,kycOption1.length)    
+    
+    if(checkKycOption1 == false && checkKycOption1!=undefined)
+    {
+      for(var i=0;i<kycOption2.length;i++)
+      {
+        if(kycOption2.includes("aadhar"))
+        {
+          if(kycData.is_valid_aadhar)
+          {
+            kycCompletedCount.push("aadhar")
+          }
+        }
+        if(kycOption2.includes("gstin"))
+        {
+          if(kycData.is_valid_gstin)
+          {
+            kycCompletedCount.push("gstin")
+          }
+        }
+        if(kycOption2.includes("pan"))
+        {
+          if(kycData.is_valid_pan)
+          {
+            kycCompletedCount.push("pan")
+          }
+        }
+      }
+      var count2 =0;
+    for(var i=0;i<kycCompletedCount.length;i++)
+    {
+      if(kycOption2.includes(kycCompletedCount[i]))
+      {
+        count2 ++;
+      }
+    }
+    if(count2 == kycOption2.length)
+    {
+      setCheckKycOption2(true)
+    }
+    else{
+      setCheckKycOption2(false)
+    }
+    }
+    handleNavigation()
+    
+
+    } 
 
   const handleNavigation=()=>{
     
     setTimeout(() => {
       setShowSplash(false)
-    navigation.navigate('Dashboard')
+    (checkKycOption1 || checkKycOption2) &&  navigation.navigate('Dashboard')
+    !(checkKycOption1 || checkKycOption2) &&  navigation.navigate('CheckKycOptions')
 
     }, 5000);
   }

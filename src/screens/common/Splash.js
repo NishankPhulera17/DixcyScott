@@ -17,6 +17,7 @@ import {
   setPrimaryThemeColor,
   setSecondaryThemeColor,
   setIcon,
+  setIcon1,
   setIconDrawer,
   setTernaryThemeColor,
   setOptLogin,
@@ -102,6 +103,7 @@ import { useInternetSpeedContext } from "../../Contexts/useInternetSpeedContext"
 import { setSlowNetwork } from "../../../redux/slices/internetSlice";
 import { apiFetchingInterval } from "../../utils/apiFetchingInterval";
 import { splash } from "../../utils/HandleClientSetup";
+import { kycOption1, kycOption2 } from '../../utils/HandleClientSetup';
 
 const Splash = ({ navigation }) => {
   const dispatch = useDispatch();
@@ -119,7 +121,8 @@ const Splash = ({ navigation }) => {
   const [dashboardDataLoaded, setDashboardDataLoaded] = useState(false);
   const [error, setError] = useState(false);
   const [checkedForInAppUpdate, setCheckedForInAppUpdate] = useState(false);
-
+  const [checkKycOption1, setCheckKycOption1] = useState()
+  const [checkKycOption2, setCheckKycOption2] = useState()
   const { responseTime, loading } = useInternetSpeedContext();
 
   // const [isAlreadyIntroduced, setIsAlreadyIntroduced] = useState(null);
@@ -332,7 +335,7 @@ const Splash = ({ navigation }) => {
           try {
             const value = await AsyncStorage.getItem("appMenu");
             const jsonValue = JSON.parse(value);
-            console.log("jsonValueGetDashbaordData", jsonValue);
+            console.log("appMenuqwerty", jsonValue);
             if (jsonValue != null) {
               const getCurrentTimeInMilliSecond = new Date().getTime();
               if (
@@ -368,17 +371,33 @@ const Splash = ({ navigation }) => {
                   jsonValue,
                   getDashboardData,
                   getWorkflowData
+                
                 );
-
-                getFormData &&
-                  (!__DEV__ ? minVersionSupport : true) &&
-                  jsonValue &&
-                  getDashboardData &&
-                  getWorkflowData &&
-                  navigation.reset({
-                    index: "0",
-                    routes: [{ name: "Dashboard" }],
-                  });
+                console.log("checkKycOptions", checkKycOption1,checkKycOption2)
+                  if((checkKycOption1 || checkKycOption2))
+                  {
+                    getFormData   &&
+                    (!__DEV__ ? minVersionSupport : true) &&
+                    jsonValue &&
+                    getDashboardData &&
+                    getWorkflowData &&
+                    navigation.reset({
+                      index: "0",
+                      routes: [{ name: "Dashboard" }],
+                    });
+                  }
+                  else{
+                    getFormData   &&
+                    (!__DEV__ ? minVersionSupport : true) &&
+                    jsonValue &&
+                    getDashboardData &&
+                    getWorkflowData &&
+                    navigation.reset({
+                      index: "0",
+                      routes: [{ name: "Introduction" }],
+                    });
+                  }
+                
               }
             } else {
               console.log("JsonValue is null", parsedJsonValue);
@@ -441,12 +460,23 @@ const Splash = ({ navigation }) => {
           getWorkflowData
         );
 
-        getFormData &&
+        if((checkKycOption1 || checkKycOption2))
+        {
+          getFormData &&
           (!__DEV__ ? minVersionSupport : true) &&
           getAppMenuData &&
           getDashboardData &&
           getWorkflowData &&
           navigation.reset({ index: "0", routes: [{ name: "Dashboard" }] });
+        }
+        else{
+          getFormData &&
+          (!__DEV__ ? minVersionSupport : true) &&
+          getAppMenuData &&
+          getDashboardData &&
+          getWorkflowData &&
+          navigation.reset({ index: "0", routes: [{ name: "CheckKycOptions" }] });
+        }
       }
     } else if (getAppMenuError) {
       console.log("getAppMenuError", getAppMenuError);
@@ -490,7 +520,7 @@ const Splash = ({ navigation }) => {
                   try {
                     const value = await AsyncStorage.getItem("appMenu");
                     const jsonValue = JSON.parse(value);
-                    console.log("jsonValueGetDashbaordData", jsonValue);
+                    console.log("appmenuqwerty", jsonValue);
                     if (jsonValue != null) {
                       const getCurrentTimeInMilliSecond = new Date().getTime();
                       if (
@@ -516,14 +546,29 @@ const Splash = ({ navigation }) => {
                           getWorkflowData
                         );
 
-                        getFormData && (!__DEV__ ? minVersionSupport : true);
-                        jsonValue &&
-                          jsonValue &&
-                          getWorkflowData &&
-                          navigation.reset({
-                            index: "0",
-                            routes: [{ name: "Dashboard" }],
-                          });
+                        if((checkKycOption1 || checkKycOption2))
+                  {
+                    getFormData   &&
+                    (!__DEV__ ? minVersionSupport : true) &&
+                    jsonValue &&
+                    getDashboardData &&
+                    getWorkflowData &&
+                    navigation.reset({
+                      index: "0",
+                      routes: [{ name: "Dashboard" }],
+                    });
+                  }
+                  else{
+                    getFormData   &&
+                    (!__DEV__ ? minVersionSupport : true) &&
+                    jsonValue &&
+                    getDashboardData &&
+                    getWorkflowData &&
+                    navigation.reset({
+                      index: "0",
+                      routes: [{ name: "CheckKycOptions" }],
+                    });
+                  }
                       }
                     } else {
                       console.log("JsonValue is null", parsedJsonValue);
@@ -885,6 +930,10 @@ const Splash = ({ navigation }) => {
     }
   }, [getMinVersionSupportData, getMinVersionSupportError]);
 
+  useEffect(()=>{
+    console.log("check ky options", checkKycOption1,checkKycOption2)
+  },[checkKycOption1,checkKycOption2])
+
   useEffect(() => {
     console.log("internet status", isConnected);
     setConnected(isConnected.isConnected);
@@ -904,12 +953,13 @@ const Splash = ({ navigation }) => {
             getUsers();
           } else {
             console.log("data already present saving userData");
-            const appUsersData = jsonValue?.body.map((item, index) => {
+            const appUsersData = jsonValue?.map((item, index) => {
               return {
                 name: item.name,
                 id: item.user_type_id,
               };
             });
+            console.log("appUserDataqwerty", appUsersData)
             dispatch(setAppUsersData(appUsersData));
           }
         } else {
@@ -962,17 +1012,22 @@ const Splash = ({ navigation }) => {
     const jsonValue = await AsyncStorage.getItem("loginData");
 
     const parsedJsonValues = JSON.parse(jsonValue);
-
+    console.log("parsedJsonValue", parsedJsonValue)
+    setParsedJsonValue(parsedJsonValues);
+    if(jsonValue!=null)
+    checkKYCDoneStatus(parsedJsonValues)
+    
     const value = await AsyncStorage.getItem("isAlreadyIntroduced");
 
     if (value != null && jsonValue != null) {
       // value previously stored
       try {
-        // console.log("parsedJsonValues",parsedJsonValues)
+        console.log("parsedJsonValues",parsedJsonValues)
 
         const getData = async () => {
           try {
             const dataStored = await AsyncStorage.getItem("storedBanner");
+            console.log("data from async before convevrsion", dataStored)
             const valueStoredBanner = JSON.parse(dataStored);
             console.log("data from async", valueStoredBanner);
             if (valueStoredBanner !== null) {
@@ -997,7 +1052,7 @@ const Splash = ({ navigation }) => {
               } else {
                 console.log(
                   "Time not completed so cant fetch, saving from asyncStorage",
-                  valueStoredBanner[0]
+                  valueStoredBanner
                 );
                 setParsedJsonValue(parsedJsonValues);
                 dispatch(setBannerData(valueStoredBanner));
@@ -1059,6 +1114,7 @@ const Splash = ({ navigation }) => {
       dispatch(
         setTernaryThemeColor(getAppThemeData?.body?.theme?.color_shades["700"])
       );
+      dispatch(setIcon1(getAppThemeData?.body?.logo[1]));
       dispatch(setIcon(getAppThemeData?.body?.logo[0]));
       dispatch(setIconDrawer(getAppThemeData?.body?.logo[0]));
       dispatch(setOptLogin(getAppThemeData?.body?.login_options?.Otp.users));
@@ -1150,6 +1206,99 @@ const Splash = ({ navigation }) => {
   }, [responseTime, connected]);
 
   //---------------------------------------
+
+  const checkKYCDoneStatus =(kycData)=>{
+
+    const kycCompletedCount = []
+    
+      for(var i=0;i<kycOption1.length;i++)
+      {
+        if(kycOption1.includes("aadhar"))
+        {
+          if(kycData.is_valid_aadhar)
+          {
+            kycCompletedCount.push("aadhar")
+          }
+        }
+        if(kycOption1.includes("gstin"))
+        {
+          if(kycData.is_valid_gstin)
+          {
+            kycCompletedCount.push("gstin")
+          }
+        } 
+        if(kycOption1.includes("pan"))
+        {
+          if(kycData.is_valid_pan)
+          {
+            kycCompletedCount.push("pan")
+          }
+        }
+      }
+    
+      var count1 =0;
+    for(var i=0;i<kycCompletedCount.length;i++)
+    {
+      if(kycOption1.includes(kycCompletedCount[i]))
+      {
+        count1 ++;
+      }
+    }
+    console.log("count", count1,kycOption1.length)
+    if(count1 == kycOption1.length)
+    {
+      setCheckKycOption1(true)
+    }
+    else{
+      setCheckKycOption1(false)
+    }
+    console.log("new clg",kycCompletedCount.length,kycOption1.length)    
+    
+    if(checkKycOption1 == false && checkKycOption1!=undefined)
+    {
+      for(var i=0;i<kycOption2.length;i++)
+      {
+        if(kycOption2.includes("aadhar"))
+        {
+          if(kycData.is_valid_aadhar)
+          {
+            kycCompletedCount.push("aadhar")
+          }
+        }
+        if(kycOption2.includes("gstin"))
+        {
+          if(kycData.is_valid_gstin)
+          {
+            kycCompletedCount.push("gstin")
+          }
+        }
+        if(kycOption2.includes("pan"))
+        {
+          if(kycData.is_valid_pan)
+          {
+            kycCompletedCount.push("pan")
+          }
+        }
+      }
+      var count2 =0;
+    for(var i=0;i<kycCompletedCount.length;i++)
+    {
+      if(kycOption2.includes(kycCompletedCount[i]))
+      {
+        count2 ++;
+      }
+    }
+    if(count2 == kycOption2.length)
+    {
+      setCheckKycOption2(true)
+    }
+    else{
+      setCheckKycOption2(false)
+    }
+    }
+    
+
+    }
 
   const modalClose = () => {
     setError(false);

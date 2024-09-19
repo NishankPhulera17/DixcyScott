@@ -9,6 +9,8 @@ import {
   Alert,
   ScrollView,
   AppState,
+  ActivityIndicator,
+  Dimensions,
 } from "react-native";
 import PoppinsTextMedium from "../../components/electrons/customFonts/PoppinsTextMedium";
 import { useSelector, useDispatch } from "react-redux";
@@ -29,11 +31,14 @@ const EnableLocationScreen = ({ route, navigation }) => {
   const [lat, setLat] = useState();
   const [lon, setLon] = useState();
   const [locationRadius, setLocationRadius] = useState()
+  const [showLoading, setShowLoading] = useState(true)
   const [continueWithoutGeocoding, setContinueWithoutGeoCoding] = useState(false)
   const [appStateVisible, setAppStateVisible] = useState(appState.current);
   const focused = useIsFocused();
   const message = route.params?.message;
   const navigateTo = route.params?.navigateTo;
+  const height = Dimensions.get('window').height
+  const width = Dimensions.get('window').width
   const dispatch = useDispatch();
   const ternaryThemeColor = useSelector(
     (state) => state.apptheme.ternaryThemeColor
@@ -57,6 +62,16 @@ const EnableLocationScreen = ({ route, navigation }) => {
     locationPermissionStatus
   );
 
+  useEffect(()=>{
+    if(locationPermissionStatus && locationEnabled)
+    {
+    console.log("location permission and location enabled status", locationEnabled,locationPermissionStatus)
+
+      setTimeout(() => {
+      setShowLoading(false)
+      }, 2000);
+    }
+  },[])
   
   useEffect(()=>{
     if(locationSetup)
@@ -223,7 +238,7 @@ const EnableLocationScreen = ({ route, navigation }) => {
             dispatch(setLocationEnabled(true));
             setTimeout(() => {
               navigateTo && navigation.replace(navigateTo);
-            }, 500);
+            }, 0);
             return;
           }
         }
@@ -266,7 +281,7 @@ const EnableLocationScreen = ({ route, navigation }) => {
 
               setTimeout(() => {
                 navigateTo && navigation.replace(navigateTo);
-              }, 500);
+              }, 0);
             } else {
                 console.log("locationSetupelse",locationSetup,lati,long)
             locationSetup && Object.keys(locationSetup)?.length>0 && handleFailedLocationFetch("error in constructing location json", lati,long);
@@ -319,7 +334,7 @@ const EnableLocationScreen = ({ route, navigation }) => {
             dispatch(setLocationEnabled(true));
             setTimeout(() => {
               navigateTo && navigation.replace(navigateTo);
-            }, 500);
+            }, 0);
             
           }
           else {
@@ -347,7 +362,7 @@ const EnableLocationScreen = ({ route, navigation }) => {
       
                 setTimeout(() => {
                   navigateTo && navigation.replace(navigateTo);
-                }, 500);
+                }, 0);
               })
               .catch(err => {
                 console.error(err)
@@ -355,7 +370,7 @@ const EnableLocationScreen = ({ route, navigation }) => {
                 {
                     setTimeout(() => {
                         navigateTo && navigation.replace(navigateTo);
-                      }, 500);
+                      }, 0);
                 }
                 else{
                     Alert.alert(
@@ -380,7 +395,7 @@ const EnableLocationScreen = ({ route, navigation }) => {
               {
                   setTimeout(() => {
                       navigateTo && navigation.replace(navigateTo);
-                    }, 500);
+                    }, 0);
               }
               else{
                   Alert.alert(
@@ -426,7 +441,7 @@ const EnableLocationScreen = ({ route, navigation }) => {
 
           setTimeout(() => {
             navigateTo && navigation.replace(navigateTo);
-          }, 500);
+          }, 0);
         })
         .catch(err => {
           console.error(err)
@@ -434,7 +449,7 @@ const EnableLocationScreen = ({ route, navigation }) => {
           {
               setTimeout(() => {
                   navigateTo && navigation.replace(navigateTo);
-                }, 500);
+                }, 0);
           }
           else{
               Alert.alert(
@@ -459,7 +474,7 @@ const EnableLocationScreen = ({ route, navigation }) => {
         {
             setTimeout(() => {
                 navigateTo && navigation.replace(navigateTo);
-              }, 500);
+              }, 0);
         }
         else{
             Alert.alert(
@@ -502,7 +517,9 @@ const EnableLocationScreen = ({ route, navigation }) => {
 
   return (
     <ScrollView contentContainerStyle={{ height: "100%", width: "100%" }}>
+    
       <View style={styles.container}>
+     
         <PoppinsTextMedium style={styles.message} content={message} />
         <Image
           resizeMode="contain"
