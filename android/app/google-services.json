@@ -1,13 +1,13 @@
 {
   "project_info": {
-    "project_number": "267987504542",
-    "project_id": "ozone-70b58",
-    "storage_bucket": "ozone-70b58.appspot.com"
+    "project_number": "132577172006",
+    "project_id": "dixcyvijeta",
+    "storage_bucket": "dixcyvijeta.appspot.com"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:267987504542:android:7391f3698078125ba71a8f",
+        "mobilesdk_app_id": "1:132577172006:android:c67dcb3d3da6085629e4e7",
         "android_client_info": {
           "package_name": "com.genefied.modenik"
         }
@@ -15,7 +15,7 @@
       "oauth_client": [],
       "api_key": [
         {
-          "current_key": "AIzaSyAfvaMYqbyCySpnjuLyFLswBBuQO1zo08c"
+          "current_key": "AIzaSyA45RZucxNVLLAsgZ-Wmixa2fLaFl2w9q4"
         }
       ],
       "services": {
