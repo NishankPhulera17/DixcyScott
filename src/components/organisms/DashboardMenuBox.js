@@ -20,6 +20,10 @@ const DashboardMenuBox=(props)=>{
         {
             navigation.navigate("Passbook")
         }
+        else if(data.toLowerCase()==="focus brand")
+        {
+            navigation.navigate("TargetVsAchievement")
+        }
         else if(data.toLowerCase() === "my rewards"){
             navigation.navigate('RedeemGifts')
         }
@@ -81,6 +85,10 @@ const DashboardMenuBox=(props)=>{
             })
             
         }
+                    <MenuItems handlePress={handleMenuItemPress} key={dataa.length+1} image={"https://picsum.photos/200"} content={"Focus Brand"}></MenuItems>
+                    <MenuItems handlePress={handleMenuItemPress} key={dataa.length+1} image={"https://picsum.photos/200"} content={"Base Points"}></MenuItems>
+                    <MenuItems handlePress={handleMenuItemPress} key={dataa.length+1} image={"https://picsum.photos/200"} content={"Bonus Points"}></MenuItems>
+        
         </View>
         </View>
     )

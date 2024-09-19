@@ -87,6 +87,7 @@ import CheckKycOptions from '../screens/kyc/CheckKycOptions';
 import OrderHistory from '../screens/historyPages/OrderHistory';
 import SchemePointDetails from '../screens/scheme/SchemePointDetails';
 import CameraCapture from '../screens/camera/CameraCapture';
+import TargetVsAchievement from '../screens/pointBooster/TargetVsAchievement';
 
 
 const Stack = createNativeStackNavigator()
@@ -101,7 +102,11 @@ const StackNavigator = () => {
                         headerShown: false
                     }
                 } name="Splash" component={Splash}></Stack.Screen>
-                
+                <Stack.Screen options={
+                    {
+                        headerShown: false
+                    }
+                } name="TargetVsAchievement" component={TargetVsAchievement}></Stack.Screen>
                 <Stack.Screen options={
                     {
                         headerShown: false

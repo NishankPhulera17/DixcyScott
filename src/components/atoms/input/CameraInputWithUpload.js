@@ -8,7 +8,7 @@ import { useNavigation } from "@react-navigation/native";
 import {launchCamera, launchImageLibrary} from 'react-native-image-picker';
 import { useUploadSingleFileMutation } from "../../../apiServices/imageApi/imageApi";
 import * as Keychain from "react-native-keychain";
-
+import CameraIcon from 'react-native-vector-icons/Entypo'
 
 const CameraInputWithUpload = (props) => {
   const [openCamera, setOpenCamera] = useState(false);
@@ -124,7 +124,7 @@ const imageData = {
     }} style={{height:40,width:100,alignItems:'center',justifyContent:'center',borderRadius:10,backgroundColor:capturePressed ? "#DDDDDD":ternaryThemeColor,marginTop:10}}>
         <PoppinsTextMedium content={(uploadImageData || image) ? "Recapture":"Capture"} style={{color:'white', fontSize:18}}></PoppinsTextMedium>
     </TouchableOpacity>}
-    {showButton && theme == "new"  && <TouchableOpacity onPress={async()=>{
+    {showButton && theme == "new"  && <TouchableOpacity style={{borderWidth:1,borderStyle:'dashed',height:60,alignItems:"center",justifyContent:'center',flexDirection:'row',borderRadius:10,width:'100%',padding:10}} onPress={async()=>{
       //   setCapturePressed(true)
       //  setTimeout(() => {
       //   captureImage()
@@ -133,6 +133,9 @@ const imageData = {
       
        navigation.navigate("CameraCapture")
     }} >
+      <CameraIcon name="camera" size={30} color={"black"}></CameraIcon>
+      <PoppinsTextMedium content={"Click Your Shop Picture"} style={{color:'black', fontSize:16,marginLeft:10}}></PoppinsTextMedium>
+
     </TouchableOpacity>}
     
     </View>
