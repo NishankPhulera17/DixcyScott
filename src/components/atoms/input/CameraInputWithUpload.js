@@ -124,7 +124,7 @@ const imageData = {
     }} style={{height:40,width:100,alignItems:'center',justifyContent:'center',borderRadius:10,backgroundColor:capturePressed ? "#DDDDDD":ternaryThemeColor,marginTop:10}}>
         <PoppinsTextMedium content={(uploadImageData || image) ? "Recapture":"Capture"} style={{color:'white', fontSize:18}}></PoppinsTextMedium>
     </TouchableOpacity>}
-    {showButton && theme == "new"  && <TouchableOpacity style={{borderWidth:1,borderStyle:'dashed',height:60,alignItems:"center",justifyContent:'center',flexDirection:'row',borderRadius:10,width:'100%',padding:10}} onPress={async()=>{
+    {showButton && theme == "new"  && <TouchableOpacity style={{marginTop:20,borderWidth:1,borderStyle:'dashed',height:60,alignItems:"center",justifyContent:'center',flexDirection:'row',borderRadius:10,width:'100%',padding:10}} onPress={async()=>{
       //   setCapturePressed(true)
       //  setTimeout(() => {
       //   captureImage()

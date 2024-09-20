@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { View, StyleSheet, ScrollView, Platform, TouchableOpacity,Image, Button,BackHandler} from 'react-native';
+import { View, StyleSheet, ScrollView, Platform, TouchableOpacity,Image, Button,BackHandler, Text} from 'react-native';
 import MenuItems from '../../components/atoms/MenuItems';
 import { BaseUrl } from '../../utils/BaseUrl';
 import * as Keychain from 'react-native-keychain';
@@ -459,7 +459,7 @@ const Dashboard = ({ navigation }) => {
       <ScrollView style={{ width: '100%', marginBottom: platformMarginScroll, height: '100%' }}>
       <DrawerHeader></DrawerHeader>
       <View style={{width:'100%',alignItems:'center',justifyContent:'flex-start',flexDirection:'row',marginBottom:10}}>
-      <PoppinsTextLeftMedium style={{color:ternaryThemeColor, fontWeight:'bold', fontSize:19,marginLeft:20}} content={`${t("welcome")} ${userData?.name}`}></PoppinsTextLeftMedium>
+      <PoppinsTextLeftMedium style={{color:ternaryThemeColor, fontWeight:'bold', fontSize:16,marginLeft:20}} content={`${t("welcome")} ${userData?.name}`}></PoppinsTextLeftMedium>
       {getActiveMembershipData?.body!==null && <View
               style={{
                 flexDirection: 'row',
@@ -533,12 +533,16 @@ const Dashboard = ({ navigation }) => {
           <View style={{ width: '100%', alignItems: "center", justifyContent: "center", marginBottom: 20 }}>
             {showKyc && <KYCVerificationComponent buttonTitle={t("Complete Your KYC")} title={t("Your KYC is not completed")}></KYCVerificationComponent>}
           </View>
-          <View style={{ flexDirection: "row", width: '100%', alignItems: "center", justifyContent: 'space-evenly' }}>
-            {(userData.user_type).toLowerCase()!=="sales" &&<DashboardSupportBox title={t("rewards")} text="Rewards" backgroundColor="#D9C7B6" borderColor="#FEE8D4" image={require('../../../assets/images/reward_dashboard.png')} ></DashboardSupportBox>}
+          {/* <View style={{ flexDirection: "row", width: '100%', alignItems: "center", justifyContent: 'space-evenly' }}> */}
+          <ScrollView contentContainerStyle={{}}  horizontal={true}>
+          <DashboardSupportBox title={t("Product Catalogue")} text="Rewards" backgroundColor="#FBFFC6" borderColor="#FEE8D4" image={require('../../../assets/images/productCatalogue.png')} ></DashboardSupportBox>
+            <DashboardSupportBox title={t("rewards")} text="Rewards" backgroundColor="#D9C7B6" borderColor="#FEE8D4" image={require('../../../assets/images/reward_dashboard.png')} ></DashboardSupportBox>
             <DashboardSupportBox title={t("customer support")} text="Customer Support" backgroundColor="#BCB5DC" borderColor="#E4E0FC" image={require('../../../assets/images/support.png')} ></DashboardSupportBox>
             <DashboardSupportBox title={t("feedback")} text="Feedback" backgroundColor="#D8C8C8" borderColor="#FDDADA" image={require('../../../assets/images/feedback.png')} ></DashboardSupportBox>
-
-          </View>
+           
+            
+            </ScrollView>
+          {/* </View> */}
           {/* <Button
         title="Add To Basket"
         onPress={async () =>

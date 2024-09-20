@@ -323,26 +323,25 @@ const CheckKycOptions = ({navigation,route}) => {
 
   const ModalContent = () => {
     return (
-      <View style={{ width: '100%', alignItems: "center", justifyContent: "center" }}>
-        <View style={{ marginTop: 30, alignItems: 'center', maxWidth: '80%' }}>
-          <Icon name="check-circle" size={53} color={ternaryThemeColor} />
-          <PoppinsTextMedium style={{ fontSize: 27, fontWeight: '600', color: ternaryThemeColor, marginLeft: 5, marginTop: 5 }} content={"Success ! !"}></PoppinsTextMedium>
+      <View style={{ width: '100%', alignItems: "center", justifyContent: "center",height:'100%' }}>
+        <ScrollView contentContainerStyle={{ marginTop: 10, alignItems: 'center', maxWidth: '96%',marginTop:40 }}>
+         
+          <PoppinsTextMedium style={{ fontSize: 20, fontWeight: '800', color: ternaryThemeColor, marginLeft: 5, marginTop: 5 }} content={"Legal Notice & Consent - During validation of Aadhaar, PAN & GSTIN"}></PoppinsTextMedium>
+          <PoppinsTextMedium style={{color:'black',fontWeight:'800',marginTop:10}} content="Aadhaar validation"></PoppinsTextMedium>
+          <PoppinsTextMedium style={{color:'black'}} content="We, DIXCY industries Ltd, are in the business of manufacturing & selling of electrical cables & wires. We respect your privacy and handle your personal data in accordance with the applicable data protection laws. DIXCY may need to process your personal data for the purpose of future communications and incentive schemes, if any. The personal data collected may include but is not limited to name, address, contact details etc. We may share your personal data with service providers, business associates etc. or where required or permitted by law. All personal data processed is stored and retained in compliance with legal, regulatory and best practice business requirements."></PoppinsTextMedium>
+          <PoppinsTextMedium style={{color:'black',fontWeight:'800',marginTop:10}} content="PAN validation"></PoppinsTextMedium>
+          <PoppinsTextMedium style={{color:'black'}} content="We, DIXCY industries Ltd, are in the business of manufacturing & selling of electrical cables & wires. We respect your privacy and handle your personal data in accordance with the applicable data protection laws. DIXCY may need to process your personal data for the purpose of future communications and incentive schemes, if any. The personal data collected may include but is not limited to name, address, contact details etc. We may share your personal data with service providers, business associates etc. or where required or permitted by law. All personal data processed is stored and retained in compliance with legal, regulatory and best practice business requirements."></PoppinsTextMedium>
           
-          <ActivityIndicator size={'small'} animating={true} color={ternaryThemeColor} />
-
-          <View style={{ marginTop: 10, marginBottom: 30 }}>
-            <PoppinsTextMedium style={{ fontSize: 16, fontWeight: '600', color: "#000000", marginLeft: 5, marginTop: 5, }} content={message}></PoppinsTextMedium>
-          </View>
 
 
           {/* <View style={{ alignItems: 'center', marginBottom: 30 }}>
             <ButtonOval handleOperation={modalWithBorderClose} backgroundColor="#000000" content="OK" style={{ color: 'white', paddingVertical: 4 }} />
           </View> */}
 
-        </View>
+        </ScrollView>
 
         <TouchableOpacity style={[{
-          backgroundColor: ternaryThemeColor, padding: 6, borderRadius: 5, position: 'absolute', top: -10, right: -10,
+          backgroundColor: ternaryThemeColor, padding: 6, borderRadius: 5, position: 'absolute', top: 4, right: 0,
         }]} onPress={modalClose} >
           <Close name="close" size={17} color="#ffffff" />
         </TouchableOpacity>
@@ -547,6 +546,7 @@ const CheckKycOptions = ({navigation,route}) => {
                   marginTop: 20,
                   alignItems: "center",
                   justifyContent: "center",
+                  marginBottom:20
                 }}
               >
                 <PoppinsTextMedium

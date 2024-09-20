@@ -88,6 +88,7 @@ import OrderHistory from '../screens/historyPages/OrderHistory';
 import SchemePointDetails from '../screens/scheme/SchemePointDetails';
 import CameraCapture from '../screens/camera/CameraCapture';
 import TargetVsAchievement from '../screens/pointBooster/TargetVsAchievement';
+import BasePoints from '../screens/pointBooster/BasePoints';
 
 
 const Stack = createNativeStackNavigator()
@@ -107,6 +108,11 @@ const StackNavigator = () => {
                         headerShown: false
                     }
                 } name="TargetVsAchievement" component={TargetVsAchievement}></Stack.Screen>
+                <Stack.Screen options={
+                    {
+                        headerShown: false
+                    }
+                } name="BasePoints" component={BasePoints}></Stack.Screen>
                 <Stack.Screen options={
                     {
                         headerShown: false

@@ -660,7 +660,7 @@ export default function Scheme({ navigation }) {
           borderColor: "#DDDDDD",
           elevation: 10,
           
-          backgroundColor: secondaryThemeColor,
+          backgroundColor: ternaryThemeColor,
           borderRadius: 20,
           marginTop: 20,
           alignItems: "center",

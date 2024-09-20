@@ -19,7 +19,7 @@ import DatePicker from "react-native-date-picker";
 import PoppinsTextLeftMedium from "../../components/electrons/customFonts/PoppinsTextLeftMedium";
 
 
-const TargetVsAchievement = ({navigation}) => {
+const BasePoints = () => {
   const [scheme, setScheme] = useState([]);
   const [selectedDataStart, setSelectedDataStart] = useState(new Date());
   const secondaryThemeColor = useSelector(
@@ -187,13 +187,13 @@ const TargetVsAchievement = ({navigation}) => {
              </View>
             </View>
             <View style={{width:'96%',height:1,backgroundColor:'white'}}></View>
-            <View style={{width:'100%',flexDirection:'row',alignItems:'center',justifyContent:'space-between',marginTop:10,padding:6}}>
-              <TouchableOpacity onPress={()=>{
+            <View style={{width:'100%',flexDirection:'row',alignItems:'center',justifyContent:'center',marginTop:10,padding:6}}>
+              {/* <TouchableOpacity onPress={()=>{
                
                 // navigation.navigate("SchemePointDetails",{type:type,data:props.data})
                 }} style={{height:30,width:100,alignItems:'center',justifyContent:'center',backgroundColor:'#171717',borderRadius:10,marginLeft:4}}>
                 <PoppinsTextMedium content="View Points" style={{color:'white'}}></PoppinsTextMedium>
-              </TouchableOpacity>
+              </TouchableOpacity> */}
               {/* <TouchableOpacity style={{height:30,width:100,alignItems:'center',justifyContent:'center',backgroundColor:'#C6280A',borderRadius:10,marginLeft:4}}>
                 <PoppinsTextMedium content="Redeem" style={{color:'white'}}></PoppinsTextMedium>
               </TouchableOpacity> */}
@@ -275,11 +275,11 @@ const TargetVsAchievement = ({navigation}) => {
                 <NewSchemeComponent
                     // data = {item}
                     // key={index}
-                    name={"Super 20-20 Scheme (2024)"}
+                    name={"Base POINTS For The Month Scheme (2024)"}
                     worth={"10000"}
                     coin={10}
                     image={""}
-                    earnedPoints={100}
+                    earnedPoints={400}
                 ></NewSchemeComponent>
             </ScrollView>
         </View>
@@ -290,4 +290,4 @@ const TargetVsAchievement = ({navigation}) => {
 
 const styles = StyleSheet.create({})
 
-export default TargetVsAchievement;
+export default BasePoints;
