@@ -21,6 +21,7 @@ import PoppinsTextLeftMedium from "../../components/electrons/customFonts/Poppin
 
 const TargetVsAchievement = ({navigation}) => {
   const [scheme, setScheme] = useState([]);
+  const [activeScheme, setActiveScheme] = useState()
   const [selectedDataStart, setSelectedDataStart] = useState(new Date());
   const secondaryThemeColor = useSelector(
     (state) => state.apptheme.secondaryThemeColor

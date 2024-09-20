@@ -17,10 +17,11 @@ import Logo from "react-native-vector-icons/AntDesign";
 import moment from "moment";
 import DatePicker from "react-native-date-picker";
 import PoppinsTextLeftMedium from "../../components/electrons/customFonts/PoppinsTextLeftMedium";
+import { useGetBasePointsMutation } from "../../apiServices/pointBooster/basePointsApi";
 
-
-const BasePoints = () => {
+const BasePoints = ({navigation}) => {
   const [scheme, setScheme] = useState([]);
+  const [activeScheme, setActiveScheme] = useState()
   const [selectedDataStart, setSelectedDataStart] = useState(new Date());
   const secondaryThemeColor = useSelector(
     (state) => state.apptheme.secondaryThemeColor
@@ -33,76 +34,110 @@ const BasePoints = () => {
   const height = Dimensions.get("window").height;
   const userData = useSelector(state => state.appusersdata.userData);
 
-    // const FilterSchemeComponent = React.memo((props) => {
-    //     const [openStart, setOpenStart] = useState(false);
+  const [getBasePointsFunc,{
+    data:getBasePointsData,
+    error:getBasePointsError,
+    isLoading:getBasePointsIsLoading,
+    isError:getBasePointsIsError
+  }] = useGetBasePointsMutation()
+
+
+  useEffect(()=>{
+    const getToken=async()=>{
+        const credentials = await Keychain.getGenericPassword();
+    const token = credentials.username;
+    const month = moment(new Date()).format("MM")
+    const year = moment(new Date()).format("YYYY")
+    const appUserId = userData.id
+    console.log("base Point mounted", month,year)
+    const body = {token:token,month:month,year:year,appUserId:appUserId}
+    getBasePointsFunc(body)
+
+    }
+    getToken()
+  },[])
+
+  useEffect(()=>{
+    if(getBasePointsData)
+    {
+        console.log("getBasePointsData",getBasePointsData)
+    }
+    else if(getBasePointsError)
+    {
+        console.log("getBasePointsError",getBasePointsError)
+    }
+  },[getBasePointsData,getBasePointsError])
+
+    const FilterSchemeComponent = React.memo((props) => {
+        const [openStart, setOpenStart] = useState(false);
         
     
-    //     const handleDateChange = (date) => {
-    //       setOpenStart(false);
-    //       setSelectedDataStart(date);
-    //       props.getDate(selectedDataStart);
+        const handleDateChange = (date) => {
+          setOpenStart(false);
+          setSelectedDataStart(date);
+          props.getDate(selectedDataStart);
     
-    //     }
+        }
       
-    //     return (
-    //       <View style={{ alignItems: 'center', justifyContent: 'flex-start', width: '100%', flexDirection: 'row', marginBottom: 10 }}>
-    //         <View
-    //           style={{
-    //             padding: 10,
-    //             width: "90%",
-    //             alignItems: "center",
-    //             justifyContent: "flex-start",
-    //             flexDirection: 'row',
-    //             marginLeft: 20
-    //           }}
-    //         >
-    //           <PoppinsTextMedium
-    //             content={`${moment(selectedDataStart).format("MM/YYYY")}`}
-    //             style={{ fontSize: 16, fontWeight: "700" }}
-    //           />
-    //           <TouchableOpacity
-    //             style={{
-    //               backgroundColor: ternaryThemeColor,
-    //               paddingLeft: 10,
-    //               borderRadius: 6,
-    //               padding: 6,
-    //               marginLeft: 10
-    //             }}
-    //             onPress={() => setOpenStart(!openStart)}
-    //           >
-    //             <DatePicker
-    //               modal
-    //               mode="date"
-    //               open={openStart}
-    //               date={selectedDataStart}
-    //               onConfirm={handleDateChange}
-    //               onCancel={() => setOpenStart(false)}
-    //             />
-    //             <PoppinsTextMedium
-    //               style={{ color: "white", fontWeight: "700" }}
-    //               content=" Select"
-    //             />
-    //           </TouchableOpacity>
-    //         </View>
-    //       </View>
-    //     );
-    //   });
-    //   const getSelectedDates = useCallback((startDate) => {
-    //     // Convert the input start date to a JavaScript Date object
-    //     const inputStartDate = new Date(startDate);
+        return (
+          <View style={{ alignItems: 'center', justifyContent: 'flex-start', width: '100%', flexDirection: 'row', marginBottom: 10 }}>
+            <View
+              style={{
+                padding: 10,
+                width: "90%",
+                alignItems: "center",
+                justifyContent: "flex-start",
+                flexDirection: 'row',
+                marginLeft: 20
+              }}
+            >
+              <PoppinsTextMedium
+                content={`${moment(selectedDataStart).format("MM/YYYY")}`}
+                style={{ fontSize: 16, fontWeight: "700" }}
+              />
+              <TouchableOpacity
+                style={{
+                  backgroundColor: ternaryThemeColor,
+                  paddingLeft: 10,
+                  borderRadius: 6,
+                  padding: 6,
+                  marginLeft: 10
+                }}
+                onPress={() => setOpenStart(!openStart)}
+              >
+                <DatePicker
+                  modal
+                  mode="date"
+                  open={openStart}
+                  date={selectedDataStart}
+                  onConfirm={handleDateChange}
+                  onCancel={() => setOpenStart(false)}
+                />
+                <PoppinsTextMedium
+                  style={{ color: "white", fontWeight: "700" }}
+                  content=" Select"
+                />
+              </TouchableOpacity>
+            </View>
+          </View>
+        );
+      });
+      const getSelectedDates = useCallback((startDate) => {
+        // Convert the input start date to a JavaScript Date object
+        const inputStartDate = new Date(startDate);
       
-    //     // Filter the data based on the start date
-    //     const filteredData = scheme?.filter(item => {
-    //       const itemStartDate = new Date(item.start_date);
-    //       console.log("getSelectedDate function", itemStartDate,inputStartDate)
+        // Filter the data based on the start date
+        const filteredData = scheme?.filter(item => {
+          const itemStartDate = new Date(item.start_date);
+          console.log("getSelectedDate function", itemStartDate,inputStartDate)
       
-    //       // Check if the item's start date is greater than or equal to the input start date
-    //       return itemStartDate >= inputStartDate;
-    //     });
+          // Check if the item's start date is greater than or equal to the input start date
+          return itemStartDate >= inputStartDate;
+        });
       
-    //     console.log("filteredData", filteredData, startDate);
-    //     setActiveScheme(filteredData);
-    //   }, [setActiveScheme]);
+        console.log("filteredData", filteredData, startDate);
+        setActiveScheme(filteredData);
+      }, [setActiveScheme]);
 
     const NewSchemeComponent =(props)=>{
         const image = props.image;
@@ -197,7 +232,7 @@ const BasePoints = () => {
               {/* <TouchableOpacity style={{height:30,width:100,alignItems:'center',justifyContent:'center',backgroundColor:'#C6280A',borderRadius:10,marginLeft:4}}>
                 <PoppinsTextMedium content="Redeem" style={{color:'white'}}></PoppinsTextMedium>
               </TouchableOpacity> */}
-              <TouchableOpacity style={{height:30,alignItems:'center',justifyContent:'center',backgroundColor:'#2F40DE',borderRadius:10,marginLeft:4,padding:4}}>
+              <TouchableOpacity style={{height:30,alignItems:'center',justifyContent:'center',backgroundColor:'#2F40DE',borderRadius:10,marginLeft:4,paddingLeft:8,paddingRight:8}}>
                 <PoppinsTextMedium content="View Scheme PDF" style={{color:'white'}}></PoppinsTextMedium>
               </TouchableOpacity>
             </View>
@@ -246,7 +281,7 @@ const BasePoints = () => {
           ></Image>
         </TouchableOpacity>
         <PoppinsTextMedium
-          content="Focus Brands"
+          content="Base Points"
           style={{
             marginLeft: 10,
             fontSize: 16,
@@ -270,12 +305,12 @@ const BasePoints = () => {
       >
        
         
-        {/* {<FilterSchemeComponent getDate = {getSelectedDates}></FilterSchemeComponent>} */}
+        {<FilterSchemeComponent getDate = {getSelectedDates}></FilterSchemeComponent>}
         <ScrollView contentContainerStyle={{alignItems:'center',justifyContent:'center'}} style={{ width: "100%" }}>
                 <NewSchemeComponent
-                    // data = {item}
+                    data = {item}
                     // key={index}
-                    name={"Base POINTS For The Month Scheme (2024)"}
+                    name={"Base points For The Month Scheme (2024)"}
                     worth={"10000"}
                     coin={10}
                     image={""}
