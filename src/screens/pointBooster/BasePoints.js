@@ -61,6 +61,7 @@ const BasePoints = ({navigation}) => {
     if(getBasePointsData)
     {
         console.log("getBasePointsData",getBasePointsData)
+        
     }
     else if(getBasePointsError)
     {
@@ -145,7 +146,11 @@ const BasePoints = ({navigation}) => {
         const worth = props.worth;
         // const earnedPoints = props?.data?.point_earned ? props?.data?.point_earned : 0;
         const coin = props.coin;
+        const startDate = moment(new Date()).format("MM-YYYY")
+        const endDate = moment(new Date()).format("MM-YYYY")
+
         // const type = props.data.trigger_key
+        console.log("NewSchemeComponent",props.data)
         return (
           <View style={{height:180,width:'90%',alignItems:'center',justifyContent:'flex-start',backgroundColor:secondaryThemeColor,borderRadius:20,marginTop:20}}>
             <View style={{height:'60%',width:'100%',flexDirection:'row',alignItems:'flex-start',justifyContent:'flex-start',marginTop:10}}>
@@ -192,31 +197,31 @@ const BasePoints = ({navigation}) => {
                 style={{ color: "white", fontSize: 12, fontWeight: "500" }}
                 content={"Total Earn Points"}
               ></PoppinsTextMedium>
-              {/* <PoppinsTextMedium
+              <PoppinsTextMedium
                 style={{ color: "white", fontSize: 12, fontWeight: "500",marginLeft:'60%' }}
-                content={earnedPoints}
-              ></PoppinsTextMedium> */}
+                content={props.data.points}
+              ></PoppinsTextMedium>
               </View>
-              <View style={{width:'100%',alignItems:'flex-start',paddingBottom:6,flexDirection:"row",marginTop:4}}>
+              <View style={{width:'100%',alignItems:'flex-start',paddingBottom:6,flexDirection:"row",marginTop:4,marginBottom:10}}>
                 <View style={{alignItems:'flex-start',justifyContent:'center',width:'50%'}}>
                 <PoppinsTextMedium
                 style={{ color: "white", fontSize: 12, fontWeight: "600" }}
                 content={"Start Date"}
               ></PoppinsTextMedium>
-               {/* <PoppinsTextMedium
+               <PoppinsTextMedium
                 style={{ color: "white", fontSize: 12, fontWeight: "600" }}
-                content={props.data.start_date}
-              ></PoppinsTextMedium> */}
+                content={startDate}
+              ></PoppinsTextMedium>
                 </View>
                 <View style={{alignItems:'flex-end',justifyContent:'center',width:'50%'}}>
                 <PoppinsTextMedium
                 style={{ color: "white", fontSize: 12, fontWeight: "600" }}
                 content={"End Date"}
               ></PoppinsTextMedium>
-               {/* <PoppinsTextMedium
+               <PoppinsTextMedium
                 style={{ color: "white", fontSize: 12, fontWeight: "600" }}
-                content={props.data.end_date}
-              ></PoppinsTextMedium> */}
+                content={endDate}
+              ></PoppinsTextMedium>
                 </View>
               </View>
              </View>
@@ -232,7 +237,9 @@ const BasePoints = ({navigation}) => {
               {/* <TouchableOpacity style={{height:30,width:100,alignItems:'center',justifyContent:'center',backgroundColor:'#C6280A',borderRadius:10,marginLeft:4}}>
                 <PoppinsTextMedium content="Redeem" style={{color:'white'}}></PoppinsTextMedium>
               </TouchableOpacity> */}
-              <TouchableOpacity style={{height:30,alignItems:'center',justifyContent:'center',backgroundColor:'#2F40DE',borderRadius:10,marginLeft:4,paddingLeft:8,paddingRight:8}}>
+              <TouchableOpacity onPress={()=>{
+               navigation.navigate('PdfComponent', { pdf: getBasePointsData?.body?.pdf })
+              }} style={{height:30,alignItems:'center',justifyContent:'center',backgroundColor:'#2F40DE',borderRadius:10,marginLeft:4,paddingLeft:8,paddingRight:8}}>
                 <PoppinsTextMedium content="View Scheme PDF" style={{color:'white'}}></PoppinsTextMedium>
               </TouchableOpacity>
             </View>
@@ -307,15 +314,14 @@ const BasePoints = ({navigation}) => {
         
         {<FilterSchemeComponent getDate = {getSelectedDates}></FilterSchemeComponent>}
         <ScrollView contentContainerStyle={{alignItems:'center',justifyContent:'center'}} style={{ width: "100%" }}>
-                <NewSchemeComponent
-                    data = {item}
-                    // key={index}
+                {getBasePointsData && <NewSchemeComponent
+                    data = {getBasePointsData?.body}
                     name={"Base points For The Month Scheme (2024)"}
                     worth={"10000"}
                     coin={10}
                     image={""}
                     earnedPoints={400}
-                ></NewSchemeComponent>
+                ></NewSchemeComponent>}
             </ScrollView>
         </View>
         </View>

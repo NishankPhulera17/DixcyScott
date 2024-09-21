@@ -95,9 +95,9 @@ const DashboardMenuBox=(props)=>{
             })
             
         }
-                    <MenuItems handlePress={handleMenuItemPress} key={dataa.length+1} image={"https://picsum.photos/200"} content={"Focus Brand"}></MenuItems>
+                    {/* <MenuItems handlePress={handleMenuItemPress} key={dataa.length+1} image={"https://picsum.photos/200"} content={"Focus Brand"}></MenuItems>
                     <MenuItems handlePress={handleMenuItemPress} key={dataa.length+2} image={"https://picsum.photos/200"} content={"Base Points"}></MenuItems>
-                    <MenuItems handlePress={handleMenuItemPress} key={dataa.length+3} image={"https://picsum.photos/200"} content={"Bonus Points"}></MenuItems>
+                    <MenuItems handlePress={handleMenuItemPress} key={dataa.length+3} image={"https://picsum.photos/200"} content={"Bonus Points"}></MenuItems> */}
         
         </View>
         </View>
