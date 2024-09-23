@@ -89,6 +89,9 @@ import SchemePointDetails from '../screens/scheme/SchemePointDetails';
 import CameraCapture from '../screens/camera/CameraCapture';
 import TargetVsAchievement from '../screens/pointBooster/TargetVsAchievement';
 import BasePoints from '../screens/pointBooster/BasePoints';
+import BonusPoints from '../screens/pointBooster/BonusPoints';
+import TargetAchievementDetails from '../screens/scheme/TargetAchievementDetails';
+
 
 
 const Stack = createNativeStackNavigator()
@@ -154,6 +157,16 @@ const StackNavigator = () => {
                         headerShown: false
                     }
                 } name="EnableCameraScreen" component={EnableCameraScreen}></Stack.Screen>
+                                <Stack.Screen options={
+                    {
+                        headerShown: false
+                    }
+                } name="BonusPoints" component={BonusPoints}></Stack.Screen>
+                                      <Stack.Screen options={
+                    {
+                        headerShown: false
+                    }
+                } name="TargetAchievementDetails" component={TargetAchievementDetails}></Stack.Screen>
                 <Stack.Screen options={
                     {
                         headerShown: false

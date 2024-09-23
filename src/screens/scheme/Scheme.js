@@ -532,7 +532,7 @@ export default function Scheme({ navigation }) {
             />
             <PoppinsTextMedium
               style={{ color: "white", fontWeight: "700" }}
-              content=" Select"
+              content="Select Date"
             />
           </TouchableOpacity>
         </View>
@@ -549,8 +549,9 @@ export default function Scheme({ navigation }) {
     const earnedPoints = props?.data?.point_earned ? props?.data?.point_earned : 0;
     const coin = props.coin;
     const type = props.data.trigger_key
+    console.log("active scheme", props.data.pdf)
     return (
-      <View style={{height:180,width:'90%',alignItems:'center',justifyContent:'flex-start',backgroundColor:secondaryThemeColor,borderRadius:20,marginTop:20}}>
+      <View style={{height:180,width:'90%',alignItems:'center',justifyContent:'flex-start',backgroundColor:ternaryThemeColor,borderRadius:20,marginTop:20}}>
         <View style={{height:'60%',width:'100%',flexDirection:'row',alignItems:'flex-start',justifyContent:'flex-start',marginTop:10}}>
         <View
             style={{
@@ -561,26 +562,26 @@ export default function Scheme({ navigation }) {
               justifyContent: "center",   
             }}
           >
-            <View
-            style={{
-              height: 65,
-              width: 65,
-              borderRadius: 10,
-              alignItems: "center",
-              justifyContent: "center",
-              borderWidth: 1,
-              borderColor: "white",
-            }}
-          >
-            <Image
+                 <View
               style={{
                 height: 65,
                 width: 65,
-                resizeMode: "contain",
                 borderRadius: 10,
+                alignItems: "center",
+                justifyContent: "center",
+                //   borderWidth: 1,
+                borderColor: "white",
               }}
-              source={{ uri: props.data?.image }}
-            ></Image>
+            >
+              <Image
+                style={{
+                  height: 65,
+                  width: 65,
+                  resizeMode: "contain",
+                  borderRadius: 10,
+                }}
+                source={require("../../../assets/images/giftBlue.png")}
+              ></Image>
             </View>
           </View>
          <View style={{width:'70%',alignItems:'flex-start',justifyContent:'center'}}>
@@ -629,13 +630,15 @@ export default function Scheme({ navigation }) {
           <TouchableOpacity onPress={()=>{
            
             navigation.navigate("SchemePointDetails",{type:type,data:props.data})
-            }} style={{height:30,width:100,alignItems:'center',justifyContent:'center',backgroundColor:'#171717',borderRadius:10,marginLeft:4}}>
+            }} style={{height:30,width:100,alignItems:'center',justifyContent:'center',backgroundColor:'#C6280A',borderRadius:30,marginLeft:4}}>
             <PoppinsTextMedium content="View Points" style={{color:'white'}}></PoppinsTextMedium>
           </TouchableOpacity>
-          <TouchableOpacity style={{height:30,width:100,alignItems:'center',justifyContent:'center',backgroundColor:'#C6280A',borderRadius:10,marginLeft:4}}>
+          {/* <TouchableOpacity style={{height:30,width:100,alignItems:'center',justifyContent:'center',backgroundColor:'#2F40DE',borderRadius:30,marginLeft:4}}>
             <PoppinsTextMedium content="Redeem" style={{color:'white'}}></PoppinsTextMedium>
-          </TouchableOpacity>
-          <TouchableOpacity style={{height:30,width:100,alignItems:'center',justifyContent:'center',backgroundColor:'#2F40DE',borderRadius:10,marginLeft:4}}>
+          </TouchableOpacity> */}
+          <TouchableOpacity onPress={()=>{
+                  navigation.navigate('PdfComponent', { pdf: props.data.pdf })
+          }} style={{height:30,width:100,alignItems:'center',justifyContent:'center',backgroundColor:'#000',borderRadius:30,marginLeft:4}}>
             <PoppinsTextMedium content="View PDF" style={{color:'white'}}></PoppinsTextMedium>
           </TouchableOpacity>
         </View>

@@ -113,7 +113,7 @@ const TargetVsAchievement = ({navigation}) => {
         const coin = props.coin;
         // const type = props.data.trigger_key
         return (
-          <View style={{height:180,width:'90%',alignItems:'center',justifyContent:'flex-start',backgroundColor:secondaryThemeColor,borderRadius:20,marginTop:20}}>
+          <View style={{height:180,width:'90%',alignItems:'center',justifyContent:'flex-start',backgroundColor:ternaryThemeColor,borderRadius:20,marginTop:20}}>
             <View style={{height:'60%',width:'100%',flexDirection:'row',alignItems:'flex-start',justifyContent:'flex-start',marginTop:10}}>
             <View
                 style={{
@@ -124,27 +124,27 @@ const TargetVsAchievement = ({navigation}) => {
                   justifyContent: "center",   
                 }}
               >
-                <View
+                  <View
+              style={{
+                height: 65,
+                width: 65,
+                borderRadius: 10,
+                alignItems: "center",
+                justifyContent: "center",
+                //   borderWidth: 1,
+                borderColor: "white",
+              }}
+            >
+              <Image
                 style={{
                   height: 65,
                   width: 65,
+                  resizeMode: "contain",
                   borderRadius: 10,
-                  alignItems: "center",
-                  justifyContent: "center",
-                  borderWidth: 1,
-                  borderColor: "white",
                 }}
-              >
-                <Image
-                  style={{
-                    height: 65,
-                    width: 65,
-                    resizeMode: "contain",
-                    borderRadius: 10,
-                  }}
-                  source={{ uri: props.data?.image }}
-                ></Image>
-                </View>
+                source={require("../../../assets/images/giftBlue.png")}
+              ></Image>
+            </View>
               </View>
              <View style={{width:'70%',alignItems:'flex-start',justifyContent:'center'}}>
               <View style={{width:'100%',borderColor:'white',borderBottomWidth:1,alignItems:'flex-start',paddingBottom:4}}>
@@ -191,14 +191,17 @@ const TargetVsAchievement = ({navigation}) => {
             <View style={{width:'100%',flexDirection:'row',alignItems:'center',justifyContent:'space-between',marginTop:10,padding:6}}>
               <TouchableOpacity onPress={()=>{
                
-                // navigation.navigate("SchemePointDetails",{type:type,data:props.data})
-                }} style={{height:30,width:100,alignItems:'center',justifyContent:'center',backgroundColor:'#171717',borderRadius:10,marginLeft:4}}>
+                navigation.navigate("TargetAchievementDetails",{type:"20-20",data:props.data})
+                }} style={{height:30,width:100,alignItems:'center',justifyContent:'center',backgroundColor:'#C6280A',borderRadius:30,marginLeft:4}}>
                 <PoppinsTextMedium content="View Points" style={{color:'white'}}></PoppinsTextMedium>
               </TouchableOpacity>
               {/* <TouchableOpacity style={{height:30,width:100,alignItems:'center',justifyContent:'center',backgroundColor:'#C6280A',borderRadius:10,marginLeft:4}}>
                 <PoppinsTextMedium content="Redeem" style={{color:'white'}}></PoppinsTextMedium>
               </TouchableOpacity> */}
-              <TouchableOpacity style={{height:30,alignItems:'center',justifyContent:'center',backgroundColor:'#2F40DE',borderRadius:10,marginLeft:4,padding:4}}>
+              <TouchableOpacity onPress={()=>{
+                   navigation.navigate('PdfComponent', { pdf: "https://genefied-saas-partner-staging.s3.ap-south-1.amazonaws.com/Mask+Group+64.pdf" })
+              }}
+               style={{height:30,alignItems:'center',justifyContent:'center',backgroundColor:'#000',borderRadius:30,marginLeft:4,padding:4, paddingHorizontal:20}}>
                 <PoppinsTextMedium content="View Scheme PDF" style={{color:'white'}}></PoppinsTextMedium>
               </TouchableOpacity>
             </View>

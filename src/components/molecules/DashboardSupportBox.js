@@ -26,6 +26,10 @@ const handleNavigation=()=>{
     {
         navigation.navigate('HelpAndSupport')
     }
+    else if(text ==="product")
+        {
+            navigation.navigate('ProductCatalogue')
+        }
 }
 
     return (

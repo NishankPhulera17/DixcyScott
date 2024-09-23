@@ -17,7 +17,7 @@ import DatePicker from "react-native-date-picker";
 import { useGetSalesBoosterOrderMutation } from "../../apiServices/salesBooster/salesBoosterApi";
 import * as Keychain from "react-native-keychain";
 
-const SchemePointDetails = ({ navigation, route }) => {
+const TargetAchievementDetails = ({ navigation, route }) => {
   const [selectedDataStart, setSelectedDataStart] = useState(new Date());
   const [searchTitle, setSearchTitle] = useState();
   const type = route.params.type;
@@ -102,6 +102,165 @@ const SchemePointDetails = ({ navigation, route }) => {
   }, [getSalesBoosterOrderData, getSalesBoosterOrderError]);
 
   console.log("selected date", selectedDataStart);
+
+
+  const Show2020Details = (props) => {
+    let demoData = [{
+      boxes: "20",
+      "purchaged":"0",
+      "gift":"0"
+  },
+  {
+    boxes: "40",
+    "purchaged":"",
+    "gift":""
+},
+{
+  boxes: "60",
+  "purchaged":"",
+  "gift":""
+},
+]
+
+  
+    const data = props.data ? props.data : demoData;
+
+
+    console.log("2020Data", data);
+    const CategoryTab = (props) => {
+      const index = props.index;
+      const brand = props.brand;
+      const style = props.style;
+      const points = props.points;
+      const matched = props.matched;
+      const item = props.item
+      return (
+        <View
+          style={{
+            width: "100%",
+            alignItems: "center",
+            justifyContent: "center",
+            marginTop: 10,
+          }}
+        >
+          <View
+            style={{
+              width: "100%",
+              alignItems: "center",
+              justifyContent: "space-evenly",
+              flexDirection: "row",
+              // backgroundColor: matched ? "#5CA509" : "#C6280A",
+              backgroundColor:'white',
+              height: 36,
+              borderWidth:0.3,
+            }}
+          >
+            <PoppinsTextMedium
+              style={{
+                fontWeight: "600",
+                fontSize: 14,
+                color: "black",
+                width: "13%",
+              }}
+              content={item?.boxes}
+            ></PoppinsTextMedium>
+            <PoppinsTextMedium
+              style={{
+                fontWeight: "600",
+                fontSize: 14,
+                color: "black",
+                width: "63%",
+              }}
+              content={item.purchaged}
+            ></PoppinsTextMedium>
+
+            <View
+              style={{ height: "100%", width: 2, backgroundColor: "white" }}
+            ></View>
+
+            <PoppinsTextMedium
+              style={{
+                fontWeight: "600",
+                fontSize: 14,
+                color: "black",
+                width: "20%",
+              }}
+              content={item.gift}
+            ></PoppinsTextMedium>
+          </View>
+        </View>
+      );
+    };
+    return (
+      <View
+        style={{
+          width: "90%",
+          alignItems: "center",
+          justifyContent: "center",
+          marginTop: 20,
+        }}
+      >
+        <View
+          style={{
+            width: "100%",
+            alignItems: "center",
+            justifyContent: "space-evenly",
+            flexDirection: "row",
+            backgroundColor: ternaryThemeColor,
+            height: 50,
+          }}
+        >
+          <PoppinsTextMedium
+            style={{
+              fontWeight: "800",
+              fontSize: 15,
+              color: "white",
+              width: "17%",
+              // padding:5,
+            }}
+            content="Combo Boxes Qty"
+          ></PoppinsTextMedium>
+          <PoppinsTextMedium
+            style={{
+              fontWeight: "800",
+              fontSize: 15,
+              color: "white",
+              width: "63%",
+            }}
+            content="Boxes Purchased"
+          ></PoppinsTextMedium>
+          <View
+            style={{ height: "100%", width: 2, backgroundColor: "white" }}
+          ></View>
+          <PoppinsTextMedium
+            style={{
+              fontWeight: "800",
+              fontSize: 15,
+              color: "white",
+              width: "20%",
+            }}
+            content="Gift Earned"
+          ></PoppinsTextMedium>
+        </View>
+
+        {demoData.map((item, index) => {
+          return (
+            <CategoryTab
+              key={index}
+              index={index + 1}
+              matched={item.matched}
+              points={item.points}
+              style={item.name}
+              brand={item.brand}
+              item = {item}
+            ></CategoryTab>
+          );
+        })}
+      </View>
+    );
+  };
+
+
 
   const ShowDoneCategoriesTable = (props) => {
     const data = props.data;
@@ -233,17 +392,17 @@ const SchemePointDetails = ({ navigation, route }) => {
       </View>
     );
   };
-
+  
   const ShowBoxDetails = (props) => {
     const [total, setTotal] = useState(0);
-    const noBox = props.noBox;
-    const data = props.data;
+    const noBox = props?.noBox;
+    const data = data ? props?.data : [];
 
     console.log("ShowBoxDetails", data);
 
     useEffect(() => {
       let sum = 0;
-      for (var i = 0; i < data.length; i++) {
+      for (var i = 0; i < data?.length; i++) {
         console.log("useEffect showBoxDetails", data[i]["total_boxes"]);
         if (data[i]["total_boxes"]) sum += Number(data[i]["total_boxes"]);
       }
@@ -736,7 +895,7 @@ const SchemePointDetails = ({ navigation, route }) => {
       <View
         style={{
           alignItems: "center",
-          justifyContent: "center",
+          // justifyContent: "center",
           width: "100%",
           backgroundColor: ternaryThemeColor,
           height: "100%",
@@ -768,6 +927,7 @@ const SchemePointDetails = ({ navigation, route }) => {
               source={require("../../../assets/images/blackBack.png")}
             ></Image>
           </TouchableOpacity>
+          
           <PoppinsTextMedium
             content="View Points"
             style={{
@@ -784,29 +944,31 @@ const SchemePointDetails = ({ navigation, route }) => {
             borderTopRightRadius: 30,
             borderTopLeftRadius: 30,
             backgroundColor: "white",
-            marginTop: 10,
-            alignItems: "center",
-            justifyContent: "flex-start",
+            marginTop: 0,
+            justifyContent:'flex-start',
             width: "100%",
             paddingBottom: 10,
-            height: "90%",
+            height: "100%",
           }}
         >
-          <FilterScheme title={"Sub-Category Purchase For"}></FilterScheme>
-          <View style={{ width: "90%", height: "30%" }}>
+          <Text style={{marginTop:20, fontWeight:'bold', fontSize:20, color:'black', marginLeft:20}}>Super 20-20 for 2024</Text>
+          {/* <FilterScheme title={"Super 20-20 for 2024"}></FilterScheme> */}
+          {/* <View style={{ width: "90%", height: "30%" }}>
             {getSalesBoosterOrderData && type == "target category" && (
               <ShowCategoryTable
                 data={getSalesBoosterOrderData.body.triggers}
               ></ShowCategoryTable>
             )}
-            {getSalesBoosterOrderData && type == "purchase limit" && (
+            {type == "purchase limit" && (
               <ShowBoxDetails
-                data={getSalesBoosterOrderData.body.triggers}
+                data={getSalesBoosterOrderData?.body.triggers}
               ></ShowBoxDetails>
             )}
-          </View>
+          </View> */}
+
           <ScrollView
-            contentContainerStyle={{ alignItems: "center", width: "100%" }}
+          // style={{backgroundColor:'red'}}
+            contentContainerStyle={{ alignItems: "center", width: "100%",}}
           >
             {getSalesBoosterOrderData && type == "target category" && (
               <ShowDoneCategoriesTable
@@ -814,10 +976,10 @@ const SchemePointDetails = ({ navigation, route }) => {
               ></ShowDoneCategoriesTable>
             )}
 
-            {getSalesBoosterOrderData && type == "20-20" && (
-              <ShowDoneCategoriesTable
-                data={getSalesBoosterOrderData.body?.ranges}
-              ></ShowDoneCategoriesTable>
+            {true && type == "20-20" && (
+              <Show2020Details
+                data={getSalesBoosterOrderData?.body?.ranges}
+              ></Show2020Details>
             )}
           </ScrollView>
         </View>
@@ -828,4 +990,4 @@ const SchemePointDetails = ({ navigation, route }) => {
 
 const styles = StyleSheet.create({});
 
-export default SchemePointDetails;
+export default TargetAchievementDetails;

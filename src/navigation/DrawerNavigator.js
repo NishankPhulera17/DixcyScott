@@ -519,7 +519,7 @@ const CustomDrawer = () => {
         </View>
         <PoppinsTextMedium content={`Version : ${currentVersion}`} style={{ position: 'absolute', bottom: 4, right: 10, color: 'white', fontSize: 12 }}></PoppinsTextMedium>
       </View>
-      <ScrollView contentContainerStyle={{}} style={{ width: '100%', height: '100%' }} >
+      <ScrollView contentContainerStyle={{backgroundColor:'white'}} style={{ width: '100%', height: '100%',backgroundColor:'white'}} >
 
         {
           drawerData !== undefined && drawerData.app_menu.map((item, index) => {
@@ -823,18 +823,18 @@ const CustomDrawer = () => {
         </View> */}
         {/* Knowledge Hub*/}
 
-        <TouchableOpacity style={{ backgroundColor: ternaryThemeColor, height: 70, justifyContent: 'center', width: '100%', alignItems: 'center' }} onPress={() => {
-
-          handleLogout()
-
-
-        }}>
-          <PoppinsTextLeftMedium style={{ color: 'white' }} content={t("LOG OUT")}></PoppinsTextLeftMedium>
-        <PoppinsTextLeftMedium style={{color:'white',fontSize:10,position:'absolute',bottom:2}} content ="Designed and developed by Genefied"></PoppinsTextLeftMedium>
-
-        </TouchableOpacity>
       </ScrollView>
 
+      <TouchableOpacity style={{ backgroundColor: ternaryThemeColor, height: 70, justifyContent: 'center', width: '100%', alignItems: 'center' }} onPress={() => {
+
+handleLogout()
+
+
+}}>
+<PoppinsTextLeftMedium style={{ color: 'white' }} content={t("LOG OUT")}></PoppinsTextLeftMedium>
+<PoppinsTextLeftMedium style={{color:'white',fontSize:10,position:'absolute',bottom:2}} content ="Designed and developed by Genefied"></PoppinsTextLeftMedium>
+
+</TouchableOpacity>
 
 
     </View>

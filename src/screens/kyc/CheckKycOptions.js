@@ -26,6 +26,7 @@ import Icon from 'react-native-vector-icons/Feather';
 import Close from 'react-native-vector-icons/Ionicons';
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import LeftIcon from 'react-native-vector-icons/AntDesign'
+import ButtonOval from "../../components/atoms/buttons/ButtonOval";
 
 const CheckKycOptions = ({navigation,route}) => {
   const [checked, setChecked] = React.useState();
@@ -323,7 +324,7 @@ const CheckKycOptions = ({navigation,route}) => {
 
   const ModalContent = () => {
     return (
-      <View style={{ width: '100%', alignItems: "center", justifyContent: "center",height:'100%' }}>
+      <View style={{ width: '100%', alignItems: "center", justifyContent: "center",}}>
         <ScrollView contentContainerStyle={{ marginTop: 10, alignItems: 'center', maxWidth: '96%',marginTop:40 }}>
          
           <PoppinsTextMedium style={{ fontSize: 20, fontWeight: '800', color: ternaryThemeColor, marginLeft: 5, marginTop: 5 }} content={"Legal Notice & Consent - During validation of Aadhaar, PAN & GSTIN"}></PoppinsTextMedium>
@@ -334,9 +335,9 @@ const CheckKycOptions = ({navigation,route}) => {
           
 
 
-          {/* <View style={{ alignItems: 'center', marginBottom: 30 }}>
+          <View style={{ alignItems: 'center', marginBottom: 30 }}>
             <ButtonOval handleOperation={modalWithBorderClose} backgroundColor="#000000" content="OK" style={{ color: 'white', paddingVertical: 4 }} />
-          </View> */}
+          </View>
 
         </ScrollView>
 
