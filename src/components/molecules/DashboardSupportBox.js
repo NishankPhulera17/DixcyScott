@@ -30,6 +30,10 @@ const handleNavigation=()=>{
         {
             navigation.navigate('ProductCatalogue')
         }
+        else if(text ==="media")
+            {
+                navigation.navigate('VideoGallery')
+            }
 }
 
     return (

@@ -136,59 +136,70 @@ const TargetAchievementDetails = ({ navigation, route }) => {
       const item = props.item
       return (
         <View
-          style={{
-            width: "100%",
-            alignItems: "center",
-            justifyContent: "center",
-            marginTop: 10,
-          }}
-        >
-          <View
-            style={{
-              width: "100%",
-              alignItems: "center",
-              justifyContent: "space-evenly",
-              flexDirection: "row",
-              // backgroundColor: matched ? "#5CA509" : "#C6280A",
-              backgroundColor:'white',
-              height: 36,
-              borderWidth:0.3,
-            }}
-          >
-            <PoppinsTextMedium
-              style={{
-                fontWeight: "600",
-                fontSize: 14,
-                color: "black",
-                width: "13%",
-              }}
-              content={item?.boxes}
-            ></PoppinsTextMedium>
-            <PoppinsTextMedium
-              style={{
-                fontWeight: "600",
-                fontSize: 14,
-                color: "black",
-                width: "63%",
-              }}
-              content={item.purchaged}
-            ></PoppinsTextMedium>
+  style={{
+    width: "100%",
+    alignItems: "center",
+    justifyContent: "center",
+    // marginTop: 10,
+    borderWidth: 0.54, // Add border to the outer container
+    borderColor: "black",
+  }}
+>
+  <View
+    style={{
+      width: "100%",
+      alignItems: "center",
+      justifyContent: "space-evenly",
+      flexDirection: "row",
+      backgroundColor: "white",
+      height: 36,
+    }}
+  >
+    {/* First column (Boxes) */}
+    <PoppinsTextMedium
+      style={{
+        fontWeight: "600",
+        fontSize: 14,
+        color: "black",
+        width: "40%",
+        textAlign: "center", // Center the text
+        borderRightWidth: 1, // Add right border
+        borderColor: "black",
+        paddingVertical: 8, // Adjust for better vertical alignment
+      }}
+      content={item?.boxes}
+    />
 
-            <View
-              style={{ height: "100%", width: 2, backgroundColor: "white" }}
-            ></View>
+    {/* Second column (Purchased) */}
+    <PoppinsTextMedium
+      style={{
+        fontWeight: "600",
+        fontSize: 14,
+        color: "black",
+        width: "54%",
+        textAlign: "center", // Center the text
+        borderRightWidth: 1, // Add right border
+        borderColor: "black",
+        paddingVertical: 8, // Adjust for better vertical alignment
+      }}
+      content={item.purchaged}
+    />
 
-            <PoppinsTextMedium
-              style={{
-                fontWeight: "600",
-                fontSize: 14,
-                color: "black",
-                width: "20%",
-              }}
-              content={item.gift}
-            ></PoppinsTextMedium>
-          </View>
-        </View>
+    {/* Third column (Gift) */}
+    <PoppinsTextMedium
+      style={{
+        fontWeight: "600",
+        fontSize: 14,
+        color: "black",
+        width: "40%",
+        textAlign: "center", // Center the text
+        paddingVertical: 8, // Adjust for better vertical alignment
+      }}
+      content={item.gift}
+    />
+  </View>
+</View>
+   
       );
     };
     return (
@@ -213,29 +224,30 @@ const TargetAchievementDetails = ({ navigation, route }) => {
           <PoppinsTextMedium
             style={{
               fontWeight: "800",
-              fontSize: 15,
+              fontSize: 13,
               color: "white",
-              width: "17%",
+              width: "28%",
               // padding:5,
+
             }}
             content="Combo Boxes Qty"
           ></PoppinsTextMedium>
           <PoppinsTextMedium
             style={{
               fontWeight: "800",
-              fontSize: 15,
+              fontSize: 13,
               color: "white",
-              width: "63%",
+              width: "37%",
             }}
             content="Boxes Purchased"
           ></PoppinsTextMedium>
           <View
-            style={{ height: "100%", width: 2, backgroundColor: "white" }}
+            style={{ height: "100%", width: 2, }}
           ></View>
           <PoppinsTextMedium
             style={{
               fontWeight: "800",
-              fontSize: 15,
+              fontSize: 13,
               color: "white",
               width: "20%",
             }}

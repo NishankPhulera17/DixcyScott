@@ -33,6 +33,7 @@ const CheckKycOptions = ({navigation,route}) => {
   const [gotShopImage, setGotShopImage] = useState(false);
   const [shopData, setShopData] = useState()
   const [openModalWithBorder, setModalWithBorder] = useState(false)
+  const [openModalWithBorderSuccess, setModalWithBorderSuccess] = useState(false);
   const [message, setMessage] = useState("")
   const [showOptions, setShowOptions] = useState(false)
   const [clickedSubmit, setClickedSubmit] = useState(true)
@@ -226,6 +227,36 @@ const CheckKycOptions = ({navigation,route}) => {
     storeData(temp)
   }
 
+  const ModalContentSuccess = () => {
+    return (
+      <View style={{ width: '100%', alignItems: "center", justifyContent: "center" }}>
+        <View style={{ marginTop: 30, alignItems: 'center', maxWidth: '80%' }}>
+          <Icon name="check-circle" size={53} color={ternaryThemeColor} />
+          <PoppinsTextMedium style={{ fontSize: 27, fontWeight: '600', color: ternaryThemeColor, marginLeft: 5, marginTop: 5 }} content={"Success ! !"}></PoppinsTextMedium>
+          
+          <ActivityIndicator size={'small'} animating={true} color={ternaryThemeColor} />
+
+          <View style={{ marginTop: 10, marginBottom: 30 }}>
+            <PoppinsTextMedium style={{ fontSize: 16, fontWeight: '600', color: "#000000", marginLeft: 5, marginTop: 5, }} content={"Congratulation, Your account has been succesfully updated."}></PoppinsTextMedium>
+          </View>
+
+
+          {/* <View style={{ alignItems: 'center', marginBottom: 30 }}>
+            <ButtonOval handleOperation={modalWithBorderClose} backgroundColor="#000000" content="OK" style={{ color: 'white', paddingVertical: 4 }} />
+          </View> */}
+
+        </View>
+
+        <TouchableOpacity style={[{
+          backgroundColor: ternaryThemeColor, padding: 6, borderRadius: 5, position: 'absolute', top: -10, right: -10,
+        }]} onPress={modalClose} >
+          <Close name="close" size={17} color="#ffffff" />
+        </TouchableOpacity>
+
+      </View>
+    )
+  }
+
   const submitKycData =async()=>{
     let tempData = {}
     const credentials = await Keychain.getGenericPassword();
@@ -316,10 +347,25 @@ const CheckKycOptions = ({navigation,route}) => {
   const modalWithBorderClose = () => {
     setModalWithBorder(false);
     setMessage('')
-    navigation.navigate("Dashboard")
+
+    setTimeout(()=>{
+      setModalWithBorderSuccess(true)
+    },1000)
+
+    setTimeout(()=>{
+      navigation.navigate("Dashboard")
+      setModalWithBorderSuccess(false)
+    },2000)
+
 
     
     
+  };
+
+  const modalWithBorderSuccessClose = () => {
+    setModalWithBorderSuccess(false);
+    setMessage('')
+    // navigation.navigate("Dashboard")    
   };
 
   const ModalContent = () => {
@@ -336,16 +382,16 @@ const CheckKycOptions = ({navigation,route}) => {
 
 
           <View style={{ alignItems: 'center', marginBottom: 30 }}>
-            <ButtonOval handleOperation={modalWithBorderClose} backgroundColor="#000000" content="OK" style={{ color: 'white', paddingVertical: 4 }} />
+            <ButtonOval handleOperation={modalWithBorderClose} backgroundColor="#000000" content="I Agree" style={{ color: 'white', paddingVertical: 4 }} />
           </View>
 
         </ScrollView>
-
+{/* 
         <TouchableOpacity style={[{
           backgroundColor: ternaryThemeColor, padding: 6, borderRadius: 5, position: 'absolute', top: 4, right: 0,
         }]} onPress={modalClose} >
           <Close name="close" size={17} color="#ffffff" />
-        </TouchableOpacity>
+        </TouchableOpacity> */}
 
       </View>
     )
@@ -440,7 +486,7 @@ const CheckKycOptions = ({navigation,route}) => {
               justifyContent: "center",
               height: 40,
               padding:8,
-              borderRadius: 14,
+              borderRadius: 30,
               borderWidth: 2,
               borderColor: "black",
               flexDirection: "row",
@@ -463,7 +509,7 @@ const CheckKycOptions = ({navigation,route}) => {
               justifyContent: "center",
               height: 40,
               padding:8,
-              borderRadius: 14,
+              borderRadius: 30,
               borderWidth: 2,
               borderColor: "black",
               flexDirection: "row",
@@ -552,7 +598,7 @@ const CheckKycOptions = ({navigation,route}) => {
               >
                 <PoppinsTextMedium
                   style={{ color: "white", fontSize: 18, fontWeight: "600" }}
-                  content="Submit"
+                  content="NEXT"
                 ></PoppinsTextMedium>
               </TouchableOpacity>
             
@@ -629,12 +675,21 @@ const CheckKycOptions = ({navigation,route}) => {
             
           </View>
         )}
-        {openModalWithBorder &&
+           {openModalWithBorder &&
           <ModalWithBorder
             modalClose={modalWithBorderClose}
             message={message}
             openModal={openModalWithBorder}
             comp={ModalContent}>
+          </ModalWithBorder>}
+          
+        {openModalWithBorderSuccess &&
+          <ModalWithBorder
+            modalClose={modalWithBorderSuccessClose}
+            message={message}
+            navigateTo = {"Dashboard"}
+            openModal={openModalWithBorderSuccess}
+            comp={ModalContentSuccess}>
           </ModalWithBorder>}
       </ScrollView>
     </ScrollView>

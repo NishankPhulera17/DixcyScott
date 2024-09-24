@@ -63,7 +63,7 @@ const RewardBox = () => {
                 />
             }
 
-            <ScrollView contentContainerStyle={{ }} style={{width:'100%'   }} showsHorizontalScrollIndicator={false} horizontal={true}>
+            <ScrollView contentContainerStyle={{ marginLeft:10}} style={{width:'100%'   }} showsHorizontalScrollIndicator={false} horizontal={true}>
                 {
                     workflow?.includes("Static Coupon") && <RewardSquare color="#FFE2E6" image={require('../../../assets/images/voucher.png')} title="My Coupons"></RewardSquare>
                 }
@@ -82,7 +82,7 @@ const RewardBox = () => {
                 {
                     userPointData && <RewardSquare amount={userPointData.body.point_redeemed} color="#FFF4DE" image={require('../../../assets/images/redeemIcon.png')} title={t("redeemed points")}></RewardSquare>
                 }
-                {
+                {/* {
                     userPointData && <RewardSquare amount={userPointData.body.point_balance} color="#DCFCE7" image={require('../../../assets/images/points.png')} title={t("balance points")}></RewardSquare>
                 }
                 {
@@ -90,7 +90,7 @@ const RewardBox = () => {
                 }
                 {
                     userPointData && <RewardSquare amount={((Number(userPointData.body.point_reserved) + Number(userPointData.body.point_balance)).toFixed(2))} color="#DCFCE7" image={require('../../../assets/images/points.png')} title={t("Total Points")}></RewardSquare>
-                }
+                } */}
             </ScrollView>
 
         </View>

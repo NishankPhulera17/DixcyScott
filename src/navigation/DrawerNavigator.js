@@ -24,6 +24,7 @@ import { useFetchLegalsMutation } from '../apiServices/fetchLegal/FetchLegalApi'
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import ErrorModal from '../components/modals/ErrorModal';
 import VersionCheck from 'react-native-version-check';
+import { DrawerActions } from '@react-navigation/native';
 import { useTranslation } from 'react-i18next';
 
 
@@ -303,13 +304,18 @@ const CustomDrawer = () => {
                 navigation.navigate('Feedback')
               }
               else if (props.title.toLowerCase() === "media") {
-                navigation.navigate('WhatsNew')
+                navigation.navigate('VideoGallery')
               }
               else if (props.title.toLowerCase() === "add user") {
                 navigation.navigate('ListUsers')
               }
               else if (props.title.toLowerCase() === "query list") {
                 navigation.navigate('QueryList')
+              }
+              else if (props.title.toLowerCase() === "home") {
+                // navigation.navigate('QueryList')
+                navigation.dispatch(DrawerActions.closeDrawer());
+                
               }
               else if (props.title.toLowerCase() === "share app") {
                 const options = {
@@ -482,7 +488,7 @@ const CustomDrawer = () => {
           {userData && <Text style={{ color: 'white', margin: 0, textTransform: "capitalize" }}>{userData.user_type} Account</Text>}
 
           {!Object.values(kycData).includes(false) ? <View style={{ flexDirection: 'row', marginTop: 4 }}>
-            <View
+            {/* <View
               style={{
                 height: 22,
                 width: 80,
@@ -492,14 +498,14 @@ const CustomDrawer = () => {
                 justifyContent: 'center',
                 flexDirection: 'row',
                 marginTop: 2,
-              }}>
-              <Image style={{ height: 10, width: 10, resizeMode: 'contain' }} source={require('../../assets/images/tickBlue.png')}></Image>
-              <Text style={{ marginLeft: 4, color: 'black', fontSize: 10, fontWeight: '500' }}>KYC Status</Text>
-            </View>
+              }}> */}
+              {/* <Image style={{ height: 10, width: 10, resizeMode: 'contain' }} source={require('../../assets/images/tickBlue.png')}></Image>
+              <Text style={{ marginLeft: 4, color: 'black', fontSize: 10, fontWeight: '500' }}>KYC Status</Text> */}
+            {/* </View> */}
 
           </View> :
             <View style={{ flexDirection: 'row', marginTop: 4 }}>
-              <View
+              {/* <View
                 style={{
                   height: 22,
                   width: 80,
@@ -512,7 +518,7 @@ const CustomDrawer = () => {
                 }}>
                 <Image style={{ height: 10, width: 10, resizeMode: 'contain' }} source={require('../../assets/images/cancel.png')}></Image>
                 <Text style={{ marginLeft: 4, color: 'black', fontSize: 10, fontWeight: '500' }}>KYC Status</Text>
-              </View>
+              </View> */}
 
             </View>
           }

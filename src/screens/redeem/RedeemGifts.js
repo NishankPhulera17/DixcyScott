@@ -902,18 +902,18 @@ const RedeemGifts = ({ navigation, route }) => {
           }}
           style={{
             alignItems: "center",
-            borderRadius: 10,
+            borderRadius: 30,
             justifyContent: "center",
             height: 50,
             width: "60%",
-            backgroundColor: ternaryThemeColor,
+            backgroundColor: 'black',
             position: "absolute",
             bottom: 20,
           }}
         >
           <PoppinsTextMedium
             style={{ color: "white", fontSize: 16, fontWeight: "700" }}
-            content={t("continue")}
+            content={t("Proceed")}
           ></PoppinsTextMedium>
         </TouchableOpacity>
       </View>

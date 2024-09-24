@@ -116,7 +116,7 @@ const BasePoints = ({navigation}) => {
                 />
                 <PoppinsTextMedium
                   style={{ color: "white", fontWeight: "700" }}
-                  content=" Select"
+                  content="Select Date"
                 />
               </TouchableOpacity>
             </View>
@@ -152,7 +152,7 @@ const BasePoints = ({navigation}) => {
         // const type = props.data.trigger_key
         console.log("NewSchemeComponent",props.data)
         return (
-          <View style={{height:180,width:'90%',alignItems:'center',justifyContent:'flex-start',backgroundColor:secondaryThemeColor,borderRadius:20,marginTop:20}}>
+          <View style={{height:200,width:'90%',alignItems:'center',justifyContent:'flex-start',backgroundColor:ternaryThemeColor,borderRadius:20,marginTop:20}}>
             <View style={{height:'60%',width:'100%',flexDirection:'row',alignItems:'flex-start',justifyContent:'flex-start',marginTop:10}}>
             <View
                 style={{
@@ -164,29 +164,29 @@ const BasePoints = ({navigation}) => {
                 }}
               >
                 <View
+              style={{
+                height: 65,
+                width: 65,
+                borderRadius: 10,
+                alignItems: "center",
+                justifyContent: "center",
+                //   borderWidth: 1,
+                borderColor: "white",
+              }}
+            >
+              <Image
                 style={{
                   height: 65,
                   width: 65,
+                  resizeMode: "contain",
                   borderRadius: 10,
-                  alignItems: "center",
-                  justifyContent: "center",
-                  borderWidth: 1,
-                  borderColor: "white",
                 }}
-              >
-                <Image
-                  style={{
-                    height: 65,
-                    width: 65,
-                    resizeMode: "contain",
-                    borderRadius: 10,
-                  }}
-                  source={{ uri: props.data?.image }}
-                ></Image>
-                </View>
+                source={require("../../../assets/images/giftBlue.png")}
+              ></Image>
+            </View>
               </View>
              <View style={{width:'70%',alignItems:'flex-start',justifyContent:'center'}}>
-              <View style={{width:'100%',borderColor:'white',borderBottomWidth:1,alignItems:'flex-start',paddingBottom:4}}>
+              <View style={{width:'100%',borderColor:'white',borderBottomWidth:1,alignItems:'flex-start',paddingBottom:4,marginTop:15}}>
               <PoppinsTextMedium
                 style={{ color: "white", fontSize: 18, fontWeight: "700" }}
                 content={name}
@@ -226,7 +226,7 @@ const BasePoints = ({navigation}) => {
               </View>
              </View>
             </View>
-            <View style={{width:'96%',height:1,backgroundColor:'white'}}></View>
+            <View style={{width:'96%',height:1,backgroundColor:'white', marginTop:15}}></View>
             <View style={{width:'100%',flexDirection:'row',alignItems:'center',justifyContent:'center',marginTop:10,padding:6}}>
               {/* <TouchableOpacity onPress={()=>{
                
@@ -239,8 +239,8 @@ const BasePoints = ({navigation}) => {
               </TouchableOpacity> */}
               <TouchableOpacity onPress={()=>{
                navigation.navigate('PdfComponent', { pdf: getBasePointsData?.body?.pdf })
-              }} style={{height:30,alignItems:'center',justifyContent:'center',backgroundColor:'#2F40DE',borderRadius:10,marginLeft:4,paddingLeft:8,paddingRight:8}}>
-                <PoppinsTextMedium content="View Scheme PDF" style={{color:'white'}}></PoppinsTextMedium>
+              }} style={{height:30,alignItems:'center',justifyContent:'center',backgroundColor:'#000',borderRadius:30,marginLeft:4,paddingLeft:8,paddingRight:8}}>
+                <PoppinsTextMedium content="View PDF" style={{color:'white', paddingHorizontal:20}}></PoppinsTextMedium>
               </TouchableOpacity>
             </View>
             

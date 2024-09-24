@@ -645,8 +645,6 @@ export default function Scheme({ navigation }) {
         
       </View>
     )
-
-
   }
 
   const SchemeComponent = (props) => {

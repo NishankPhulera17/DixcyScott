@@ -34,6 +34,24 @@ const TargetVsAchievement = ({navigation}) => {
   const height = Dimensions.get("window").height;
   const userData = useSelector(state => state.appusersdata.userData);
 
+  const getSelectedDates = useCallback((startDate) => {
+    // Convert the input start date to a JavaScript Date object
+    const inputStartDate = new Date(startDate);
+  
+    // Filter the data based on the start date
+    const filteredData = scheme?.filter(item => {
+      const itemStartDate = new Date(item.start_date);
+      console.log("getSelectedDate function", itemStartDate,inputStartDate)
+  
+      // Check if the item's start date is greater than or equal to the input start date
+      return itemStartDate >= inputStartDate;
+    });
+  
+    console.log("filteredData", filteredData, startDate);
+    setActiveScheme(filteredData);
+  }, [setActiveScheme]);
+  
+
     // const FilterSchemeComponent = React.memo((props) => {
     //     const [openStart, setOpenStart] = useState(false);
         
@@ -104,14 +122,75 @@ const TargetVsAchievement = ({navigation}) => {
     //     console.log("filteredData", filteredData, startDate);
     //     setActiveScheme(filteredData);
     //   }, [setActiveScheme]);
+    const FilterSchemeComponent = React.memo((props) => {
+      const [openStart, setOpenStart] = useState(false);
+      
+  
+      const handleDateChange = (date) => {
+        setOpenStart(false);
+        setSelectedDataStart(date);
+        props.getDate(selectedDataStart);
+  
+      }
+
+
+
+      return (
+        <View style={{ alignItems: 'center', justifyContent: 'flex-start', width: '100%', flexDirection: 'row', marginBottom: 10 }}>
+          <View
+            style={{
+              padding: 10,
+              width: "90%",
+              alignItems: "center",
+              justifyContent: "flex-start",
+              flexDirection: 'row',
+              marginLeft: 20
+            }}
+          >
+            <PoppinsTextMedium
+              content={`${moment(selectedDataStart).format("MM/YYYY")}`}
+              style={{ fontSize: 16, fontWeight: "700" }}
+            />
+            <TouchableOpacity
+              style={{
+                backgroundColor: ternaryThemeColor,
+                paddingLeft: 10,
+                borderRadius: 6,
+                padding: 6,
+                marginLeft: 10
+              }}
+              onPress={() => setOpenStart(!openStart)}
+            >
+              <DatePicker
+                modal
+                mode="date"
+                open={openStart}
+                date={selectedDataStart}
+                onConfirm={handleDateChange}
+                onCancel={() => setOpenStart(false)}
+              />
+              <PoppinsTextMedium
+                style={{ color: "white", fontWeight: "700" }}
+                content="Select Date"
+              />
+            </TouchableOpacity>
+          </View>
+        </View>
+      );
+    });
 
     const NewSchemeComponent =(props)=>{
         const image = props.image;
         const name = props.name;
         const worth = props.worth;
+
+        
+
+
         // const earnedPoints = props?.data?.point_earned ? props?.data?.point_earned : 0;
         const coin = props.coin;
         // const type = props.data.trigger_key
+        
         return (
           <View style={{height:180,width:'90%',alignItems:'center',justifyContent:'flex-start',backgroundColor:ternaryThemeColor,borderRadius:20,marginTop:20}}>
             <View style={{height:'60%',width:'100%',flexDirection:'row',alignItems:'flex-start',justifyContent:'flex-start',marginTop:10}}>
@@ -274,7 +353,7 @@ const TargetVsAchievement = ({navigation}) => {
       >
        
         
-        {/* {<FilterSchemeComponent getDate = {getSelectedDates}></FilterSchemeComponent>} */}
+        {<FilterSchemeComponent getDate = {getSelectedDates}></FilterSchemeComponent>}
         <ScrollView contentContainerStyle={{alignItems:'center',justifyContent:'center'}} style={{ width: "100%" }}>
                 <NewSchemeComponent
                     // data = {item}
