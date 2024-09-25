@@ -14,7 +14,10 @@ import { useSelector } from "react-redux";
 import PoppinsTextMedium from "../../components/electrons/customFonts/PoppinsTextMedium";
 import moment from "moment";
 import DatePicker from "react-native-date-picker";
-import { useGetSalesBoosterOrderMutation } from "../../apiServices/salesBooster/salesBoosterApi";
+import {
+  useGetSalesBoosterFocusPointMutation,
+  useGetSalesBoosterOrderMutation,
+} from "../../apiServices/salesBooster/salesBoosterApi";
 import * as Keychain from "react-native-keychain";
 
 const TargetAchievementDetails = ({ navigation, route }) => {
@@ -22,6 +25,7 @@ const TargetAchievementDetails = ({ navigation, route }) => {
   const [searchTitle, setSearchTitle] = useState();
   const type = route.params.type;
   const schemeData = route.params.data;
+  const sb_id = route.params.sb_id;
   const secondaryThemeColor = useSelector(
     (state) => state.apptheme.secondaryThemeColor
   );
@@ -33,14 +37,14 @@ const TargetAchievementDetails = ({ navigation, route }) => {
   console.log("userdata", userData);
 
   const [
-    getSalesBoosterOrderFunc,
+    getSalesBoosterFocusFunc,
     {
-      data: getSalesBoosterOrderData,
-      error: getSalesBoosterOrderError,
+      data: getSalesBoosterFocusData,
+      error: getSalesBoosterFocusError,
       isLoading: getSalesBoosterOrderIsLoading,
       isError: getSalesBoosterOrderIsError,
     },
-  ] = useGetSalesBoosterOrderMutation();
+  ] = useGetSalesBoosterFocusPointMutation();
 
   useEffect(() => {
     const getToken = async () => {
@@ -52,13 +56,13 @@ const TargetAchievementDetails = ({ navigation, route }) => {
       console.log("month time data", currMonth, currYear);
       const params = {
         appUserID: userData.id,
-        sb_id: schemeData.id,
+        sb_id: sb_id,
         month: currMonth,
         year: currYear,
         token: token,
       };
       console.log("getSalesBoosterOrderFunc", JSON.stringify(params));
-      getSalesBoosterOrderFunc(params);
+      getSalesBoosterFocusFunc(params);
     };
 
     getToken();
@@ -79,52 +83,62 @@ const TargetAchievementDetails = ({ navigation, route }) => {
         year: currYear,
         token: token,
       };
-      console.log("getSalesBoosterOrderFunc", JSON.stringify(params));
-      getSalesBoosterOrderFunc(params);
+      console.log("getSalesFocusFunc", JSON.stringify(params));
+      getSalesBoosterFocusFunc(params);
     };
 
     getToken();
   }, [selectedDataStart]);
 
   useEffect(() => {
-    if (getSalesBoosterOrderData) {
+    if (getSalesBoosterFocusData) {
       console.log(
-        "getSalesBoosterOrderData",
-        JSON.stringify(getSalesBoosterOrderData)
+        "getSalesBoosterFocusData",
+        JSON.stringify(getSalesBoosterFocusData)
       );
-      // if(getSalesBoosterOrderData.body.type == "purchase limit")
+      // if(getSalesBoosterFocusData.body.type == "purchase limit")
       // {
 
       // }
-    } else if (getSalesBoosterOrderError) {
-      console.log("getSalesBoosterOrderError", getSalesBoosterOrderError);
+    } else if (getSalesBoosterFocusError) {
+      console.log("getSalesBoosterFocusError", getSalesBoosterFocusError);
     }
-  }, [getSalesBoosterOrderData, getSalesBoosterOrderError]);
+  }, [getSalesBoosterFocusData, getSalesBoosterFocusError]);
 
   console.log("selected date", selectedDataStart);
 
-
   const Show2020Details = (props) => {
-    let demoData = [{
-      boxes: "20",
-      "purchaged":"0",
-      "gift":"0"
-  },
-  {
-    boxes: "40",
-    "purchaged":"",
-    "gift":""
-},
-{
-  boxes: "60",
-  "purchaged":"",
-  "gift":""
-},
-]
+    const data =  [
+      {
+          "id": 14,
+          "sb_id": 7,
+          "trigger_on": "purchase limit",
+          "trigger_value": 20,
+          "offer_type": "S",
+          "point": null,
+          "gift_id": 2,
+          "coupon": null,
+          "wheel_campaign_id": null,
+          "cashback": null,
+          "point_probability": 0,
+          "gift_probability": 0,
+          "coupon_probability": 0,
+          "wheel_campaign_probability": 0,
+          "cashback_probability": 0,
+          "status": "1",
+          "created_at": "2024-09-24T06:43:05.520Z",
+          "created_by_id": 1,
+          "created_by_name": "modenik",
+          "updated_at": "2024-09-24T06:43:05.520Z",
+          "updated_by_id": 1,
+          "updated_by_name": "modenik",
+          "name": "Super 20-20 Scheme (2024)",
+          "matched": false
+      }
+  ]
+    
 
-  
-    const data = props.data ? props.data : demoData;
-
+    
 
     console.log("2020Data", data);
     const CategoryTab = (props) => {
@@ -133,73 +147,73 @@ const TargetAchievementDetails = ({ navigation, route }) => {
       const style = props.style;
       const points = props.points;
       const matched = props.matched;
-      const item = props.item
+      const item = props.item;
+
       return (
         <View
-  style={{
-    width: "100%",
-    alignItems: "center",
-    justifyContent: "center",
-    // marginTop: 10,
-    borderWidth: 0.54, // Add border to the outer container
-    borderColor: "black",
-  }}
->
-  <View
-    style={{
-      width: "100%",
-      alignItems: "center",
-      justifyContent: "space-evenly",
-      flexDirection: "row",
-      backgroundColor: "white",
-      height: 36,
-    }}
-  >
-    {/* First column (Boxes) */}
-    <PoppinsTextMedium
-      style={{
-        fontWeight: "600",
-        fontSize: 14,
-        color: "black",
-        width: "40%",
-        textAlign: "center", // Center the text
-        borderRightWidth: 1, // Add right border
-        borderColor: "black",
-        paddingVertical: 8, // Adjust for better vertical alignment
-      }}
-      content={item?.boxes}
-    />
+          style={{
+            width: "100%",
+            alignItems: "center",
+            justifyContent: "center",
+            // marginTop: 10,
+            borderWidth: 0.54, // Add border to the outer container
+            borderColor: "black",
+          }}
+        >
+          <View
+            style={{
+              width: "100%",
+              alignItems: "center",
+              justifyContent: "space-evenly",
+              flexDirection: "row",
+              backgroundColor: "white",
+              height: 36,
+            }}
+          >
+            {/* First column (Boxes) */}
+            <PoppinsTextMedium
+              style={{
+                fontWeight: "600",
+                fontSize: 14,
+                color: "black",
+                width: "40%",
+                textAlign: "center", // Center the text
+                borderRightWidth: 1, // Add right border
+                borderColor: "black",
+                paddingVertical: 8, // Adjust for better vertical alignment
+              }}
+              content={item?.trigger_value}
+            />
 
-    {/* Second column (Purchased) */}
-    <PoppinsTextMedium
-      style={{
-        fontWeight: "600",
-        fontSize: 14,
-        color: "black",
-        width: "54%",
-        textAlign: "center", // Center the text
-        borderRightWidth: 1, // Add right border
-        borderColor: "black",
-        paddingVertical: 8, // Adjust for better vertical alignment
-      }}
-      content={item.purchaged}
-    />
+            {/* Second column (Purchased) */}
+            <PoppinsTextMedium
+              style={{
+                fontWeight: "600",
+                fontSize: 14,
+                color: "black",
+                width: "54%",
+                textAlign: "center", // Center the text
+                borderRightWidth: 1, // Add right border
+                borderColor: "black",
+                paddingVertical: 8, // Adjust for better vertical alignment
+              }}
+              content={item.purchaged}
+            />
 
-    {/* Third column (Gift) */}
-    <PoppinsTextMedium
-      style={{
-        fontWeight: "600",
-        fontSize: 14,
-        color: "black",
-        width: "40%",
-        textAlign: "center", // Center the text
-        paddingVertical: 8, // Adjust for better vertical alignment
-      }}
-      content={item.gift}
-    />
-  </View>
-</View>
-   
+            {/* Third column (Gift) */}
+            <PoppinsTextMedium
+              style={{
+                fontWeight: "600",
+                fontSize: 14,
+                color: "black",
+                width: "40%",
+                textAlign: "center", // Center the text
+                paddingVertical: 8, // Adjust for better vertical alignment
+              }}
+              content={(item.gift_id && item.matched ? 1 : 0) }
+            />
+          </View>
+        </View>
       );
     };
     return (
@@ -228,7 +242,6 @@ const TargetAchievementDetails = ({ navigation, route }) => {
               color: "white",
               width: "28%",
               // padding:5,
-
             }}
             content="Combo Boxes Qty"
           ></PoppinsTextMedium>
@@ -241,9 +254,7 @@ const TargetAchievementDetails = ({ navigation, route }) => {
             }}
             content="Boxes Purchased"
           ></PoppinsTextMedium>
-          <View
-            style={{ height: "100%", width: 2, }}
-          ></View>
+          <View style={{ height: "100%", width: 2 }}></View>
           <PoppinsTextMedium
             style={{
               fontWeight: "800",
@@ -255,24 +266,22 @@ const TargetAchievementDetails = ({ navigation, route }) => {
           ></PoppinsTextMedium>
         </View>
 
-        {demoData.map((item, index) => {
+        {data.map((item, index) => {
           return (
             <CategoryTab
               key={index}
               index={index + 1}
               matched={item.matched}
-              points={item.points}
+              // points={item.points}
               style={item.name}
-              brand={item.brand}
-              item = {item}
+              // brand={item.brand}
+              item={item}
             ></CategoryTab>
           );
         })}
       </View>
     );
   };
-
-
 
   const ShowDoneCategoriesTable = (props) => {
     const data = props.data;
@@ -298,7 +307,7 @@ const TargetAchievementDetails = ({ navigation, route }) => {
               alignItems: "center",
               justifyContent: "space-evenly",
               flexDirection: "row",
-              backgroundColor: matched ? "#5CA509" : "#C6280A",
+              backgroundColor: matched ? "#5CA509" : "#5CA509",
               height: 36,
             }}
           >
@@ -404,7 +413,7 @@ const TargetAchievementDetails = ({ navigation, route }) => {
       </View>
     );
   };
-  
+
   const ShowBoxDetails = (props) => {
     const [total, setTotal] = useState(0);
     const noBox = props?.noBox;
@@ -939,7 +948,7 @@ const TargetAchievementDetails = ({ navigation, route }) => {
               source={require("../../../assets/images/blackBack.png")}
             ></Image>
           </TouchableOpacity>
-          
+
           <PoppinsTextMedium
             content="View Points"
             style={{
@@ -957,40 +966,50 @@ const TargetAchievementDetails = ({ navigation, route }) => {
             borderTopLeftRadius: 30,
             backgroundColor: "white",
             marginTop: 0,
-            justifyContent:'flex-start',
+            justifyContent: "flex-start",
             width: "100%",
             paddingBottom: 10,
             height: "100%",
           }}
         >
-          <Text style={{marginTop:20, fontWeight:'bold', fontSize:20, color:'black', marginLeft:20}}>Super 20-20 for 2024</Text>
+          <Text
+            style={{
+              marginTop: 20,
+              fontWeight: "bold",
+              fontSize: 20,
+              color: "black",
+              marginLeft: 20,
+            }}
+          >
+            Super 20-20 for 2024
+          </Text>
           {/* <FilterScheme title={"Super 20-20 for 2024"}></FilterScheme> */}
           {/* <View style={{ width: "90%", height: "30%" }}>
-            {getSalesBoosterOrderData && type == "target category" && (
+            {getSalesBoosterFocusData && type == "target category" && (
               <ShowCategoryTable
-                data={getSalesBoosterOrderData.body.triggers}
+                data={getSalesBoosterFocusData.body.triggers}
               ></ShowCategoryTable>
             )}
             {type == "purchase limit" && (
               <ShowBoxDetails
-                data={getSalesBoosterOrderData?.body.triggers}
+                data={getSalesBoosterFocusData?.body.triggers}
               ></ShowBoxDetails>
             )}
           </View> */}
 
           <ScrollView
-          // style={{backgroundColor:'red'}}
-            contentContainerStyle={{ alignItems: "center", width: "100%",}}
+            // style={{backgroundColor:'red'}}
+            contentContainerStyle={{ alignItems: "center", width: "100%" }}
           >
-            {getSalesBoosterOrderData && type == "target category" && (
+            {getSalesBoosterFocusData && type == "target category" && (
               <ShowDoneCategoriesTable
-                data={getSalesBoosterOrderData.body?.ranges}
+                data={getSalesBoosterFocusData.body?.ranges}
               ></ShowDoneCategoriesTable>
             )}
 
-            {true && type == "20-20" && (
+            {getSalesBoosterFocusData && type == "20-20" && (
               <Show2020Details
-                data={getSalesBoosterOrderData?.body?.ranges}
+                data={getSalesBoosterFocusData?.body?.triggers}
               ></Show2020Details>
             )}
           </ScrollView>

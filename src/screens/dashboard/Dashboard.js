@@ -496,7 +496,7 @@ const Dashboard = ({ navigation }) => {
           }  
           </View>
          
-            <View style={{ width: "90%",  backgroundColor: 'white', marginBottom: 20, flexDirection: 'row', alignItems: 'center', borderColor: '#808080', borderWidth: 0.3, borderRadius: 10,paddingBottom:10,justifyContent:'center',paddingTop:10,minHeight:50 }}>
+            {/* <View style={{ width: "90%",  backgroundColor: 'white', marginBottom: 20, flexDirection: 'row', alignItems: 'center', borderColor: '#808080', borderWidth: 0.3, borderRadius: 10,paddingBottom:10,justifyContent:'center',paddingTop:10,minHeight:50 }}>
 
             <View style={{ backgroundColor: 'white', width: '42%', marginHorizontal: 20,alignItems:'center',justifyContent:'center' }}>
              {userPointData?.body?.point_balance ? <PoppinsText content={`${t("balance points")} ${userPointData?.body?.point_balance ? userPointData?.body?.point_balance : "loading"}`} style={{ color: 'black', fontWeight: 'bold' }}></PoppinsText> : <AnimatedDots color={'black'}/>} 
@@ -512,7 +512,7 @@ const Dashboard = ({ navigation }) => {
               </TouchableOpacity>
             </View>}
 
-          </View>
+          </View> */}
          {(userData?.user_type).toLowerCase() !== "dealer" ? (userData?.user_type).toLowerCase() !== "sales" ? scanningDetails && scanningDetails?.data.length!==0 &&  <ScannedDetailsBox lastScannedDate={moment(scanningDetails?.data[0]?.created_at).format("DD MMM YYYY")} scanCount={scanningDetails.total}></ScannedDetailsBox>:<></> :<></>}
           {/* <ScrollView showsHorizontalScrollIndicator={false} horizontal={true} style={{ paddingLeft: 10, paddingRight: 10, paddingBottom: 4 }}>
             <DashboardDataBox header="Total Points"  data="5000" image={require('../../../assets/images/coin.png')} ></DashboardDataBox>

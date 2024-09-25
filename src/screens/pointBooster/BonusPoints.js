@@ -65,12 +65,32 @@ const BonusPoints = ({ navigation }) => {
   }, []);
 
   useEffect(() => {
+    const getToken = async () => {
+      const credentials = await Keychain.getGenericPassword();
+      const token = credentials.username;
+      const month = String(selectedDataStart.getMonth() + 1).padStart(2, '0'); // Adding 1 because getMonth() is 0-based (0 for January, 1 for February, etc.)
+      const year = selectedDataStart.getFullYear();
+      const appUserId = userData.id;
+      console.log("base Point mounted", month, year);
+      const body = {
+        token: token,
+        month: month,
+        year: year,
+        appUserId: appUserId,
+      };
+      getBonusPointsFunc(body);
+    };
+    getToken();
+  }, [selectedDataStart]);
+
+  useEffect(() => {
     if (getBonusPointsData) {
       console.log("getBonusPointsData", getBonusPointsData);
     } else if (getBonusPointsError) {
       console.log("getBonusPointsError", getBonusPointsError);
     }
   }, [getBonusPointsData, getBonusPointsError]);
+  
 
   const FilterSchemeComponent = React.memo((props) => {
     const [openStart, setOpenStart] = useState(false);
@@ -102,16 +122,20 @@ const BonusPoints = ({ navigation }) => {
           }}
         >
           <PoppinsTextMedium
-            content={`${moment(selectedDataStart).format("MM/YYYY")}`}
-            style={{ fontSize: 16, fontWeight: "700" }}
+            content={`${moment(selectedDataStart).format("MMM YYYY")}`}
+            style={{ fontSize: 16, fontWeight: "700", color:'black', borderBottomWidth:0.5 }}
           />
           <TouchableOpacity
             style={{
-              backgroundColor: ternaryThemeColor,
+              backgroundColor: 'white',
               paddingLeft: 10,
-              borderRadius: 6,
-              padding: 6,
-              marginLeft: 10,
+              borderRadius: 30,
+              paddingHorizontal:10,
+              paddingVertical:8,
+              marginLeft: 'auto',
+              borderWidth:0.5,
+              borderColor:'#808080',flexDirection:'row',
+              justifyContent:'center'
             }}
             onPress={() => setOpenStart(!openStart)}
           >
@@ -124,14 +148,16 @@ const BonusPoints = ({ navigation }) => {
               onCancel={() => setOpenStart(false)}
             />
             <PoppinsTextMedium
-              style={{ color: "white", fontWeight: "700" }}
-              content=" Select Year"
+              style={{ color: "#808080", fontWeight: "600",marginRight:10 }}
+              content= {"Select Month & Year"}
             />
+            <Image style={{height:13,width:12, resizeMode:'contain',marginTop:2,marginLeft:5}} source={require("../../../assets/images/arrowDown.png")}/>
           </TouchableOpacity>
         </View>
       </View>
     );
   });
+
   const getSelectedDates = useCallback(
     (startDate) => {
       // Convert the input start date to a JavaScript Date object
@@ -204,15 +230,30 @@ const BonusPoints = ({ navigation }) => {
                 borderColor: "white",
               }}
             >
-              <Image
+              {
+                image ?
+                <Image
                 style={{
                   height: 65,
                   width: 65,
                   resizeMode: "contain",
                   borderRadius: 10,
                 }}
-                source={require("../../../assets/images/giftBlue.png")}
+                source={{uri:image}}
               ></Image>
+
+              :
+              <Image
+              style={{
+                height: 65,
+                width: 65,
+                resizeMode: "contain",
+                borderRadius: 10,
+              }}
+              source={require("../../../assets/images/giftBlue.png")}
+            ></Image>
+
+              }
             </View>
           </View>
           <View

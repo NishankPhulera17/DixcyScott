@@ -18,11 +18,26 @@ export const salesBoosterApi = baseApi.injectEndpoints({
                 },
         }),
 
+        getSalesBoosterFocusPoint:builder.mutation({
+            query: (params) => {
+                return {
+                method: "GET",
+                url: `/api/tenant/modenik/focus_brand?app_user_id=${params.appUserID}&sb_id=${params.sb_id}&month=${params.month}&year=${params.year}`,
+                headers: {
+                "Content-Type": "application/json",
+                Authorization: "Bearer " + params.token,
+                slug: slug,
+                },
+                };
+                },
+        }),
+
         getAllSalesBooster: builder.mutation({
             query: (params) => {
+                console.log("params of sales booster", params)
             return {
             method: "GET",
-            url: `/api/tenant/modenik/scheme/${params.appUserID}`,
+            url: `/api/tenant/modenik/scheme/${params.appUserID}?type=${params.type}&month=${params.month}&year=${params.year}`,
             headers: {
             "Content-Type": "application/json",
             Authorization: "Bearer " + params.token,
@@ -75,4 +90,4 @@ export const salesBoosterApi = baseApi.injectEndpoints({
     })
 });
 
-export const {useGetAllSalesBoosterMutation,useCheckSalesBoosterMutation,useCheckSalesBoosterOnEachScanMutation,useClaimSalesBoosterMutation,useGetSalesBoosterOrderMutation} = salesBoosterApi;
+export const {useGetAllSalesBoosterMutation,useCheckSalesBoosterMutation,useCheckSalesBoosterOnEachScanMutation,useClaimSalesBoosterMutation,useGetSalesBoosterOrderMutation, useGetSalesBoosterFocusPointMutation} = salesBoosterApi;

@@ -77,6 +77,9 @@ const DashboardMenuBox=(props)=>{
         else if(data.toLowerCase() === "report an issue"){
             navigation.navigate('QueryList')
         }
+        else{
+            navigation.navigate('ComingSoonScreen')
+        }
     }
 
     return(

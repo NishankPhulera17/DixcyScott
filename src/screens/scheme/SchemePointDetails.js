@@ -127,7 +127,7 @@ const SchemePointDetails = ({ navigation, route }) => {
               alignItems: "center",
               justifyContent: "space-evenly",
               flexDirection: "row",
-              backgroundColor: matched ? "#5CA509" : "#C6280A",
+              backgroundColor: matched ? "#5CA509" : "#5CA509",
               height: 36,
             }}
           >
@@ -299,6 +299,7 @@ const SchemePointDetails = ({ navigation, route }) => {
       const matched = props.data.matched;
       const boxes = props.data.trigger_value;
       const mtdBoxes = props.data.total_boxes;
+      const earnPoint = props.data.total_points;
       const temp = props.data.point;
 
       const bonusPoints = temp.split("-")[1];
@@ -314,7 +315,7 @@ const SchemePointDetails = ({ navigation, route }) => {
         >
           <View
             style={{
-              width: "33%",
+              width: "25%",
               alignItems: "center",
               justifyContent: "center",
               borderWidth: 1,
@@ -333,7 +334,7 @@ const SchemePointDetails = ({ navigation, route }) => {
           </View>
           <View
             style={{
-              width: "33%",
+              width: "25%",
               alignItems: "center",
               justifyContent: "center",
               borderWidth: 1,
@@ -352,7 +353,7 @@ const SchemePointDetails = ({ navigation, route }) => {
           </View>
           <View
             style={{
-              width: "33%",
+              width: "25%",
               alignItems: "center",
               justifyContent: "center",
               borderWidth: 1,
@@ -366,7 +367,26 @@ const SchemePointDetails = ({ navigation, route }) => {
                 fontSize: 15,
                 fontWeight: "600",
               }}
-              content={mtdBoxes}
+              content={matched ? mtdBoxes : ""}
+            ></PoppinsTextMedium>
+          </View>
+          <View
+            style={{
+              width: "25%",
+              alignItems: "center",
+              justifyContent: "center",
+              borderWidth: 1,
+              borderColor: "#DDDDDD",
+              padding: 4,
+            }}
+          >
+            <PoppinsTextMedium
+              style={{
+                color: matched ? "white" : "#171717",
+                fontSize: 15,
+                fontWeight: "600",
+              }}
+              content={matched ? earnPoint : ""}
             ></PoppinsTextMedium>
           </View>
         </View>
@@ -397,7 +417,8 @@ const SchemePointDetails = ({ navigation, route }) => {
         >
           <PoppinsTextMedium
             style={{ color: "#171717", fontSize: 16, fontWeight: "600" }}
-            content="No. of Boxes Bought (MTD )"
+            // content="No. of Boxes Bought (MTD)"
+            content = "Monthly Volume Based Multiplier"
           ></PoppinsTextMedium>
           <PoppinsTextMedium
             style={{
@@ -433,7 +454,7 @@ const SchemePointDetails = ({ navigation, route }) => {
         >
           <View
             style={{
-              width: "33%",
+              width: "25%",
               alignItems: "center",
               justifyContent: "center",
               borderWidth: 1,
@@ -448,7 +469,7 @@ const SchemePointDetails = ({ navigation, route }) => {
           </View>
           <View
             style={{
-              width: "33%",
+              width: "25%",
               alignItems: "center",
               justifyContent: "center",
               borderWidth: 1,
@@ -463,7 +484,7 @@ const SchemePointDetails = ({ navigation, route }) => {
           </View>
           <View
             style={{
-              width: "33%",
+              width: "25%",
               alignItems: "center",
               justifyContent: "center",
               borderWidth: 1,
@@ -474,6 +495,21 @@ const SchemePointDetails = ({ navigation, route }) => {
             <PoppinsTextMedium
               style={{ color: "#171717", fontSize: 15, fontWeight: "600" }}
               content="MTD Boxes"
+            ></PoppinsTextMedium>
+          </View>
+          <View
+            style={{
+              width: "25%",
+              alignItems: "center",
+              justifyContent: "center",
+              borderWidth: 1,
+              borderColor: "#DDDDDD",
+              padding: 4,
+            }}
+          >
+            <PoppinsTextMedium
+              style={{ color: "#171717", fontSize: 15, fontWeight: "600" }}
+              content="Earn Point"
             ></PoppinsTextMedium>
           </View>
         </View>
@@ -634,7 +670,7 @@ const SchemePointDetails = ({ navigation, route }) => {
           return (
             <CategoryTab
               key={index}
-              points={item.pointsRewarded}
+              points={item.total_points}
               multiplier={item.point}
               noSubCategories={item.trigger_value}
               backGroundColor={item.matched}
@@ -666,12 +702,13 @@ const SchemePointDetails = ({ navigation, route }) => {
       >
         <View
           style={{
-            padding: 10,
-            width: "50%",
+            padding: 8,
+            width: "90%",
             alignItems: "center",
-            justifyContent: "flex-start",
+            justifyContent: "space-between",
             flexDirection: "row",
             marginLeft: 20,
+            marginTop:10
           }}
         >
           <PoppinsTextMedium
@@ -680,11 +717,13 @@ const SchemePointDetails = ({ navigation, route }) => {
           />
           <TouchableOpacity
             style={{
-              backgroundColor: ternaryThemeColor,
+              backgroundColor: 'white',
               paddingLeft: 10,
-              borderRadius: 6,
+              borderRadius: 30,
               padding: 6,
               marginLeft: 20,
+              borderWidth:1,
+
             }}
             onPress={() => setOpenStart(!openStart)}
           >
@@ -697,8 +736,8 @@ const SchemePointDetails = ({ navigation, route }) => {
               onCancel={() => setOpenStart(false)}
             />
             <PoppinsTextMedium
-              style={{ color: "white", fontWeight: "700" }}
-              content=" Select"
+            style={{color:"#808080"}}
+              content="Select Month & Year"
             />
           </TouchableOpacity>
         </View>
@@ -718,15 +757,6 @@ const SchemePointDetails = ({ navigation, route }) => {
           flexDirection: "row",
         }}
       >
-        <PoppinsTextMedium
-          style={{
-            color: "black",
-            fontSize: 16,
-            fontWeight: "600",
-            width: "40%",
-          }}
-          content={title}
-        ></PoppinsTextMedium>
         <FilterSchemeComponent></FilterSchemeComponent>
       </View>
     );
@@ -792,8 +822,8 @@ const SchemePointDetails = ({ navigation, route }) => {
             height: "90%",
           }}
         >
-          <FilterScheme title={"Sub-Category Purchase For"}></FilterScheme>
-          <View style={{ width: "90%", height: "30%" }}>
+          <FilterScheme title={"Filter Date"}></FilterScheme>
+          <View style={{ width: "90%", height: "30%", marginTop:20}}>
             {getSalesBoosterOrderData && type == "target category" && (
               <ShowCategoryTable
                 data={getSalesBoosterOrderData.body.triggers}

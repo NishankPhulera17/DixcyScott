@@ -17,10 +17,26 @@ export const GetOrderApi = baseApi.injectEndpoints({
               };
             },
           }),
+
+          getOrderHistoryDateWise: builder.mutation({
+            query: (params) => {
+                console.log("getProductSubCategoryById",params)
+              return {
+                method: "POST",
+                url: `/api/tenant/modenik/orders`,
+                headers: {
+                  Authorization: "Bearer " + params.token,
+                  slug: slug,
+                },
+                body: params.body,    
+              };
+            },
+          }),
+          
           
           
         }),
         
    });
    
-   export const {useGetOrderHistoryMutation} = GetOrderApi;
+   export const {useGetOrderHistoryMutation, useGetOrderHistoryDateWiseMutation} = GetOrderApi;

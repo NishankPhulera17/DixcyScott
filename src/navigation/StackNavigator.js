@@ -91,6 +91,7 @@ import TargetVsAchievement from '../screens/pointBooster/TargetVsAchievement';
 import BasePoints from '../screens/pointBooster/BasePoints';
 import BonusPoints from '../screens/pointBooster/BonusPoints';
 import TargetAchievementDetails from '../screens/scheme/TargetAchievementDetails';
+import ComingSoonScreen from '../comingsoon/ComingSoon';
 
 
 
@@ -111,6 +112,11 @@ const StackNavigator = () => {
                         headerShown: false
                     }
                 } name="TargetVsAchievement" component={TargetVsAchievement}></Stack.Screen>
+                   <Stack.Screen options={
+                    {
+                        headerShown: false
+                    }
+                } name="ComingSoonScreen" component={ComingSoonScreen}></Stack.Screen>
                 <Stack.Screen options={
                     {
                         headerShown: false

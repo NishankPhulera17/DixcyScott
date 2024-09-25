@@ -57,6 +57,28 @@ const BasePoints = ({navigation}) => {
     getToken()
   },[])
 
+
+  useEffect(()=>{
+    const getToken=async()=>{
+        const credentials = await Keychain.getGenericPassword();
+    const token = credentials.username;
+
+    const month = selectedDataStart.getMonth() + 1; // Adding 1 because getMonth() returns 0-based month (0 for January, 1 for February, etc.)
+    const year = selectedDataStart.getFullYear();
+    
+    console.log("monthyear prev", month,year)
+    const appUserId = userData.id
+    console.log("base selected date", selectedDataStart)
+    const body = {token:token,month:month,year:year,appUserId:appUserId}
+    getBasePointsFunc(body)
+
+    }
+    getToken()
+  },[selectedDataStart])
+
+
+  
+
   useEffect(()=>{
     if(getBasePointsData)
     {
@@ -69,60 +91,74 @@ const BasePoints = ({navigation}) => {
     }
   },[getBasePointsData,getBasePointsError])
 
-    const FilterSchemeComponent = React.memo((props) => {
-        const [openStart, setOpenStart] = useState(false);
-        
-    
-        const handleDateChange = (date) => {
-          setOpenStart(false);
-          setSelectedDataStart(date);
-          props.getDate(selectedDataStart);
-    
-        }
-      
-        return (
-          <View style={{ alignItems: 'center', justifyContent: 'flex-start', width: '100%', flexDirection: 'row', marginBottom: 10 }}>
-            <View
-              style={{
-                padding: 10,
-                width: "90%",
-                alignItems: "center",
-                justifyContent: "flex-start",
-                flexDirection: 'row',
-                marginLeft: 20
-              }}
-            >
-              <PoppinsTextMedium
-                content={`${moment(selectedDataStart).format("MM/YYYY")}`}
-                style={{ fontSize: 16, fontWeight: "700" }}
-              />
-              <TouchableOpacity
-                style={{
-                  backgroundColor: ternaryThemeColor,
-                  paddingLeft: 10,
-                  borderRadius: 6,
-                  padding: 6,
-                  marginLeft: 10
-                }}
-                onPress={() => setOpenStart(!openStart)}
-              >
-                <DatePicker
-                  modal
-                  mode="date"
-                  open={openStart}
-                  date={selectedDataStart}
-                  onConfirm={handleDateChange}
-                  onCancel={() => setOpenStart(false)}
-                />
-                <PoppinsTextMedium
-                  style={{ color: "white", fontWeight: "700" }}
-                  content="Select Date"
-                />
-              </TouchableOpacity>
-            </View>
-          </View>
-        );
-      });
+
+  const FilterSchemeComponent = React.memo((props) => {
+    const [openStart, setOpenStart] = useState(false);
+
+    const handleDateChange = (date) => {
+      setOpenStart(false);
+      setSelectedDataStart(date);
+      props.getDate(selectedDataStart);
+    };
+
+    return (
+      <View
+        style={{
+          alignItems: "center",
+          justifyContent: "flex-start",
+          width: "100%",
+          flexDirection: "row",
+          marginBottom: 10,
+        }}
+      >
+        <View
+          style={{
+            padding: 10,
+            width: "90%",
+            alignItems: "center",
+            justifyContent: "flex-start",
+            flexDirection: "row",
+            marginLeft: 20,
+          }}
+        >
+          <PoppinsTextMedium
+            content={`${moment(selectedDataStart).format("MMM YYYY")}`}
+            style={{ fontSize: 16, fontWeight: "700", color:'black', borderBottomWidth:0.5 }}
+          />
+          <TouchableOpacity
+            style={{
+              backgroundColor: 'white',
+              paddingLeft: 10,
+              borderRadius: 30,
+              paddingHorizontal:10,
+              paddingVertical:8,
+              marginLeft: 'auto',
+              borderWidth:0.5,
+              borderColor:'#808080',flexDirection:'row',
+              justifyContent:'center'
+            }}
+            onPress={() => setOpenStart(!openStart)}
+          >
+            <DatePicker
+              modal
+              mode="date"
+              open={openStart}
+              date={selectedDataStart}
+              onConfirm={handleDateChange}
+              onCancel={() => setOpenStart(false)}
+            />
+            <PoppinsTextMedium
+              style={{ color: "#808080", fontWeight: "600",marginRight:10 }}
+              content= {"Select Month & Year"}
+            />
+            <Image style={{height:13,width:12, resizeMode:'contain',marginTop:2,marginLeft:5}} source={require("../../../assets/images/arrowDown.png")}/>
+          </TouchableOpacity>
+        </View>
+      </View>
+    );
+  });
+
+
       const getSelectedDates = useCallback((startDate) => {
         // Convert the input start date to a JavaScript Date object
         const inputStartDate = new Date(startDate);
@@ -186,7 +222,7 @@ const BasePoints = ({navigation}) => {
             </View>
               </View>
              <View style={{width:'70%',alignItems:'flex-start',justifyContent:'center'}}>
-              <View style={{width:'100%',borderColor:'white',borderBottomWidth:1,alignItems:'flex-start',paddingBottom:4,marginTop:15}}>
+              <View style={{width:'100%',borderColor:'white',borderBottomWidth:1,alignItems:'flex-start',paddingBottom:4,marginTop:15,}}>
               <PoppinsTextMedium
                 style={{ color: "white", fontSize: 18, fontWeight: "700" }}
                 content={name}
@@ -199,7 +235,7 @@ const BasePoints = ({navigation}) => {
               ></PoppinsTextMedium>
               <PoppinsTextMedium
                 style={{ color: "white", fontSize: 12, fontWeight: "500",marginLeft:'60%' }}
-                content={props.data.points}
+                content={Number(props.data.points)}
               ></PoppinsTextMedium>
               </View>
               <View style={{width:'100%',alignItems:'flex-start',paddingBottom:6,flexDirection:"row",marginTop:4,marginBottom:10}}>
