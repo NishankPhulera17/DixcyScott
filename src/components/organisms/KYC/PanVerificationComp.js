@@ -98,7 +98,7 @@ const PanVerificationComp = (props) => {
               placeholder="Enter Pan Number"
                 maxLength={15}
                 onChangeText={(text) => {
-                  setPan(text);
+                  setPan(text.toUpperCase());
                 }}
                 style={{
                   alignItems: "center",
