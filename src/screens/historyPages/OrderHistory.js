@@ -49,6 +49,9 @@ const OrderHistory = ({ navigation }) => {
   console.log("userData mob", userData);
   const userId = useSelector((state) => state.appusersdata.id);
 
+  const [openBottomModal, setOpenBottomModal] = useState(false);
+
+
   const [
     getPointSharingFunc,
     {
@@ -197,11 +200,18 @@ const OrderHistory = ({ navigation }) => {
         alert("Kindly enter proper end date");
         startDate = undefined;
         endDate = undefined;
+        // FilterModal(false)
+      setOpenBottomModal(false)
+
       } else {
         fetchPointHistoryData(startDate, endDate);
+      setOpenBottomModal(false)
+
       }
     } else {
       alert("Kindly enter a valid date");
+      
+      setOpenBottomModal(false)
       startDate = undefined;
       endDate = undefined;
     }
@@ -364,7 +374,6 @@ const OrderHistory = ({ navigation }) => {
   };
   //header
   const Header = () => {
-    const [openBottomModal, setOpenBottomModal] = useState(false);
     const [message, setMessage] = useState();
     const modalClose = () => {
       setOpenBottomModal(false);

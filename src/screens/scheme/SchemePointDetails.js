@@ -16,10 +16,13 @@ import moment from "moment";
 import DatePicker from "react-native-date-picker";
 import { useGetSalesBoosterOrderMutation } from "../../apiServices/salesBooster/salesBoosterApi";
 import * as Keychain from "react-native-keychain";
+import PoppinsTextLeftMedium from "../../components/electrons/customFonts/PoppinsTextLeftMedium";
 
 const SchemePointDetails = ({ navigation, route }) => {
   const [selectedDataStart, setSelectedDataStart] = useState(new Date());
   const [searchTitle, setSearchTitle] = useState();
+  const [basePoint, setBasePoints] = useState();
+
   const type = route.params.type;
   const schemeData = route.params.data;
   const secondaryThemeColor = useSelector(
@@ -92,10 +95,16 @@ const SchemePointDetails = ({ navigation, route }) => {
         "getSalesBoosterOrderData",
         JSON.stringify(getSalesBoosterOrderData)
       );
+      const arr = getSalesBoosterOrderData?.body?.triggers.filter(
+        (item) => item?.matched == true
+      );
+      const base_point = arr.length > 0 ? Number(arr[0].base_points) : 0;
       // if(getSalesBoosterOrderData.body.type == "purchase limit")
       // {
 
       // }
+      console.log("basePoint11", base_point);
+      setBasePoints(base_point);
     } else if (getSalesBoosterOrderError) {
       console.log("getSalesBoosterOrderError", getSalesBoosterOrderError);
     }
@@ -161,7 +170,7 @@ const SchemePointDetails = ({ navigation, route }) => {
                 color: "white",
                 width: "20%",
               }}
-              content={points}
+              content={props.isLast ? `<=${points}`: points}
             ></PoppinsTextMedium>
           </View>
         </View>
@@ -222,6 +231,7 @@ const SchemePointDetails = ({ navigation, route }) => {
           return (
             <CategoryTab
               key={index}
+              isLast= {data.length-1 == index}
               index={index + 1}
               matched={item.matched}
               points={item.points}
@@ -329,7 +339,7 @@ const SchemePointDetails = ({ navigation, route }) => {
                 fontSize: 15,
                 fontWeight: "600",
               }}
-              content={boxes}
+              content={Number(boxes)}
             ></PoppinsTextMedium>
           </View>
           <View
@@ -348,7 +358,7 @@ const SchemePointDetails = ({ navigation, route }) => {
                 fontSize: 15,
                 fontWeight: "600",
               }}
-              content={bonusPoints}
+              content={bonusPoints+"%"}
             ></PoppinsTextMedium>
           </View>
           <View
@@ -367,7 +377,7 @@ const SchemePointDetails = ({ navigation, route }) => {
                 fontSize: 15,
                 fontWeight: "600",
               }}
-              content={matched ? mtdBoxes : ""}
+              content={matched ? Number(mtdBoxes) : ""}
             ></PoppinsTextMedium>
           </View>
           <View
@@ -386,7 +396,7 @@ const SchemePointDetails = ({ navigation, route }) => {
                 fontSize: 15,
                 fontWeight: "600",
               }}
-              content={matched ? earnPoint : ""}
+              content={matched ? Number(earnPoint) : ""}
             ></PoppinsTextMedium>
           </View>
         </View>
@@ -418,7 +428,7 @@ const SchemePointDetails = ({ navigation, route }) => {
           <PoppinsTextMedium
             style={{ color: "#171717", fontSize: 16, fontWeight: "600" }}
             // content="No. of Boxes Bought (MTD)"
-            content = "Monthly Volume Based Multiplier"
+            content="Monthly Volume Based Multiplier"
           ></PoppinsTextMedium>
           <PoppinsTextMedium
             style={{
@@ -440,7 +450,7 @@ const SchemePointDetails = ({ navigation, route }) => {
         >
           <PoppinsTextMedium
             style={{ color: "#171717", fontSize: 16, fontWeight: "600" }}
-            content="Monthly Vo. Based Multiplier"
+            content="Monthly Vol Based Multiplier"
           ></PoppinsTextMedium>
         </View>
         <View
@@ -595,7 +605,7 @@ const SchemePointDetails = ({ navigation, route }) => {
                 fontSize: 14,
                 color: backGroundColor ? "white" : "black",
               }}
-              content={points}
+              content={  points}
             ></PoppinsTextMedium>
           </View>
         </View>
@@ -708,22 +718,21 @@ const SchemePointDetails = ({ navigation, route }) => {
             justifyContent: "space-between",
             flexDirection: "row",
             marginLeft: 20,
-            marginTop:10
+            marginTop: 10,
           }}
         >
           <PoppinsTextMedium
             content={`${moment(selectedDataStart).format("MM/YYYY")}`}
-            style={{ fontSize: 16, fontWeight: "700" }}
+            style={{ fontSize: 16, fontWeight: "700", color: "black" }}
           />
           <TouchableOpacity
             style={{
-              backgroundColor: 'white',
+              backgroundColor: "white",
               paddingLeft: 10,
               borderRadius: 30,
               padding: 6,
               marginLeft: 20,
-              borderWidth:1,
-
+              borderWidth: 1,
             }}
             onPress={() => setOpenStart(!openStart)}
           >
@@ -736,7 +745,7 @@ const SchemePointDetails = ({ navigation, route }) => {
               onCancel={() => setOpenStart(false)}
             />
             <PoppinsTextMedium
-            style={{color:"#808080"}}
+              style={{ color: "#808080" }}
               content="Select Month & Year"
             />
           </TouchableOpacity>
@@ -823,21 +832,79 @@ const SchemePointDetails = ({ navigation, route }) => {
           }}
         >
           <FilterScheme title={"Filter Date"}></FilterScheme>
-          <View style={{ width: "90%", height: "30%", marginTop:20}}>
+     
+          <View style={{ width: "90%", height: "30%", marginTop: 20 }}>
+          {
+            type=="target category" &&
+            <View
+            style={{
+              width: "100%",
+              alignItems: "center",
+              justifyContent: "space-evenly",
+              flexDirection: "row",
+              backgroundColor: ternaryThemeColor,
+              height: 40,
+            }}
+          >
+            <PoppinsTextLeftMedium
+              style={{
+                fontWeight: "800",
+                fontSize: 15,
+                color: "white",
+                width: "52%",
+              }}
+              content="Total Points"
+            ></PoppinsTextLeftMedium>
+
+            <View
+              style={{ height: "100%", width: 2, backgroundColor: "white" }}
+            ></View>
+            <PoppinsTextMedium
+              style={{
+                fontWeight: "800",
+                fontSize: 15,
+                color: "white",
+                width: "20%",
+              }}
+              content={basePoint}
+            ></PoppinsTextMedium>
+            {console.log(
+              "my data duta",
+              getSalesBoosterOrderData?.body?.triggers
+            )}
+          </View>
+          }
+          
             {getSalesBoosterOrderData && type == "target category" && (
               <ShowCategoryTable
                 data={getSalesBoosterOrderData.body.triggers}
               ></ShowCategoryTable>
             )}
+
             {getSalesBoosterOrderData && type == "purchase limit" && (
               <ShowBoxDetails
                 data={getSalesBoosterOrderData.body.triggers}
               ></ShowBoxDetails>
             )}
           </View>
+
           <ScrollView
-            contentContainerStyle={{ alignItems: "center", width: "100%" }}
+            contentContainerStyle={{
+              width: "100%",
+              marginTop: 20,
+              paddingBottom: 20,
+            }}
           >
+            {type == "target category" && (
+              <View>
+                <Text
+                  style={{ color: "black", fontWeight: "800", marginTop: 20 }}
+                >
+                  STYLE WISE BASIC POINTS
+                </Text>
+              </View>
+            )}
+
             {getSalesBoosterOrderData && type == "target category" && (
               <ShowDoneCategoriesTable
                 data={getSalesBoosterOrderData.body?.ranges}

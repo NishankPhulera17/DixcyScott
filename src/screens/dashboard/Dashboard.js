@@ -520,6 +520,15 @@ const Dashboard = ({ navigation }) => {
 
           </ScrollView> */}
           {dashboardData && !userPointIsLoading && <DashboardMenuBox requiresLocation = {requiresLocation} navigation={navigation} data={dashboardData}></DashboardMenuBox>}
+
+          {/* <View>
+          <TouchableOpacity onPress={()=>{
+               navigation.navigate('PdfComponent', { pdf: "https://genefied-saas-partner-staging.s3.ap-south-1.amazonaws.com/Vijeta+Annual+Scheme+2024+FV+3-5-24+18-9-2024.pdf"})
+            }} style={{width:'100%',height:80,alignItems:'center',justifyContent:'center',borderRadius:4}}>
+            <Image source={require('../../../assets/images/vijeta.png')} style={{width:200,height:200}} resizeMode='contain'></Image>
+            </TouchableOpacity>
+          </View> */}
+
           {
         userPointIsLoading && <FastImage
           style={{ width: 100, height: 100, alignSelf: 'center',marginTop:20 }}
@@ -535,11 +544,13 @@ const Dashboard = ({ navigation }) => {
           </View>
           {/* <View style={{ flexDirection: "row", width: '100%', alignItems: "center", justifyContent: 'space-evenly' }}> */}
           <ScrollView contentContainerStyle={{}}  horizontal={true}>
+          <DashboardSupportBox title={t("Program Brochure")} text="program brochure" backgroundColor="#D8C8C8" borderColor="#FDDADA" image={require('../../../assets/images/vijetaDashboard.png')} ></DashboardSupportBox>
+
           <DashboardSupportBox title={"Product Catalogue"} text="product" backgroundColor="#FBFFC6" borderColor="#FEE8D4" image={require('../../../assets/images/productCatalogue.png')} ></DashboardSupportBox>
             <DashboardSupportBox title={t("Media")} text="media" backgroundColor="#D9C7B6" borderColor="#FEE8D4" image={require('../../../assets/images/mediaDashboard.png')} ></DashboardSupportBox>
             <DashboardSupportBox title={t("customer support")} text="Customer Support" backgroundColor="#BCB5DC" borderColor="#E4E0FC" image={require('../../../assets/images/support.png')} ></DashboardSupportBox>
             <DashboardSupportBox title={t("feedback")} text="Feedback" backgroundColor="#D8C8C8" borderColor="#FDDADA" image={require('../../../assets/images/feedback.png')} ></DashboardSupportBox>
-           
+            
             
             </ScrollView>
           {/* </View> */}

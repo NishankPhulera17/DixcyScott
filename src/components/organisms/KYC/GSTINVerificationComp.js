@@ -108,7 +108,7 @@ const GSTINVerificationComp = (props) => {
                 placeholder="Enter GSTIN Number"
                 maxLength={15}
                 onChangeText={(text) => {
-                  setGstin(text);
+                  setGstin(text.toLocaleUpperCase());
                 }}
                 style={{
                   alignItems: "center",

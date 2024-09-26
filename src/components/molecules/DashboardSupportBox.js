@@ -34,6 +34,10 @@ const handleNavigation=()=>{
             {
                 navigation.navigate('VideoGallery')
             }
+            else if(text ==="program brochure"){
+               navigation.navigate('PdfComponent', { pdf: "https://genefied-saas-partner-staging.s3.ap-south-1.amazonaws.com/Vijeta+Annual+Scheme+2024+FV+3-5-24+18-9-2024.pdf"})
+
+            }
 }
 
     return (

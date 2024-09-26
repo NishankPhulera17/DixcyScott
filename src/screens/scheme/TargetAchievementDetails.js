@@ -108,34 +108,7 @@ const TargetAchievementDetails = ({ navigation, route }) => {
   console.log("selected date", selectedDataStart);
 
   const Show2020Details = (props) => {
-    const data =  [
-      {
-          "id": 14,
-          "sb_id": 7,
-          "trigger_on": "purchase limit",
-          "trigger_value": 20,
-          "offer_type": "S",
-          "point": null,
-          "gift_id": 2,
-          "coupon": null,
-          "wheel_campaign_id": null,
-          "cashback": null,
-          "point_probability": 0,
-          "gift_probability": 0,
-          "coupon_probability": 0,
-          "wheel_campaign_probability": 0,
-          "cashback_probability": 0,
-          "status": "1",
-          "created_at": "2024-09-24T06:43:05.520Z",
-          "created_by_id": 1,
-          "created_by_name": "modenik",
-          "updated_at": "2024-09-24T06:43:05.520Z",
-          "updated_by_id": 1,
-          "updated_by_name": "modenik",
-          "name": "Super 20-20 Scheme (2024)",
-          "matched": false
-      }
-  ]
+    const data =  props.data
     
 
     
@@ -148,6 +121,8 @@ const TargetAchievementDetails = ({ navigation, route }) => {
       const points = props.points;
       const matched = props.matched;
       const item = props.item;
+      const boxes = props.boxes;
+      
 
       return (
         <View
@@ -166,7 +141,7 @@ const TargetAchievementDetails = ({ navigation, route }) => {
               alignItems: "center",
               justifyContent: "space-evenly",
               flexDirection: "row",
-              backgroundColor: "white",
+              backgroundColor: item?.matched ? "#5CA509" : "white",
               height: 36,
             }}
           >
@@ -175,7 +150,7 @@ const TargetAchievementDetails = ({ navigation, route }) => {
               style={{
                 fontWeight: "600",
                 fontSize: 14,
-                color: "black",
+                color:item?.matched ? 'white' : "black",
                 width: "40%",
                 textAlign: "center", // Center the text
                 borderRightWidth: 1, // Add right border
@@ -190,14 +165,14 @@ const TargetAchievementDetails = ({ navigation, route }) => {
               style={{
                 fontWeight: "600",
                 fontSize: 14,
-                color: "black",
+                color:item?.matched ? 'white' : "black",
                 width: "54%",
                 textAlign: "center", // Center the text
                 borderRightWidth: 1, // Add right border
                 borderColor: "black",
                 paddingVertical: 8, // Adjust for better vertical alignment
               }}
-              content={item.purchaged}
+              content={props.boxes}
             />
 
             {/* Third column (Gift) */}
@@ -205,7 +180,7 @@ const TargetAchievementDetails = ({ navigation, route }) => {
               style={{
                 fontWeight: "600",
                 fontSize: 14,
-                color: "black",
+                color:item?.matched ? 'white' : "black",
                 width: "40%",
                 textAlign: "center", // Center the text
                 paddingVertical: 8, // Adjust for better vertical alignment
@@ -276,6 +251,7 @@ const TargetAchievementDetails = ({ navigation, route }) => {
               style={item.name}
               // brand={item.brand}
               item={item}
+              boxes = {item.matched==true ?  item.total_boxes :""}
             ></CategoryTab>
           );
         })}
@@ -599,7 +575,7 @@ const TargetAchievementDetails = ({ navigation, route }) => {
         >
           <PoppinsTextMedium
             style={{ color: "#171717", fontSize: 16, fontWeight: "600" }}
-            content="Monthly Vo. Based Multiplier"
+            content="Monthly Vol Based Multiplier"
           ></PoppinsTextMedium>
         </View>
         <View
@@ -818,6 +794,7 @@ const TargetAchievementDetails = ({ navigation, route }) => {
               multiplier={item.point}
               noSubCategories={item.trigger_value}
               backGroundColor={item.matched}
+              boxes ={item.matched == true ? item.total_boxes : ""}
             ></CategoryTab>
           );
         })}
