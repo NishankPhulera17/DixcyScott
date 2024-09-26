@@ -632,7 +632,7 @@ export default function Scheme({ navigation }) {
       >
         <View
           style={{
-            height: "60%",
+            height: "50%",
             width: "100%",
             flexDirection: "row",
             alignItems: "flex-start",
@@ -708,7 +708,7 @@ export default function Scheme({ navigation }) {
                 content={name}
               ></PoppinsTextMedium>
             </View>
-            <View
+            {/* <View
               style={{
                 width: "100%",
                 borderColor: "white",
@@ -732,14 +732,14 @@ export default function Scheme({ navigation }) {
                 }}
                 content={earnedPoints}
               ></PoppinsTextMedium>
-            </View>
+            </View> */}
             <View
               style={{
                 width: "100%",
                 alignItems: "flex-start",
                 paddingBottom: 6,
                 flexDirection: "row",
-                marginTop: 4,
+                marginTop: 10,
               }}
             >
               <View
@@ -778,7 +778,7 @@ export default function Scheme({ navigation }) {
           </View>
         </View>
         <View
-          style={{ width: "96%", height: 1, backgroundColor: "white" }}
+          style={{ width: "96%", height: 1, backgroundColor: "white", marginVertical:10 }}
         ></View>
         <View
           style={{

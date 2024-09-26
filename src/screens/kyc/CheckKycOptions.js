@@ -122,7 +122,7 @@ const CheckKycOptions = ({navigation,route}) => {
       setClickedSubmit(true)
       setModalWithBorder(true)
       setGotShopImage(false)
-      setMessage("Congratulation, your account has been successfully updated.")
+      setMessage("Congratulation, You are successfully Enrolled in the Modenik Vijeta retailer Loyalty program.")
       createValidatedJson(updateProfileData?.body)
       // setTimeout(() => {
       //   console.log("running2")

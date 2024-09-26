@@ -237,7 +237,7 @@ const TargetAchievementDetails = ({ navigation, route }) => {
               color: "white",
               width: "20%",
             }}
-            content="Gift Earned"
+            content="Combo Achievement"
           ></PoppinsTextMedium>
         </View>
 

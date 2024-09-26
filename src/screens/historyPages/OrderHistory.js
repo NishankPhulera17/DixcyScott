@@ -97,13 +97,14 @@ const OrderHistory = ({ navigation }) => {
       const credentials = await Keychain.getGenericPassword();
       const token = credentials.username;
 
-      const today = new Date();
+      const month = new Date().getMonth() + 1;
+      const year = new Date().getFullYear();
 
       // Get the first day of the current month
       const firstDayOfMonth = new Date(today.getFullYear(), today.getMonth(), 1);
       
       // Format dates to "YYYY-MM-DD"
-      const formattedFirstDay = firstDayOfMonth.toISOString().split('T')[0];
+      const formattedFirstDay = `${year}-${month}-01`;
       const formattedToday = today.toISOString().split('T')[0];
       
       console.log("today",{
@@ -571,7 +572,7 @@ const OrderHistory = ({ navigation }) => {
           )}
           <PoppinsTextMedium
             style={{ color: "black", fontSize: 14, color: "black" }}
-            content="Lifetime Burns"
+            content="Lifetime Redemptions"
           ></PoppinsTextMedium>
         </View>
         {/* <TouchableOpacity style={{ borderRadius: 2, height: 40, width: 100, backgroundColor: "#FFD11E", alignItems: "center", justifyContent: "center", marginLeft: 20, color: 'black' }}>
@@ -631,7 +632,7 @@ const OrderHistory = ({ navigation }) => {
           ) : (
             <Image
               style={{ height: 40, width: 40, resizeMode: "contain" }}
-              source={require("../../../assets/images/box.png")}
+              source={require("../../../assets/images/coinDixy.png")}
             ></Image>
           )}
         </View>
@@ -649,14 +650,14 @@ const OrderHistory = ({ navigation }) => {
           {type !== "registration_bonus" && (
             <PoppinsTextMedium
               style={{ fontWeight: "700", fontSize: 15, color: "black" }}
-              content={`Invoice No. : ${description}`}
+              content={ billType ? `Invoice No : ${description}` : `GR No : ${description}` }
             ></PoppinsTextMedium>
           )}
 
           {type !== "registration_bonus" && (
             <PoppinsTextMedium
               style={{ fontSize: 15, color: "black", marginTop: 5 }}
-              content={`Total Units. : ${qty}`}
+              content={`Total Qty : ${Number(qty)}`}
             ></PoppinsTextMedium>
           )}
           {type === "registration_bonus" && (
@@ -714,24 +715,26 @@ const OrderHistory = ({ navigation }) => {
             width: "26%",
           }}
         >
-          <View style={{ flexDirection: "row" }}>
+          <View style={{ flexDirection: "row", alignItems : "center" , justifyContent : "center" }}>
             <Image
               style={{ height: 20, width: 20, resizeMode: "contain" }}
               source={
                 !billType== true
-                  ? require("../../../assets/images/minus_wallet.png")
-                  : require("../../../assets/images/wallet.png")
+                // require("../../../assets/images/minus_wallet.png")
+                  ? require("../../../assets/images/coinDixy.png")
+                  : require("../../../assets/images/coinDixy.png")
+                  // require("../../../assets/images/wallet.png")
               }
             ></Image>
             <PoppinsTextMedium
               style={{
                 color: "#91B406",
-                fontSize: 14,
+                fontSize: 16,
                 color: !billType == true ? "red" : "black",
               }}
               content={`${
-                billType ? " +" : "-" 
-              } ${amount}`}
+                billType ? " +" : " -" 
+              } ${Number(amount)}`}
             ></PoppinsTextMedium>
           </View>
           {is_reverted && (
@@ -834,13 +837,15 @@ const OrderHistory = ({ navigation }) => {
         </View>
         <Image
           style={{
-            height: 80,
+            height: 50,
             width: "30%",
             resizeMode: "contain",
             position: "absolute",
             right: 20,
           }}
           source={require("../../../assets/images/points.png")}
+          // source={require("../../../assets/images/coinDixy.png")}
+
         ></Image>
       </View>
 

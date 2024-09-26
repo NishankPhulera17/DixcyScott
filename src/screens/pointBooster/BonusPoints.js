@@ -381,6 +381,8 @@ const BonusPoints = ({ navigation }) => {
   };
 
   return (
+   
+
     <View
       style={{
         alignItems: "center",
@@ -426,6 +428,8 @@ const BonusPoints = ({ navigation }) => {
           }}
         ></PoppinsTextMedium>
       </View>
+
+     
       <View
         style={{
           borderTopRightRadius: 30,
@@ -436,7 +440,7 @@ const BonusPoints = ({ navigation }) => {
           justifyContent: "flex-start",
           width: "100%",
           paddingBottom: 10,
-          height: "90%",
+          height: "92%",
         }}
       >
         {
@@ -444,10 +448,7 @@ const BonusPoints = ({ navigation }) => {
             getDate={getSelectedDates}
           ></FilterSchemeComponent>
         }
-        <ScrollView
-          contentContainerStyle={{ alignItems: "center", height: "100%" }}
-          style={{ width: "100%" }}
-        >
+    
           {getBonusPointsData && (
             <NewSchemeComponent
               data={getBonusPointsData?.body}
@@ -458,14 +459,14 @@ const BonusPoints = ({ navigation }) => {
               earnedPoints={400}
             ></NewSchemeComponent>
           )}
-          <View style={{  marginBottom:40 }}>
+          <View style={{  marginBottom:40, }}>
             <Image
-              style={{ height: 400, width: 400, marginTop: 40 }}
+              style={{  marginTop: 40, height:300, width:300 }}
               source={require("../../../assets/images/cardBonus.png")}
             />
           </View>
-        </ScrollView>
       </View>
+   
     </View>
   );
 };

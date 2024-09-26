@@ -234,7 +234,7 @@ const BasePoints = ({navigation}) => {
                 content={"Total Earn Points"}
               ></PoppinsTextMedium>
               <PoppinsTextMedium
-                style={{ color: "white", fontSize: 12, fontWeight: "500",marginLeft:'60%' }}
+                style={{ color: "white", fontSize: 12, fontWeight: "500",marginLeft:'50%' }}
                 content={Number(props.data.points)}
               ></PoppinsTextMedium>
               </View>

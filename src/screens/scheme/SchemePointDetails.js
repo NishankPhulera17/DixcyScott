@@ -33,7 +33,7 @@ const SchemePointDetails = ({ navigation, route }) => {
   );
 
   const userData = useSelector((state) => state.appusersdata.userData);
-  console.log("userdata", userData);
+  console.log("schemeData", schemeData);
 
   const [
     getSalesBoosterOrderFunc,
@@ -428,7 +428,7 @@ const SchemePointDetails = ({ navigation, route }) => {
           <PoppinsTextMedium
             style={{ color: "#171717", fontSize: 16, fontWeight: "600" }}
             // content="No. of Boxes Bought (MTD)"
-            content="Monthly Volume Based Multiplier"
+            content={schemeData?.name}
           ></PoppinsTextMedium>
           <PoppinsTextMedium
             style={{
@@ -502,6 +502,7 @@ const SchemePointDetails = ({ navigation, route }) => {
               padding: 4,
             }}
           >
+            
             <PoppinsTextMedium
               style={{ color: "#171717", fontSize: 15, fontWeight: "600" }}
               content="MTD Boxes"
@@ -523,11 +524,12 @@ const SchemePointDetails = ({ navigation, route }) => {
             ></PoppinsTextMedium>
           </View>
         </View>
+    
         {data &&
           data.map((item, index) => {
             return <MultiplierBox data={item}></MultiplierBox>;
           })}
-        <TotalBox total={total}></TotalBox>
+        {/* <TotalBox total={total}></TotalBox> */}
       </View>
     );
   };
@@ -772,6 +774,7 @@ const SchemePointDetails = ({ navigation, route }) => {
   };
   return (
     <View>
+      
       <View
         style={{
           alignItems: "center",
@@ -832,6 +835,8 @@ const SchemePointDetails = ({ navigation, route }) => {
           }}
         >
           <FilterScheme title={"Filter Date"}></FilterScheme>
+
+      
      
           <View style={{ width: "90%", height: "30%", marginTop: 20 }}>
           {
@@ -898,7 +903,7 @@ const SchemePointDetails = ({ navigation, route }) => {
             {type == "target category" && (
               <View>
                 <Text
-                  style={{ color: "black", fontWeight: "800", marginTop: 20 }}
+                  style={{ color: "black", fontWeight: "800", marginTop: "13%" }}
                 >
                   STYLE WISE BASIC POINTS
                 </Text>

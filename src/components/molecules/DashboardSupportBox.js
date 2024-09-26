@@ -11,6 +11,7 @@ const DashboardSupportBox = (props) => {
    const borderColor =props?.borderColor
     const fontWeight =Platform.OS==='ios' ? '400' : '800'
     const fontSize =Platform.OS==='ios' ? 10 : 12
+    const pdfLink = props?.pdf
 
     // console.log("text support",text)
 
@@ -35,7 +36,7 @@ const handleNavigation=()=>{
                 navigation.navigate('VideoGallery')
             }
             else if(text ==="program brochure"){
-               navigation.navigate('PdfComponent', { pdf: "https://genefied-saas-partner-staging.s3.ap-south-1.amazonaws.com/Vijeta+Annual+Scheme+2024+FV+3-5-24+18-9-2024.pdf"})
+               navigation.navigate('PdfComponent', { pdf: pdfLink })
 
             }
 }

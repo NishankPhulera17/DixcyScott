@@ -38,6 +38,7 @@ import ErrorModal from '../../components/modals/ErrorModal';
 import { useTranslation } from 'react-i18next';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { needCaimpaign } from '../../utils/HandleClientSetup';
+import { useFetchLegalsMutation } from '../../apiServices/fetchLegal/FetchLegalApi';
 
 
 
@@ -94,6 +95,16 @@ const Dashboard = ({ navigation }) => {
     isError: getKycStatusIsError
   }] = useGetkycStatusMutation()
 
+  const [
+    getPdfScheme,
+    {
+      data: getTermsData,
+      error: getTermsError,
+      isLoading: termsLoading,
+      isError: termsIsError,
+    },
+  ] = useFetchLegalsMutation();
+
   const [userPointFunc, {
     data: userPointData,
     error: userPointError,
@@ -135,6 +146,36 @@ const Dashboard = ({ navigation }) => {
     }
     
   },[locationSetup])
+
+
+  const [programBrochure, setProgramBrochure] = useState(null);
+
+  useEffect(() => {
+    // console.log("currentVersion", currentVersion);
+
+
+
+      const fetchTerms = async () => {
+        // const credentials = await Keychain.getGenericPassword();
+        // const token = credentials.username;
+        const params = {
+          type: "yearly-scheme",
+        };
+        getPdfScheme(params);
+      };
+      fetchTerms();
+
+
+
+    
+  }, []);
+
+  useEffect(()=>{
+    if(getTermsData && getTermsData.body && getTermsData.body.data && getTermsData.body.data.length > 0){
+      console.log("getTermsData dash", getTermsData.body?.data[0])
+      setProgramBrochure(getTermsData.body.data[0]);
+    }
+  },[getTermsData])
 
   useEffect(() => {
     const handleBackPress = () => {
@@ -544,7 +585,7 @@ const Dashboard = ({ navigation }) => {
           </View>
           {/* <View style={{ flexDirection: "row", width: '100%', alignItems: "center", justifyContent: 'space-evenly' }}> */}
           <ScrollView contentContainerStyle={{}}  horizontal={true}>
-          <DashboardSupportBox title={t("Program Brochure")} text="program brochure" backgroundColor="#D8C8C8" borderColor="#FDDADA" image={require('../../../assets/images/vijetaDashboard.png')} ></DashboardSupportBox>
+          <DashboardSupportBox title={t("Program Brochure")} text="program brochure" backgroundColor="#D8C8C8" borderColor="#FDDADA" image={require('../../../assets/images/vijetaDashboard.png')} pdf={programBrochure.files.length> 0 ? programBrochure.files[0] : "" } ></DashboardSupportBox>
 
           <DashboardSupportBox title={"Product Catalogue"} text="product" backgroundColor="#FBFFC6" borderColor="#FEE8D4" image={require('../../../assets/images/productCatalogue.png')} ></DashboardSupportBox>
             <DashboardSupportBox title={t("Media")} text="media" backgroundColor="#D9C7B6" borderColor="#FEE8D4" image={require('../../../assets/images/mediaDashboard.png')} ></DashboardSupportBox>
