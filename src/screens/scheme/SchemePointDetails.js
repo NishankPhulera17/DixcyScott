@@ -145,7 +145,7 @@ const SchemePointDetails = ({ navigation, route }) => {
                 fontWeight: "600",
                 fontSize: 14,
                 color: "white",
-                width: "13%",
+                width: "20%",
               }}
               content={index}
             ></PoppinsTextMedium>
@@ -154,7 +154,7 @@ const SchemePointDetails = ({ navigation, route }) => {
                 fontWeight: "600",
                 fontSize: 14,
                 color: "white",
-                width: "63%",
+                width: "80%",
               }}
               content={style}
             ></PoppinsTextMedium>
@@ -163,7 +163,7 @@ const SchemePointDetails = ({ navigation, route }) => {
               style={{ height: "100%", width: 2, backgroundColor: "white" }}
             ></View>
 
-            <PoppinsTextMedium
+            {/* <PoppinsTextMedium
               style={{
                 fontWeight: "600",
                 fontSize: 14,
@@ -171,7 +171,7 @@ const SchemePointDetails = ({ navigation, route }) => {
                 width: "20%",
               }}
               content={props.isLast ? `<=${points}`: points}
-            ></PoppinsTextMedium>
+            ></PoppinsTextMedium> */}
           </View>
         </View>
       );
@@ -200,31 +200,31 @@ const SchemePointDetails = ({ navigation, route }) => {
               fontWeight: "800",
               fontSize: 15,
               color: "white",
-              width: "13%",
+              width: "20%",
             }}
-            content="Index"
+            content="S NO."
           ></PoppinsTextMedium>
           <PoppinsTextMedium
             style={{
               fontWeight: "800",
               fontSize: 15,
               color: "white",
-              width: "63%",
+              width: "80%",
             }}
             content="STYLE"
           ></PoppinsTextMedium>
           <View
             style={{ height: "100%", width: 2, backgroundColor: "white" }}
           ></View>
-          <PoppinsTextMedium
+          {/* <PoppinsTextMedium
             style={{
               fontWeight: "800",
               fontSize: 15,
               color: "white",
               width: "20%",
             }}
-            content="POINTS"
-          ></PoppinsTextMedium>
+            content="PPp"
+          ></PoppinsTextMedium> */}
         </View>
 
         {data.map((item, index) => {
@@ -239,7 +239,8 @@ const SchemePointDetails = ({ navigation, route }) => {
               brand={item.brand}
             ></CategoryTab>
           );
-        })}
+        }
+        )}
       </View>
     );
   };
@@ -542,6 +543,7 @@ const SchemePointDetails = ({ navigation, route }) => {
       const noSubCategories = props.noSubCategories;
       const multiplier = props.multiplier;
       const points = props.points;
+      const isLast = props.isLast;
       return (
         <View
           style={{
@@ -571,7 +573,7 @@ const SchemePointDetails = ({ navigation, route }) => {
                 fontSize: 14,
                 color: backGroundColor ? "white" : "black",
               }}
-              content={noSubCategories}
+              content={ isLast ? `>=${Number(noSubCategories)}` :  Number(noSubCategories)}
             ></PoppinsTextMedium>
           </View>
           <View
@@ -590,7 +592,7 @@ const SchemePointDetails = ({ navigation, route }) => {
                 fontSize: 14,
                 color: backGroundColor ? "white" : "black",
               }}
-              content={multiplier}
+              content={  multiplier}
             ></PoppinsTextMedium>
           </View>
           <View
@@ -686,6 +688,7 @@ const SchemePointDetails = ({ navigation, route }) => {
               multiplier={item.point}
               noSubCategories={item.trigger_value}
               backGroundColor={item.matched}
+              isLast={data.length -1 == index ? true : false}
             ></CategoryTab>
           );
         })}
