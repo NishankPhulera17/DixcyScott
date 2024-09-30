@@ -684,7 +684,9 @@ const PasswordLogin = ({ navigation, route }) => {
           <TouchableOpacity onPress={() => {
             navigation.navigate('PdfComponent', { pdf: getTermsData.body.data?.[0]?.files[0] })
           }}>
-            <PoppinsTextLeftMedium content={t("I agree to the Terms & Conditions")} style={{ color: '#808080', marginHorizontal: 30, marginBottom: 20, fontSize: 15, marginLeft: 8, marginTop: 16 }}></PoppinsTextLeftMedium>
+            <PoppinsTextLeftMedium content={"I agree"} style={{ color: '#808080', marginHorizontal: 30, marginBottom: 20, fontSize: 15, marginLeft: 8, marginTop: 16 }}></PoppinsTextLeftMedium>
+            <PoppinsTextLeftMedium content={"Terms & Conditions"} style={{ color:ternaryThemeColor, marginHorizontal: 30, marginBottom: 20, fontSize: 15, marginLeft: 8, marginTop: 16 }}></PoppinsTextLeftMedium>
+
           </TouchableOpacity>
         </View>
 

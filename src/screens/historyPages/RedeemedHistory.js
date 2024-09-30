@@ -17,6 +17,7 @@ import { useGetkycStatusMutation } from '../../apiServices/kyc/KycStatusApi';
 import PoppinsTextLeftMedium from '../../components/electrons/customFonts/PoppinsTextLeftMedium';
 import InputDate from '../../components/atoms/input/InputDate';
 import { useTranslation } from 'react-i18next';
+import RewardBox from '../../components/molecules/RewardBox';
 
 const RedeemedHistory = ({ navigation }) => {
   const [message, setMessage] = useState();
@@ -349,7 +350,9 @@ const RedeemedHistory = ({ navigation }) => {
             </View>
           </View>
         </Modal>
-        {userPointData && <View style={{ alignItems: "center", justifyContent: "center" }}>
+
+        {/* DIXY CHANGES */}
+        {/* {userPointData && <View style={{ alignItems: "center", justifyContent: "center" }}>
           <PoppinsText style={{ color: "black" }} content={userPointData.body.point_earned}></PoppinsText>
           <PoppinsTextMedium style={{ color: "black", fontSize: 14, width:100 }} content={t("lifetime earnings")}></PoppinsTextMedium>
         </View>
@@ -363,7 +366,9 @@ const RedeemedHistory = ({ navigation }) => {
           handleRedeemButtonPress()
         }} style={{ borderRadius: 2, height: 40, width: 100, backgroundColor: "#FFD11E", alignItems: "center", justifyContent: "center", marginLeft: 20 }}>
           <PoppinsTextMedium style={{ color: 'black' }} content={t("redeem")}></PoppinsTextMedium>
-        </TouchableOpacity>}
+        </TouchableOpacity>} */}
+        {/* DIXY CHANGES */}
+
       </View>
     )
   }
@@ -490,19 +495,20 @@ const RedeemedHistory = ({ navigation }) => {
     <View style={{ alignItems: "center", justifyContent: "flex-start", width: '100%', height: '100%', backgroundColor: "white" }}>
       
 
-      <View style={{ alignItems: "center", justifyContent: "flex-start", flexDirection: "row", width: '100%', marginTop: 10, height: 40, marginLeft: 20 }}>
+      <View style={{ alignItems: "center", justifyContent: "flex-start", flexDirection: "row", width: '100%',  height: 50,backgroundColor:ternaryThemeColor, }}>
         <TouchableOpacity onPress={() => {
           navigation.goBack()
         }}>
           <Image style={{ height: 24, width: 24, resizeMode: 'contain', marginLeft: 10 }} source={require('../../../assets/images/blackBack.png')}></Image>
 
         </TouchableOpacity>
-        <PoppinsTextMedium content={t("redeemed history")} style={{ marginLeft: 10, fontSize: 16, fontWeight: '600', color: '#171717' }}></PoppinsTextMedium>
+        <PoppinsTextMedium content={t("redeemed history")} style={{ marginLeft: 10, fontSize: 16, fontWeight: '600', color: 'white' }}></PoppinsTextMedium>
         <TouchableOpacity style={{ marginLeft: 160 }}>
           {/* <Image style={{height:30,width:30,resizeMode:'contain'}} source={require('../../../assets/images/notificationOn.png')}></Image> */}
         </TouchableOpacity>
       </View>
-      <View style={{ padding: 14, alignItems: "flex-start", justifyContent: "flex-start", width: "100%" }}>
+      {/* DIXY CHANGES */}
+      {/* <View style={{ padding: 14, alignItems: "flex-start", justifyContent: "flex-start", width: "100%" }}>
         <PoppinsTextMedium style={{ marginLeft: 10, fontSize: 20, fontWeight: '600', color: '#6E6E6E' }} content={t("you have")}></PoppinsTextMedium>
         <Image style={{ position: 'absolute', right: 0, width: 117, height: 82, marginRight: 23, marginTop: 20 }} source={require('../../../assets/images/reedem2.png')}></Image>
 
@@ -510,8 +516,16 @@ const RedeemedHistory = ({ navigation }) => {
           <PoppinsText style={{ marginLeft: 10, fontSize: 34, fontWeight: '600', color: '#373737' }} content={userPointData.body.point_balance}></PoppinsText>
         }
         <PoppinsTextMedium style={{ marginLeft: 10, fontSize: 20, fontWeight: '600', color: '#6E6E6E' }}  content={t("balance points")}></PoppinsTextMedium>
-      </View>
+      </View> */}
+      {/* DIXY CHANGES */}
+      <View style={{ alignItems: "center", justifyContent: "center", width: '90%',backgroundColor:'white' ,marginTop:20}}>
+                        <RewardBox ></RewardBox>
+                    </View>
+      
+
       <DisplayEarnings></DisplayEarnings>
+
+
       {/* <Header></Header> */}
      
         

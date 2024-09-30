@@ -104,6 +104,7 @@ import { setSlowNetwork } from "../../../redux/slices/internetSlice";
 import { apiFetchingInterval } from "../../utils/apiFetchingInterval";
 import { splash } from "../../utils/HandleClientSetup";
 import { kycOption1, kycOption2 } from '../../utils/HandleClientSetup';
+import FastImage from "react-native-fast-image";
 
 const Splash = ({ navigation }) => {
   const dispatch = useDispatch();
@@ -324,7 +325,10 @@ const Splash = ({ navigation }) => {
   const removerTokenData = async () => {
     await AsyncStorage.removeItem("loginData");
     setShowLoading(false);
-    navigation.navigate("SelectUser");
+    setTimeout(()=>{
+      navigation.navigate("SelectUser");
+
+    },10000)
   };
 
   useEffect(() => {
@@ -1084,9 +1088,13 @@ const Splash = ({ navigation }) => {
       __DEV__ && setMinVersionSupport(true);
 
       if (value === "Yes") {
+        setTimeout(()=>{
         navigation.navigate("Introduction");
+        },10000)
       } else {
+        setTimeout(()=>{
         navigation.navigate("Introduction");
+        },10000)
       }
       // console.log("isAlreadyIntroduced",isAlreadyIntroduced,gotLoginData)
     }
@@ -1337,51 +1345,48 @@ const Splash = ({ navigation }) => {
 
   // console.log("internet connection status",connected)
   return (
-    <ImageBackground
-      resizeMode="stretch"
-      style={{
-        height: "100%",
-        width: "100%",
-        alignItems: "center",
-        justifyContent: "center",
-      }}
-      source={splash}
-    >
-      <InternetModal visible={!connected} comp={NoInternetComp} />
-      {isSlowInternet && (
-        <InternetModal visible={isSlowInternet} comp={SlowInternetComp} />
-      )}
+<View >
+      {/* <ImageBackground resizeMode='stretch' style={{  height: '100%', width: '100%', alignItems:'center',justifyContent:'center' }} source={require('../../../assets/images/splash2.png')}>  */}
+      {/* <InternetModal visible={!connected} comp = {NoInternetComp} /> */}
+      {/* {isSlowInternet && <InternetModal visible={isSlowInternet} comp = {SlowInternetComp} /> } */}
 
-      {error && (
-        <ErrorModal
+      <FastImage
+                    style={{ width: "100%", height: "100%", alignSelf: 'center'}}
+                    source={{
+                        uri: gifUri, // Update the path to your GIF
+                        priority: FastImage.priority.normal,
+                    }}
+                    resizeMode={FastImage.resizeMode.cover}
+                />
+
+     
+      {error &&  <ErrorModal
           modalClose={modalClose}
+
           message={message}
-          openModal={error}
-        ></ErrorModal>
-      )}
-      {/* <Image  style={{ width: 200, height: 200,  }}  source={require('../../../assets/gif/ozonegif.gif')} /> */}
-      {
-        <View style={{ position: "absolute", bottom: 30, height: 40 }}>
-          <View>
-            {/* {loading ? (
+          openModal={error}></ErrorModal>
+      }
+      {/* <Image  style={{ width: 200, height: 200,  }}  source={require('../../../assets/gif/Tibcongif.gif')} /> */}
+        {
+      
+       
+      <View style={{position:'absolute',bottom:30,height:40}}> 
+      <View>
+      {/* {loading ? (
         <Text>Loading...</Text>
       ) : (
         
         <Text>Response Time: {responseTime} ms</Text>
       )} */}
-          </View>
-          <ActivityIndicator
-            size={"medium"}
-            animating={true}
-            color={MD2Colors.yellow800}
-          />
-          <PoppinsTextMedium
-            style={{ color: "white", marginTop: 4 }}
-            content="Please Wait"
-          ></PoppinsTextMedium>
-        </View>
-      }
-    </ImageBackground>
+    </View>
+      <ActivityIndicator size={'medium'} animating={true} color={MD2Colors.yellow800} />
+      <PoppinsTextMedium style={{color:'white',marginTop:4}} content="Please Wait"></PoppinsTextMedium>
+
+      </View>
+        }
+       {/* </ImageBackground>  */}
+       </View>
+
   );
 };
 

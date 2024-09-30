@@ -22,6 +22,7 @@ const SchemePointDetails = ({ navigation, route }) => {
   const [selectedDataStart, setSelectedDataStart] = useState(new Date());
   const [searchTitle, setSearchTitle] = useState();
   const [basePoint, setBasePoints] = useState();
+  const [totalPoints, setTotalPoints] = useState();
 
   const type = route.params.type;
   const schemeData = route.params.data;
@@ -98,12 +99,17 @@ const SchemePointDetails = ({ navigation, route }) => {
       const arr = getSalesBoosterOrderData?.body?.triggers.filter(
         (item) => item?.matched == true
       );
+
       const base_point = arr.length > 0 ? Number(arr[0].base_points) : 0;
+      const total_points = arr.length > 0 ? Number(arr[0].total_points) : 0;
+
       // if(getSalesBoosterOrderData.body.type == "purchase limit")
       // {
 
       // }
+
       console.log("basePoint11", base_point);
+      setTotalPoints(base_point+total_points)
       setBasePoints(base_point);
     } else if (getSalesBoosterOrderError) {
       console.log("getSalesBoosterOrderError", getSalesBoosterOrderError);
@@ -231,7 +237,7 @@ const SchemePointDetails = ({ navigation, route }) => {
           return (
             <CategoryTab
               key={index}
-              isLast= {data.length-1 == index}
+              isLast={data.length - 1 == index}
               index={index + 1}
               matched={item.matched}
               points={item.points}
@@ -239,8 +245,7 @@ const SchemePointDetails = ({ navigation, route }) => {
               brand={item.brand}
             ></CategoryTab>
           );
-        }
-        )}
+        })}
       </View>
     );
   };
@@ -359,7 +364,7 @@ const SchemePointDetails = ({ navigation, route }) => {
                 fontSize: 15,
                 fontWeight: "600",
               }}
-              content={bonusPoints+"%"}
+              content={bonusPoints + "%"}
             ></PoppinsTextMedium>
           </View>
           <View
@@ -503,7 +508,6 @@ const SchemePointDetails = ({ navigation, route }) => {
               padding: 4,
             }}
           >
-            
             <PoppinsTextMedium
               style={{ color: "#171717", fontSize: 15, fontWeight: "600" }}
               content="MTD Boxes"
@@ -525,7 +529,7 @@ const SchemePointDetails = ({ navigation, route }) => {
             ></PoppinsTextMedium>
           </View>
         </View>
-    
+
         {data &&
           data.map((item, index) => {
             return <MultiplierBox data={item}></MultiplierBox>;
@@ -537,80 +541,87 @@ const SchemePointDetails = ({ navigation, route }) => {
 
   const ShowCategoryTable = (props) => {
     const data = props.data;
-
     const CategoryTab = (props) => {
       const backGroundColor = props.backGroundColor;
       const noSubCategories = props.noSubCategories;
-      const multiplier = props.multiplier;
+      let multiplier = props.multiplier;
+      multiplier = multiplier.split("-")[1];
       const points = props.points;
       const isLast = props.isLast;
+
       return (
-        <View
-          style={{
-            width: "100%",
-            alignItems: "center",
-            justifyContent: "space-evenly",
-            flexDirection: "row",
-            height: 40,
-            backgroundColor: backGroundColor ? "#5CA509" : "white",
-            borderWidth: 1,
-            borderColor: "#DDDDDD",
-          }}
-        >
+        <View>
           <View
             style={{
-              width: "33%",
+              width: "100%",
               alignItems: "center",
-              justifyContent: "center",
-              height: "100%",
-              borderRightWidth: 1,
+              justifyContent: "space-evenly",
+              flexDirection: "row",
+              height: 40,
+              backgroundColor: backGroundColor ? "#5CA509" : "white",
+              borderWidth: 1,
               borderColor: "#DDDDDD",
             }}
           >
-            <PoppinsTextMedium
+            <View
               style={{
-                fontWeight: "600",
-                fontSize: 14,
-                color: backGroundColor ? "white" : "black",
+                width: "33%",
+                alignItems: "center",
+                justifyContent: "center",
+                height: "100%",
+                borderRightWidth: 1,
+                borderColor: "#DDDDDD",
               }}
-              content={ isLast ? `>=${Number(noSubCategories)}` :  Number(noSubCategories)}
-            ></PoppinsTextMedium>
-          </View>
-          <View
-            style={{
-              width: "33%",
-              alignItems: "center",
-              justifyContent: "center",
-              height: "100%",
-              borderRightWidth: 1,
-              borderColor: "#DDDDDD",
-            }}
-          >
-            <PoppinsTextMedium
+            >
+              <PoppinsTextMedium
+                style={{
+                  fontWeight: "600",
+                  fontSize: 14,
+                  color: backGroundColor ? "white" : "black",
+                }}
+                content={
+                  isLast
+                    ? `>=${Number(noSubCategories)}`
+                    : Number(noSubCategories)
+                }
+              ></PoppinsTextMedium>
+            </View>
+            <View
               style={{
-                fontWeight: "600",
-                fontSize: 14,
-                color: backGroundColor ? "white" : "black",
+                width: "33%",
+                alignItems: "center",
+                justifyContent: "center",
+                height: "100%",
+                borderRightWidth: 1,
+                borderColor: "#DDDDDD",
               }}
-              content={  multiplier}
-            ></PoppinsTextMedium>
-          </View>
-          <View
-            style={{
-              width: "33%",
-              alignItems: "center",
-              justifyContent: "center",
-              height: "100%",
-            }}
-          >
-            <PoppinsTextMedium
+            >
+              <PoppinsTextMedium
+                style={{
+                  fontWeight: "600",
+                  fontSize: 14,
+                  color: backGroundColor ? "white" : "black",
+                }}
+                content={multiplier + "%"}
+              ></PoppinsTextMedium>
+            </View>
+            <View
               style={{
-                fontWeight: "600",
-                fontSize: 14,
-                color: backGroundColor ? "white" : "black",
+                width: "33%",
+                alignItems: "center",
+                justifyContent: "center",
+                height: "100%",
               }}
-              content={  points}
-            ></PoppinsTextMedium>
+            >
+              <PoppinsTextMedium
+                style={{
+                  fontWeight: "600",
+                  fontSize: 14,
+                  color: backGroundColor ? "white" : "black",
+                }}
+                content={points}
+              ></PoppinsTextMedium>
+            </View>
           </View>
         </View>
       );
@@ -688,7 +699,7 @@ const SchemePointDetails = ({ navigation, route }) => {
               multiplier={item.point}
               noSubCategories={item.trigger_value}
               backGroundColor={item.matched}
-              isLast={data.length -1 == index ? true : false}
+              isLast={data.length - 1 == index ? true : false}
             ></CategoryTab>
           );
         })}
@@ -777,7 +788,6 @@ const SchemePointDetails = ({ navigation, route }) => {
   };
   return (
     <View>
-      
       <View
         style={{
           alignItems: "center",
@@ -839,54 +849,65 @@ const SchemePointDetails = ({ navigation, route }) => {
         >
           <FilterScheme title={"Filter Date"}></FilterScheme>
 
-      
-     
           <View style={{ width: "90%", height: "30%", marginTop: 20 }}>
-          {
-            type=="target category" &&
-            <View
-            style={{
-              width: "100%",
-              alignItems: "center",
-              justifyContent: "space-evenly",
-              flexDirection: "row",
-              backgroundColor: ternaryThemeColor,
-              height: 40,
-            }}
-          >
-            <PoppinsTextLeftMedium
-              style={{
-                fontWeight: "800",
-                fontSize: 15,
-                color: "white",
-                width: "52%",
-              }}
-              content="Total Points"
-            ></PoppinsTextLeftMedium>
+            {type == "target category" && (
+              <View
+                style={{
+                  width: "100%",
+                  alignItems: "center",
+                  justifyContent: "space-evenly",
+                  flexDirection: "row",
+                  backgroundColor: ternaryThemeColor,
+                  height: 40,
+                }}
+              >
+                <PoppinsTextLeftMedium
+                  style={{
+                    fontWeight: "800",
+                    fontSize: 15,
+                    color: "white",
+                    width: "52%",
+                  }}
+                  content="Base Points"
+                ></PoppinsTextLeftMedium>
 
-            <View
-              style={{ height: "100%", width: 2, backgroundColor: "white" }}
-            ></View>
-            <PoppinsTextMedium
-              style={{
-                fontWeight: "800",
-                fontSize: 15,
-                color: "white",
-                width: "20%",
-              }}
-              content={basePoint}
-            ></PoppinsTextMedium>
-            {console.log(
-              "my data duta",
-              getSalesBoosterOrderData?.body?.triggers
+                <View
+                  style={{ height: "100%", width: 2, backgroundColor: "white" }}
+                ></View>
+                <PoppinsTextMedium
+                  style={{
+                    fontWeight: "800",
+                    fontSize: 15,
+                    color: "white",
+                    width: "20%",
+                  }}
+                  content={basePoint}
+                ></PoppinsTextMedium>
+                {console.log(
+                  "my data duta",
+                  getSalesBoosterOrderData?.body?.triggers
+                )}
+              </View>
             )}
-          </View>
-          }
-          
+
             {getSalesBoosterOrderData && type == "target category" && (
-              <ShowCategoryTable
-                data={getSalesBoosterOrderData.body.triggers}
-              ></ShowCategoryTable>
+              <View>
+                <ShowCategoryTable
+                  data={getSalesBoosterOrderData.body.triggers}
+                ></ShowCategoryTable>
+                <View style={{justifyContent:'space-between', flexDirection:'row',backgroundColor:ternaryThemeColor, height:30, alignItems:'center',}}>
+                  <View style={{marginLeft:30}}>
+                  {/* <Text style={{color:'white', fontWeight:'bold'}}>Total Points</Text> */}
+
+                  </View>
+                  <View style={{marginRight:40}}>
+                  <Text style={{color:'white', fontWeight:'900'}}>{totalPoints ? totalPoints: ""}</Text>
+
+                  </View>
+
+
+                </View>
+              </View>
             )}
 
             {getSalesBoosterOrderData && type == "purchase limit" && (
@@ -906,7 +927,11 @@ const SchemePointDetails = ({ navigation, route }) => {
             {type == "target category" && (
               <View>
                 <Text
-                  style={{ color: "black", fontWeight: "800", marginTop: "13%" }}
+                  style={{
+                    color: "black",
+                    fontWeight: "800",
+                    marginTop: "13%",
+                  }}
                 >
                   STYLE WISE BASIC POINTS
                 </Text>

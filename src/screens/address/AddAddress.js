@@ -338,7 +338,7 @@ const AddAddress = ({ navigation }) => {
           title={"Thanks"}
           message={message}
           openModal={success}
-          navigateTo="ListAddress"
+          navigateTo="Passbook"
         ></MessageModal>
       )}
       {

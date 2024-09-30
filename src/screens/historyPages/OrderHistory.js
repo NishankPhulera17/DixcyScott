@@ -29,6 +29,7 @@ import {
   useGetOrderHistoryMutation,
 } from "../../apiServices/orders/GetOrderApi";
 import { hasTdsSetup } from "../../utils/HandleClientSetup";
+import RewardBox from "../../components/molecules/RewardBox";
 
 const OrderHistory = ({ navigation }) => {
   const [displayList, setDisplayList] = useState([]);
@@ -50,7 +51,6 @@ const OrderHistory = ({ navigation }) => {
   const userId = useSelector((state) => state.appusersdata.id);
 
   const [openBottomModal, setOpenBottomModal] = useState(false);
-
 
   const [
     getPointSharingFunc,
@@ -100,19 +100,25 @@ const OrderHistory = ({ navigation }) => {
       const month = new Date().getMonth() + 1;
       const year = new Date().getFullYear();
 
-      console.log(">>>>>>>", month, year)
+      console.log(">>>>>>>", month, year);
       // Get the first day of the current month
-      const today = new Date();  // Get today's date
-      const firstDayOfMonth = new Date(today.getFullYear(), today.getMonth(), 1);
-      
-      console.log("today date",firstDayOfMonth);
+      const today = new Date(); // Get today's date
+      const firstDayOfMonth = new Date(
+        today.getFullYear(),
+        today.getMonth(),
+        1
+      );
+
+      console.log("today date", firstDayOfMonth);
       // Format dates to "YYYY-MM-DD"
       const formattedFirstDay = `${year}-${month}-01`;
-      const formattedToday = today.toISOString().split('T')[0];
+      const formattedToday = today.toISOString().split("T")[0];
 
-      console.log("formattedFirstDay,formattedToday",formattedFirstDay, formattedToday);
-      
-    
+      console.log(
+        "formattedFirstDay,formattedToday",
+        formattedFirstDay,
+        formattedToday
+      );
 
       const params = {
         token: token,
@@ -151,10 +157,8 @@ const OrderHistory = ({ navigation }) => {
         },
       };
       getOrderFunc(params);
-
     })();
   };
-
 
   const fetchPoints = async () => {
     const credentials = await Keychain.getGenericPassword();
@@ -204,17 +208,15 @@ const OrderHistory = ({ navigation }) => {
         startDate = undefined;
         endDate = undefined;
         // FilterModal(false)
-      setOpenBottomModal(false)
-
+        setOpenBottomModal(false);
       } else {
         fetchPointHistoryData(startDate, endDate);
-      setOpenBottomModal(false)
-
+        setOpenBottomModal(false);
       }
     } else {
       alert("Kindly enter a valid date");
-      
-      setOpenBottomModal(false)
+
+      setOpenBottomModal(false);
       startDate = undefined;
       endDate = undefined;
     }
@@ -610,7 +612,7 @@ const OrderHistory = ({ navigation }) => {
           borderColor: "#DDDDDD",
           paddingBottom: 10,
           width: "100%",
-          height:120,
+          height: 120,
           //   height: 120,
           backgroundColor: "white",
         }}
@@ -652,7 +654,11 @@ const OrderHistory = ({ navigation }) => {
           {type !== "registration_bonus" && (
             <PoppinsTextMedium
               style={{ fontWeight: "700", fontSize: 15, color: "black" }}
-              content={ billType ? `Invoice No : ${description}` : `GR No : ${description}` }
+              content={
+                billType
+                  ? `Invoice No : ${description}`
+                  : `GR No : ${description}`
+              }
             ></PoppinsTextMedium>
           )}
 
@@ -686,23 +692,28 @@ const OrderHistory = ({ navigation }) => {
               content={`Purchase Amount : ${amount} INR`}
             ></PoppinsTextMedium>
           )} */}
-        <View style={{flexDirection:'row',marginTop:3}}>
-        <Image
-            style={{ height: 12, width: 12, resizeMode: "contain" ,marginTop:5,marginRight:5}}
-            source={require("../../../assets/images/Date.png")}
-          ></Image>
-          <PoppinsTextMedium
-            style={{
-              fontWeight: "400",
-              fontSize: 14,
-              color: "black",
-            //   marginTop: 5,
-            }}
-            content={date}
-          ></PoppinsTextMedium>
+          <View style={{ flexDirection: "row", marginTop: 3 }}>
+            <Image
+              style={{
+                height: 12,
+                width: 12,
+                resizeMode: "contain",
+                marginTop: 5,
+                marginRight: 5,
+              }}
+              source={require("../../../assets/images/Date.png")}
+            ></Image>
+            <PoppinsTextMedium
+              style={{
+                fontWeight: "400",
+                fontSize: 14,
+                color: "black",
+                //   marginTop: 5,
+              }}
+              content={date}
+            ></PoppinsTextMedium>
+          </View>
 
-        </View>
-     
           {/* <PoppinsTextMedium
             style={{ fontWeight: "400", fontSize: 12, color: "black" }}
             content={time}
@@ -717,15 +728,21 @@ const OrderHistory = ({ navigation }) => {
             width: "26%",
           }}
         >
-          <View style={{ flexDirection: "row", alignItems : "center" , justifyContent : "center" }}>
+          <View
+            style={{
+              flexDirection: "row",
+              alignItems: "center",
+              justifyContent: "center",
+            }}
+          >
             <Image
               style={{ height: 20, width: 20, resizeMode: "contain" }}
               source={
-                !billType== true
-                // require("../../../assets/images/minus_wallet.png")
-                  ? require("../../../assets/images/coinDixy.png")
+                !billType == true
+                  ? // require("../../../assets/images/minus_wallet.png")
+                    require("../../../assets/images/coinDixy.png")
                   : require("../../../assets/images/coinDixy.png")
-                  // require("../../../assets/images/wallet.png")
+                // require("../../../assets/images/wallet.png")
               }
             ></Image>
             <PoppinsTextMedium
@@ -734,9 +751,7 @@ const OrderHistory = ({ navigation }) => {
                 fontSize: 16,
                 color: !billType == true ? "red" : "black",
               }}
-              content={`${
-                billType ? " +" : " -" 
-              } ${Number(amount)}`}
+              content={`${billType ? " +" : " -"} ${Number(amount)}`}
             ></PoppinsTextMedium>
           </View>
           {is_reverted && (
@@ -754,9 +769,10 @@ const OrderHistory = ({ navigation }) => {
       style={{
         alignItems: "center",
         justifyContent: "center",
-        backgroundColor: "white",
+        backgroundColor: 'white',
         width: "100%",
         height: "100%",
+        marginBottom:20
       }}
     >
       <View
@@ -765,10 +781,11 @@ const OrderHistory = ({ navigation }) => {
           justifyContent: "flex-start",
           flexDirection: "row",
           width: "100%",
-          marginTop: 10,
-          height: 40,
-          marginLeft: 20,
-          backgroundColor: "white",
+          // marginTop: 10,
+          height: 60,
+          // marginLeft: 20,
+          marginBottom:20,
+          backgroundColor: ternaryThemeColor,
         }}
       >
         <TouchableOpacity
@@ -793,7 +810,7 @@ const OrderHistory = ({ navigation }) => {
             marginLeft: 10,
             fontSize: 16,
             fontWeight: "600",
-            color: "#171717",
+            color: "#fff",
           }}
         ></PoppinsTextMedium>
 
@@ -801,7 +818,9 @@ const OrderHistory = ({ navigation }) => {
                     <Image style={{ height: 30, width: 30, resizeMode: 'contain' }} source={require('../../../assets/images/notificationOn.png')}></Image>
                 </TouchableOpacity> */}
       </View>
-      <View
+
+      {/* DIXY COMMENT */}
+      {/* <View
         style={{
           padding: 14,
           alignItems: "center",
@@ -819,7 +838,7 @@ const OrderHistory = ({ navigation }) => {
             marginLeft: 10,
           }}
         >
-          {/* <PoppinsTextMedium style={{ marginLeft: 10, fontSize: 20, fontWeight: '600', color: '#6E6E6E', }} content="You Have"></PoppinsTextMedium> */}
+
           <PoppinsTextMedium
             style={{ fontSize: 24, fontWeight: "600", color: "#6E6E6E" }}
             content={t("You have")}
@@ -831,7 +850,7 @@ const OrderHistory = ({ navigation }) => {
               content={userPointData.body.point_balance}
             ></PoppinsText>
           )}
-          {/* <PoppinsTextMedium style={{ marginLeft: 10, fontSize: 20, fontWeight: '600', color: '#6E6E6E' }} content="Points"></PoppinsTextMedium> */}
+
           <PoppinsTextMedium
             style={{ fontSize: 24, fontWeight: "600", color: "#6E6E6E" }}
             content={t("Balance Points")}
@@ -849,13 +868,19 @@ const OrderHistory = ({ navigation }) => {
           // source={require("../../../assets/images/coinDixy.png")}
 
         ></Image>
-      </View>
+      </View> */}
 
-      <DisplayEarnings></DisplayEarnings>
+
+      {/* <DisplayEarnings></DisplayEarnings> */}
+
+      {/* DIXY COMMENT */}
+      
+      <View style={{ alignItems: "center", justifyContent: "center", width: '90%',backgroundColor:'white' }}>
+                        <RewardBox ></RewardBox>
+                    </View>
+      
 
       <Header></Header>
-
-      {/* <PointCategoryTab></PointCategoryTab> */}
 
       {displayList.length == 0 && !isLoading && (
         <View>
@@ -892,7 +917,6 @@ const OrderHistory = ({ navigation }) => {
         </View>
       )}
 
-
       {displayList && (
         <FlatList
           style={{ width: "100%", height: "60%" }}
@@ -919,7 +943,7 @@ const OrderHistory = ({ navigation }) => {
                 productCode={item?.invoice_id}
                 amount={item?.bill_value}
                 status={item?.status}
-                billType = {item?.bill_type == "SALES"}
+                billType={item?.bill_type == "SALES"}
                 points={item?.points}
                 qty={item.qty}
                 is_reverted={item?.is_reverted}

@@ -92,6 +92,7 @@ import BasePoints from '../screens/pointBooster/BasePoints';
 import BonusPoints from '../screens/pointBooster/BonusPoints';
 import TargetAchievementDetails from '../screens/scheme/TargetAchievementDetails';
 import ComingSoonScreen from '../comingsoon/ComingSoon';
+import PdfIntroduction from '../screens/pdf/PdfIntroduction';
 
 
 
@@ -356,6 +357,11 @@ const StackNavigator = () => {
                         headerShown: false
                     }
                 } name="PdfComponent" component={PdfComponent}></Stack.Screen>
+                        <Stack.Screen options={
+                    {
+                        headerShown: false
+                    }
+                } name="PdfIntroduction" component={PdfIntroduction}></Stack.Screen>
                 <Stack.Screen options={
                     {
                         headerShown: false

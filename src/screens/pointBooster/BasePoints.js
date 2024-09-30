@@ -122,7 +122,7 @@ const BasePoints = ({navigation}) => {
           }}
         >
           <PoppinsTextMedium
-            content={`${moment(selectedDataStart).format("MMM YYYY")}`}
+            content={`${moment(selectedDataStart).format("YYYY")}`}
             style={{ fontSize: 16, fontWeight: "700", color:'black', borderBottomWidth:0.5 }}
           />
           <TouchableOpacity

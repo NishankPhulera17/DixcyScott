@@ -63,7 +63,7 @@ const RewardBox = () => {
                 />
             }
 
-            <ScrollView contentContainerStyle={{ marginLeft:10}} style={{width:'100%'   }} showsHorizontalScrollIndicator={false} horizontal={true}>
+            <ScrollView contentContainerStyle={{ marginLeft:15}} style={{width:'100%'   }} showsHorizontalScrollIndicator={false} horizontal={true}>
                 {
                     workflow?.includes("Static Coupon") && <RewardSquare color="#FFE2E6" image={require('../../../assets/images/voucher.png')} title="My Coupons"></RewardSquare>
                 }

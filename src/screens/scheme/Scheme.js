@@ -1229,11 +1229,11 @@ export default function Scheme({ navigation }) {
           height: "90%",
         }}
       >
-        {getAllSalesBoosterData && (
+        {/* {getAllSalesBoosterData && (
           <FilterSchemeComponent
             getDate={getSelectedDates}
           ></FilterSchemeComponent>
-        )}
+        )} */}
         <ScrollView style={{ width: "100%" }}>
           <View
             style={{

@@ -33,7 +33,9 @@ const Introduction = ({ navigation }) => {
   }, []);
   // This is the array used to display images, add or remove image from the array to modify as per clients need----------------
 
-  const descriptionImages=[require('../../../assets/images/Vijeta4X.png'),require('../../../assets/images/SchemeVijeta.png')]
+  // const descriptionImages=[require('../../../assets/images/Vijeta4X.png'),require('../../../assets/images/SchemeVijeta.png')]
+  const descriptionImages=[require('../../../assets/images/SchemeVijeta.png')]
+
 
   // function to handle next button press and to navigate to Select Language page when all the images are showed-----------------
   const handleNext = () => {
@@ -41,7 +43,9 @@ const Introduction = ({ navigation }) => {
     if (imageIndex < descriptionImages?.length) {
       if (imageIndex == descriptionImages?.length - 1) {
         storeData();
+        // navigation.navigate("SelectUser");
         navigation.navigate("SelectUser");
+
       } else {
         setImageIndex(imageIndex + 1);
       }
@@ -66,7 +70,7 @@ const Introduction = ({ navigation }) => {
           flex: 1,
         }}
       > */}
-        <View style={{width:'100%',height: imageIndex == 0 ? "100%" : "75%"}}>
+        <View style={{width:'100%',height: imageIndex == 1? "100%" : "75%"}}>
                 <Image style={{height:"100%",width:"100%"}} source={descriptionImages[imageIndex]}></Image>
             </View>
         <View
@@ -125,7 +129,7 @@ const Introduction = ({ navigation }) => {
             </View>
           )} */}
 
-          {true&& (
+          {true && (
             <View style={{}}>
               <View style={{ alignItems: "center" }}>
                 <TouchableOpacity

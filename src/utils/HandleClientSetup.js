@@ -1,4 +1,5 @@
-export const splash = require('../../assets/images/splash2.png')
+export const splash = require('../../assets/gif/vijetaSplash.gif')
+export const splash2 = require('../../assets/images/Vijeta4X.png')
 export const icon = require('../../assets/images/splash2.png')
 export const needCaimpaign = false
 export const needCaimpaignVideo = false
@@ -12,6 +13,6 @@ export const hasTdsSetup = false;
 // use kycOption1 and kycOption2 in case of optional kyc
 
 // use kycOption1 in case there is no conditional kyc
-export const kycOption1 = ["gstin"]
+export const kycOption1 = ["gstin","pan"]
 // enable this with secondary kyc options to enable optional kyc
 export const kycOption2 = ["aadhar","pan"]
