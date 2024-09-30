@@ -100,17 +100,19 @@ const OrderHistory = ({ navigation }) => {
       const month = new Date().getMonth() + 1;
       const year = new Date().getFullYear();
 
+      console.log(">>>>>>>", month, year)
       // Get the first day of the current month
+      const today = new Date();  // Get today's date
       const firstDayOfMonth = new Date(today.getFullYear(), today.getMonth(), 1);
       
+      console.log("today date",firstDayOfMonth);
       // Format dates to "YYYY-MM-DD"
       const formattedFirstDay = `${year}-${month}-01`;
       const formattedToday = today.toISOString().split('T')[0];
+
+      console.log("formattedFirstDay,formattedToday",formattedFirstDay, formattedToday);
       
-      console.log("today",{
-          startDate: formattedFirstDay,
-          endDate: formattedToday
-      });
+    
 
       const params = {
         token: token,
