@@ -15,11 +15,13 @@ import { useTranslation } from "react-i18next";
 
 const PdfIntroduction = ({ route, navigation }) => {
   const pdf = route?.params?.pdf;
+  console.log("THE PDF IS HERE", pdf, route);
   const pdfLink = pdf == null ? "" : pdf;
   const source =
     pdf == null ? { uri: "", cache: true } : { uri: pdfLink, cache: true };
 
   const { t } = useTranslation();
+
   const ternaryThemeColor = useSelector(
     (state) => state.apptheme.ternaryThemeColor
   );
@@ -40,52 +42,60 @@ const PdfIntroduction = ({ route, navigation }) => {
 
   return (
     <View style={styles.container}>
-      <View
-        style={{
-          height: 50,
-          width: "100%",
-          backgroundColor: ternaryThemeColor,
-          alignItems: "flex-start",
-          justifyContent: "center",
-          flexDirection: "row",
-          //   marginTop: 10,
-        }}
-      >
-        <View style={{height:'90%'}}>
-        
-
-          <PoppinsTextMedium
-            style={{
-              fontSize: 20,
-              color: "#ffffff",
-              marginTop: 15,
-              position: "absolute",
-              left: 50,
+      <View style={{ height: "85%" }}>
+        {pdf != undefined && pdf != null && (
+          <Pdf
+            trustAllCerts={false}
+            source={pdf && source}
+            onLoadComplete={(numberOfPages, filePath) => {
+              console.log(`Number of pages: ${numberOfPages}`);
             }}
-            content={t("PDF")}
-          ></PoppinsTextMedium>
-        </View>
+            onPageChanged={(page, numberOfPages) => {
+              console.log(`Current page: ${page}`);
+            }}
+            onError={(error) => {
+              console.log(error);
+            }}
+            onPressLink={(uri) => {
+              console.log(`Link pressed: ${uri}`);
+            }}
+            style={styles.pdf}
+          />
+        )}
       </View>
 
-      {pdf != undefined && pdf != null && (
-        <Pdf
-          trustAllCerts={false}
-          source={pdf && source}
-          onLoadComplete={(numberOfPages, filePath) => {
-            console.log(`Number of pages: ${numberOfPages}`);
+      <View style={{ alignItems: "center", height:'15%',justifyContent:'center' }}>
+        <TouchableOpacity
+          onPress={() => {
+            // handleNext();
+            navigation.navigate("SelectUser")
           }}
-          onPageChanged={(page, numberOfPages) => {
-            console.log(`Current page: ${page}`);
+          style={{
+            width: 200,
+            marginTop:10,
+            paddingVertical: 20,
+            alignItems: "center",
+            backgroundColor: "#FF6318",
           }}
-          onError={(error) => {
-            console.log(error);
-          }}
-          onPressLink={(uri) => {
-            console.log(`Link pressed: ${uri}`);
-          }}
-          style={styles.pdf}
-        />
-      )}
+        >
+          <View style={{ flexDirection: "row" }}>
+            <Text style={{ color: "white", fontWeight: "bold", fontSize: 20 }}>
+              Continue
+            </Text>
+
+            <Image
+              style={{
+                height: 20,
+                width: 20,
+                resizeMode: "contain",
+                marginLeft: 20,
+                marginTop: 4,
+              }}
+              source={require("../../../assets/images/whiteArrowRight.png")}
+            ></Image>
+          </View>
+        </TouchableOpacity>
+      </View>
     </View>
   );
 };

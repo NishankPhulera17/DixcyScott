@@ -13,6 +13,6 @@ export const hasTdsSetup = false;
 // use kycOption1 and kycOption2 in case of optional kyc
 
 // use kycOption1 in case there is no conditional kyc
-export const kycOption1 = ["gstin","pan"]
+export const kycOption1 = ["gstin"]
 // enable this with secondary kyc options to enable optional kyc
-export const kycOption2 = ["aadhar","pan"]
+export const kycOption2 = ["pan","aadhar"]

@@ -547,19 +547,20 @@ const CheckKycOptions = ({navigation,route}) => {
                     <GSTINVerificationComp key = {`Option1${index}`} required = {true} verify= {true} showDetails={true} gstinData={gstinData} ></GSTINVerificationComp>
                   )
                 }
+                else if(item == "pan")
+                  {
+                    return(
+                      <PanVerificationComp key = {`Option1${index}`} required = {true} verify= {true} showDetails={true} panData={panData}></PanVerificationComp>
+  
+                    )
+                  }
                 else if(item == "aadhar")
                 {
                   return(
                     <AADHAARVerificationComp key = {`Option1${index}`} required = {true} verify= {true} showDetails={true} aadharData={aadharData}></AADHAARVerificationComp>
                   )
                 }
-                else if(item == "pan")
-                {
-                  return(
-                    <PanVerificationComp key = {`Option1${index}`} required = {true} verify= {true} showDetails={true} panData={panData}></PanVerificationComp>
-
-                  )
-                }
+       
               })
             }
             
@@ -622,19 +623,20 @@ const CheckKycOptions = ({navigation,route}) => {
                     <GSTINVerificationComp key = {`Option2${index}`} required = {true} verify= {true} showDetails={true} gstinData={gstinData} ></GSTINVerificationComp>
                   )
                 }
+                if(item === "pan")
+                  {
+                    return(
+                      <PanVerificationComp key = {`Option2${index}`} required = {true} verify= {true} showDetails={true} panData={panData}></PanVerificationComp>
+  
+                    )
+                  }
                  if(item === "aadhar")
                 {
                   return(
                     <AADHAARVerificationComp key = {`Option2${index}`} required = {true} verify= {true} showDetails={true} aadharData={aadharData}></AADHAARVerificationComp>
                   )
                 }
-                 if(item === "pan")
-                {
-                  return(
-                    <PanVerificationComp key = {`Option2${index}`} required = {true} verify= {true} showDetails={true} panData={panData}></PanVerificationComp>
-
-                  )
-                }
+     
               })
             }
               <View style={{ marginTop: 20 }}>

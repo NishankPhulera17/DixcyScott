@@ -322,7 +322,7 @@ const OtpLogin = ({ navigation, route }) => {
             flexDirection: "row",
           }}
         >
-          <TouchableOpacity
+          {/* <TouchableOpacity
             style={{
               height: 50,
               alignItems: "center",
@@ -335,11 +335,9 @@ const OtpLogin = ({ navigation, route }) => {
               navigation.goBack();
             }}
           >
-            {/* <Image
-              style={{ height: 20, width: 20, resizeMode: 'contain' }}
-              source={require('../../../assets/images/blackBack.png')}></Image> */}
+
             <LeftIcon name="arrowleft" size={24} color={"white"}></LeftIcon>
-          </TouchableOpacity>
+          </TouchableOpacity> */}
           <Image
             style={{
               height: 50,
@@ -347,7 +345,7 @@ const OtpLogin = ({ navigation, route }) => {
               resizeMode: "contain",
               top: 20,
               position: "absolute",
-              left: 50,
+              left: 25,
             }}
             source={{ uri: icon }}
           ></Image>
@@ -381,6 +379,7 @@ const OtpLogin = ({ navigation, route }) => {
           openModal={alert}
         ></AlertModal>
       )}
+
       <ScrollView contentContainerStyle={{ flex: 1 }} style={{ width: "100%" }}>
         <KeyboardAvoidingView>
           <View
