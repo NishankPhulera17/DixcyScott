@@ -20,7 +20,7 @@ const Introduction = ({ navigation }) => {
   const storeData = async () => {
     try {
       await AsyncStorage.setItem("isAlreadyIntroduced", "Yes");
-      //   console.log("saved")
+        console.log("saved")
     } catch (e) {
       // saving error
       console.log("error", e);

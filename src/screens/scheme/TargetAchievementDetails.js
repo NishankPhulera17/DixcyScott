@@ -78,7 +78,7 @@ const TargetAchievementDetails = ({ navigation, route }) => {
       console.log("month time data", currMonth, currYear);
       const params = {
         appUserID: userData.id,
-        sb_id: schemeData.id,
+        sb_id: sb_id,
         month: currMonth,
         year: currYear,
         token: token,
@@ -104,16 +104,15 @@ const TargetAchievementDetails = ({ navigation, route }) => {
       console.log("getSalesBoosterFocusError", getSalesBoosterFocusError);
     }
   }, [getSalesBoosterFocusData, getSalesBoosterFocusError]);
+  
 
   console.log("selected date", selectedDataStart);
 
   const Show2020Details = (props) => {
     const data =  props.data
-    
+    const boxesTillNow = props.boxesTillNow
 
-    
-
-    console.log("2020Data", data);
+    // console.log("2020Data", data);
     const CategoryTab = (props) => {
       const index = props.index;
       const brand = props.brand;
@@ -121,7 +120,9 @@ const TargetAchievementDetails = ({ navigation, route }) => {
       const points = props.points;
       const matched = props.matched;
       const item = props.item;
+      const boxesTillNow = props.boxesTillNow;
       const boxes = props.boxes;
+    
       
 
       return (
@@ -172,7 +173,7 @@ const TargetAchievementDetails = ({ navigation, route }) => {
                 borderColor: "black",
                 paddingVertical: 8, // Adjust for better vertical alignment
               }}
-              content={props.boxes}
+              content={matched ? props.boxes : boxesTillNow}
             />
 
             {/* Third column (Gift) */}
@@ -251,6 +252,7 @@ const TargetAchievementDetails = ({ navigation, route }) => {
               style={item.name}
               // brand={item.brand}
               item={item}
+              boxesTillNow = {boxesTillNow}
               boxes = {item.matched==true ?  item.total_boxes :""}
             ></CategoryTab>
           );
@@ -823,25 +825,27 @@ const TargetAchievementDetails = ({ navigation, route }) => {
       >
         <View
           style={{
-            padding: 10,
-            width: "50%",
+            padding: 8,
+            width: "90%",
             alignItems: "center",
-            justifyContent: "flex-start",
+            justifyContent: "space-between",
             flexDirection: "row",
             marginLeft: 20,
+            marginTop: 10,
           }}
         >
           <PoppinsTextMedium
             content={`${moment(selectedDataStart).format("MM/YYYY")}`}
-            style={{ fontSize: 16, fontWeight: "700" }}
+            style={{ fontSize: 16, fontWeight: "700", color: "black" }}
           />
           <TouchableOpacity
             style={{
-              backgroundColor: ternaryThemeColor,
+              backgroundColor: "white",
               paddingLeft: 10,
-              borderRadius: 6,
+              borderRadius: 30,
               padding: 6,
               marginLeft: 20,
+              borderWidth: 1,
             }}
             onPress={() => setOpenStart(!openStart)}
           >
@@ -854,14 +858,16 @@ const TargetAchievementDetails = ({ navigation, route }) => {
               onCancel={() => setOpenStart(false)}
             />
             <PoppinsTextMedium
-              style={{ color: "white", fontWeight: "700" }}
-              content=" Select"
+              style={{ color: "#808080" }}
+              content="Select Month & Year"
             />
           </TouchableOpacity>
         </View>
       </View>
     );
   });
+
+  
   const FilterScheme = (props) => {
     const [month, setMonth] = useState();
     const title = props.title;
@@ -884,7 +890,6 @@ const TargetAchievementDetails = ({ navigation, route }) => {
           }}
           content={title}
         ></PoppinsTextMedium>
-        <FilterSchemeComponent></FilterSchemeComponent>
       </View>
     );
   };
@@ -899,6 +904,7 @@ const TargetAchievementDetails = ({ navigation, route }) => {
           height: "100%",
         }}
       >
+        
         <View
           style={{
             alignItems: "center",
@@ -936,6 +942,7 @@ const TargetAchievementDetails = ({ navigation, route }) => {
             }}
           ></PoppinsTextMedium>
         </View>
+        
 
         <View
           style={{
@@ -949,6 +956,8 @@ const TargetAchievementDetails = ({ navigation, route }) => {
             height: "100%",
           }}
         >
+        <FilterSchemeComponent></FilterSchemeComponent>
+
           <Text
             style={{
               marginTop: 20,
@@ -987,8 +996,10 @@ const TargetAchievementDetails = ({ navigation, route }) => {
             {getSalesBoosterFocusData && type == "20-20" && (
               <Show2020Details
                 data={getSalesBoosterFocusData?.body?.triggers}
+                boxesTillNow ={getSalesBoosterFocusData?.body?.boxes_till_now}
               ></Show2020Details>
             )}
+            
           </ScrollView>
         </View>
       </View>

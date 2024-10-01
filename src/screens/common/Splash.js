@@ -396,10 +396,13 @@ const Splash = ({ navigation }) => {
                     jsonValue &&
                     getDashboardData &&
                     getWorkflowData &&
-                    navigation.reset({
-                      index: "0",
-                      routes: [{ name: "Introduction" }],
-                    });
+                    setTimeout(()=>{
+                      navigation.reset({
+                        index: "0",
+                        routes: [{ name: "Introduction" }],
+                      });
+                    },10000)
+                
                   }
                 
               }
@@ -1022,6 +1025,7 @@ const Splash = ({ navigation }) => {
     checkKYCDoneStatus(parsedJsonValues)
     
     const value = await AsyncStorage.getItem("isAlreadyIntroduced");
+    console.log("Valuesisisisis", value)
 
     if (value != null && jsonValue != null) {
       // value previously stored
@@ -1089,7 +1093,7 @@ const Splash = ({ navigation }) => {
 
       if (value === "Yes") {
         setTimeout(()=>{
-        navigation.navigate("Introduction");
+        navigation.navigate("SelectUser");
         },10000)
       } else {
         setTimeout(()=>{
@@ -1221,21 +1225,21 @@ const Splash = ({ navigation }) => {
     
       for(var i=0;i<kycOption1.length;i++)
       {
-        if(kycOption1.includes("aadhar"))
+        if(kycOption1.includes("aadhar") && !kycCompletedCount.includes("aadhar"))
         {
-          if(kycData.is_valid_aadhar)
+          if(kycData.is_valid_aadhar )
           {
             kycCompletedCount.push("aadhar")
           }
         }
-        if(kycOption1.includes("gstin"))
+        if(kycOption1.includes("gstin") && !kycCompletedCount.includes("gstin"))
         {
           if(kycData.is_valid_gstin)
           {
             kycCompletedCount.push("gstin")
           }
         } 
-        if(kycOption1.includes("pan"))
+        if(kycOption1.includes("pan") && !kycCompletedCount.includes("pan"))
         {
           if(kycData.is_valid_pan)
           {
@@ -1245,13 +1249,15 @@ const Splash = ({ navigation }) => {
       }
     
       var count1 =0;
+
     for(var i=0;i<kycCompletedCount.length;i++)
     {
-      if(kycOption1.includes(kycCompletedCount[i]))
+      if(kycOption1.includes(kycCompletedCount[i]) )
       {
         count1 ++;
       }
     }
+
     console.log("count", count1,kycOption1.length)
     if(count1 == kycOption1.length)
     {

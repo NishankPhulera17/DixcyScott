@@ -528,7 +528,7 @@ const VerifyOtp = ({ navigation, route }) => {
     if (!checkKycOption1) {
       console.log("enter to !kyc op 2")
       for (var i = 0; i < kycOption2.length; i++) {
-        if (kycOption2.includes("aadhar")&& !kycCompletedCount.includes("aadhar")) {
+        if (kycOption2.includes("aadhar") && !kycCompletedCount.includes("aadhar")) {
           if (kycData.is_valid_aadhar) {
             console.log("aadhar done")
             kycCompletedCount.push("aadhar");

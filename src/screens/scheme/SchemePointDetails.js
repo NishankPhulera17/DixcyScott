@@ -109,7 +109,7 @@ const SchemePointDetails = ({ navigation, route }) => {
       // }
 
       console.log("basePoint11", base_point);
-      setTotalPoints(base_point+total_points)
+      setTotalPoints(base_point + total_points);
       setBasePoints(base_point);
     } else if (getSalesBoosterOrderError) {
       console.log("getSalesBoosterOrderError", getSalesBoosterOrderError);
@@ -619,7 +619,7 @@ const SchemePointDetails = ({ navigation, route }) => {
                   fontSize: 14,
                   color: backGroundColor ? "white" : "black",
                 }}
-                content={points}
+                content={Number(points) ? Number(points).toFixed() : ""}
               ></PoppinsTextMedium>
             </View>
           </View>
@@ -895,17 +895,23 @@ const SchemePointDetails = ({ navigation, route }) => {
                 <ShowCategoryTable
                   data={getSalesBoosterOrderData.body.triggers}
                 ></ShowCategoryTable>
-                <View style={{justifyContent:'space-between', flexDirection:'row',backgroundColor:ternaryThemeColor, height:30, alignItems:'center',}}>
-                  <View style={{marginLeft:30}}>
-                  {/* <Text style={{color:'white', fontWeight:'bold'}}>Total Points</Text> */}
-
+                <View
+                  style={{
+                    justifyContent: "space-between",
+                    flexDirection: "row",
+                    backgroundColor: ternaryThemeColor,
+                    height: 30,
+                    alignItems: "center",
+                  }}
+                >
+                  <View style={{ marginLeft: 30 }}>
+                    {/* <Text style={{color:'white', fontWeight:'bold'}}>Total Points</Text> */}
                   </View>
-                  <View style={{marginRight:40}}>
-                  <Text style={{color:'white', fontWeight:'900'}}>{totalPoints ? totalPoints: ""}</Text>
-
+                  <View style={{ marginRight: 50 }}>
+                    <Text style={{ color: "white", fontWeight: "900" }}>
+                      {totalPoints ? Number(totalPoints).toFixed() : ""}
+                    </Text>
                   </View>
-
-
                 </View>
               </View>
             )}
