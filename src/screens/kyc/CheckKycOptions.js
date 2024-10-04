@@ -72,6 +72,10 @@ const CheckKycOptions = ({navigation,route}) => {
     }
     
   },[imageData])
+  
+  useEffect(()=>{
+
+  },[checked])
 
   useEffect(()=>{
     if(kycOption2.length == 0)
@@ -81,7 +85,7 @@ const CheckKycOptions = ({navigation,route}) => {
     else{
       setShowOptions(true)
     }
-  },[])
+  },[]) 
 
   const modalClose = () => {
     setMessage('')
@@ -138,7 +142,12 @@ const CheckKycOptions = ({navigation,route}) => {
   useEffect(()=>{
     console.log("checked status",checked,kycOption1,kycOption2)
     tempData={}
-
+    setAadharDetails(null)
+    setAadharNumber("")
+    setGotAadhar("")
+    setGotPan("")
+    setGstinDetails(null)
+    setPanDetails(null)
   },[checked])
 
   const createValidatedJson=async(profileData)=>{
@@ -234,6 +243,7 @@ const CheckKycOptions = ({navigation,route}) => {
           <Icon name="check-circle" size={53} color={ternaryThemeColor} />
           <PoppinsTextMedium style={{ fontSize: 27, fontWeight: '600', color: ternaryThemeColor, marginLeft: 5, marginTop: 5 }} content={"Success ! !"}></PoppinsTextMedium>
           
+          
           <ActivityIndicator size={'small'} animating={true} color={ternaryThemeColor} />
 
           <View style={{ marginTop: 10, marginBottom: 30 }}>
@@ -292,7 +302,30 @@ const CheckKycOptions = ({navigation,route}) => {
       const params = {token:token,data:tempData}
       console.log("FINAL FORM SUBMISSION", params)
       setClickedSubmit(false)
-      updateProfileFunc(params)
+      
+    
+
+      console.log("first second", gstinDetails, checked)
+
+
+      if(gstinDetails.GSTIN && checked){
+        updateProfileFunc(params)
+        console.log("idhar idhar") 
+      }
+      else{
+        let firstNamePan = panDetails.registered_name && (panDetails?.registered_name).split()[0]?.trim().toLowerCase()
+        let firstaadharName = aadharDetails?.body.name  && (aadharDetails?.name).split()[0].trim().toLowerCase()
+
+        if(firstNamePan.toLowerCase() == firstaadharName.toLowerCase()){
+        console.log("idhar udhar")
+
+          updateProfileFunc(params)
+        }
+        else{
+          alert("Names from PAN and Aadhar do not match. Please correct them")
+        } 
+      }
+
     }
 
       }
@@ -305,6 +338,7 @@ const CheckKycOptions = ({navigation,route}) => {
             missingFields +=  " "+kycOption1[i]
           }
         }
+        
         alert("Missing fields "+missingFields)
       }
     }
@@ -323,9 +357,30 @@ const CheckKycOptions = ({navigation,route}) => {
     else{
       tempData={...tempData, "profile_pic" : shopData.value,"is_online_verification":true}
       const params = {token:token,data:tempData}
-      console.log("FINAL FORM SUBMISSION", params)
+      console.log("FINAL FORM SUBMISSION",  aadharDetails)
       setClickedSubmit(false)
-      updateProfileFunc(params)
+     
+
+      console.log("first second", gstinDetails, checked)
+
+
+
+      if((gstinDetails?.GSTIN!==undefined) && checked){
+        updateProfileFunc(params)
+        console.log("idhar idhar") 
+      }
+      else{
+      let firstNamePan = panDetails?.registered_name ? (panDetails?.registered_name)?.split(" ")[0]?.toLowerCase() : ""
+      let firstaadharName = aadharDetails?.body.name ? (aadharDetails?.body?.name)?.split(" ")[0].toLowerCase() : ""
+        if(firstNamePan == firstaadharName){
+        console.log("idhar udhar")
+          updateProfileFunc(params)
+        }
+        else{
+          alert("Names from PAN and Aadhar do not match. Please correct them")
+        } 
+      }
+
     }
       }
       else{
@@ -346,8 +401,15 @@ const CheckKycOptions = ({navigation,route}) => {
   }
   const modalWithBorderClose = () => {
     setModalWithBorder(false);
-    setMessage('')
+    setMessage('')  
 
+  };
+
+
+  const modalWithBorderAgree = () => {
+    setModalWithBorder(false);
+    setMessage('')  
+    
     setTimeout(()=>{
       setModalWithBorderSuccess(true)
     },1000)
@@ -356,10 +418,6 @@ const CheckKycOptions = ({navigation,route}) => {
       navigation.navigate("Dashboard")
       setModalWithBorderSuccess(false)
     },2000)
-
-
-    
-    
   };
 
   const modalWithBorderSuccessClose = () => {
@@ -382,7 +440,7 @@ const CheckKycOptions = ({navigation,route}) => {
 
 
           <View style={{ alignItems: 'center', marginBottom: 30 }}>
-            <ButtonOval handleOperation={modalWithBorderClose} backgroundColor="#000000" content="I Agree" style={{ color: 'white', paddingVertical: 4 }} />
+            <ButtonOval handleOperation={modalWithBorderAgree} backgroundColor="#000000" content="I Agree" style={{ color: 'white', paddingVertical: 4 }} />
           </View>
 
         </ScrollView>
@@ -681,6 +739,7 @@ const CheckKycOptions = ({navigation,route}) => {
           <ModalWithBorder
             modalClose={modalWithBorderClose}
             message={message}
+            closable = {false}
             openModal={openModalWithBorder}
             comp={ModalContent}>
           </ModalWithBorder>}

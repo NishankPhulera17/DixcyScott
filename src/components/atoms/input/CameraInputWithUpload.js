@@ -9,6 +9,7 @@ import {launchCamera, launchImageLibrary} from 'react-native-image-picker';
 import { useUploadSingleFileMutation } from "../../../apiServices/imageApi/imageApi";
 import * as Keychain from "react-native-keychain";
 import CameraIcon from 'react-native-vector-icons/Entypo'
+import FastImage from "react-native-fast-image";
 
 const CameraInputWithUpload = (props) => {
   const [openCamera, setOpenCamera] = useState(false);
@@ -16,6 +17,7 @@ const CameraInputWithUpload = (props) => {
   const [capturePressed, setCapturePressed] = useState(false)
   const [loading, setLoading] = useState(false)
   const { hasPermission, requestPermission } = useCameraPermission();
+  const gifUri = Image.resolveAssetSource(require('../../../../assets/gif/loader.gif')).uri;
   const device = useCameraDevice("back");
   const ternaryThemeColor = useSelector(
     state => state.apptheme.ternaryThemeColor,
@@ -112,7 +114,17 @@ const imageData = {
     {/* {loading  && <ActivityIndicator size={40} color={ternaryThemeColor}></ActivityIndicator>} */}
     {image && <Image loadingIndicatorSource={{uri:"https://picsum.photos/200"}} style={{height:200,width:300,resizeMode:'contain',marginTop:20}} source={{uri:image?.fileLink}}></Image>}
     {uploadImageData && <Image style={{height:260,width:340,resizeMode:'contain',marginTop:20}} source={{uri:uploadImageData?.body?.fileLink}}></Image>}
-   {!showButton && <ActivityIndicator size={40} color={ternaryThemeColor}></ActivityIndicator>}
+   {!showButton &&
+    // <ActivityIndicator size={40} color={ternaryThemeColor}></ActivityIndicator>
+    <FastImage
+    style={{ width: 30, height: 30, alignSelf: 'center'}}
+    source={{
+      uri: gifUri, // Update the path to your GIF
+      priority: FastImage.priority.normal,
+    }}
+    resizeMode={FastImage.resizeMode.contain}
+  />
+   }
    {showButton && theme !== "new" && <TouchableOpacity onPress={async()=>{
       //   setCapturePressed(true)
       //  setTimeout(() => {

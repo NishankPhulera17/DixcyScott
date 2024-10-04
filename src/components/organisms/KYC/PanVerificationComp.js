@@ -26,6 +26,9 @@ const PanVerificationComp = (props) => {
   const required = props.required
   const verify = props.verify
   const showDetails = props.showDetails
+
+  // const gifUri = Image.resolveAssetSource(require('../../../../assets/gif/loader.gif')).uri;
+
   
   useEffect(()=>{
     verifyPanData && props.panData(panVerified, verifyPanData?.body)
@@ -95,6 +98,7 @@ const PanVerificationComp = (props) => {
               </View>
               <TextInput
               value={pan}
+              editable={!panVerified}
               placeholder="Enter Pan Number"
                 maxLength={15}
                 onChangeText={(text) => {

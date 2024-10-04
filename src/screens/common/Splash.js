@@ -328,7 +328,7 @@ const Splash = ({ navigation }) => {
     setTimeout(()=>{
       navigation.navigate("SelectUser");
 
-    },10000)
+    },7000)
   };
 
   useEffect(() => {
@@ -401,7 +401,7 @@ const Splash = ({ navigation }) => {
                         index: "0",
                         routes: [{ name: "Introduction" }],
                       });
-                    },10000)
+                    },7000)
                 
                   }
                 
@@ -1094,11 +1094,11 @@ const Splash = ({ navigation }) => {
       if (value === "Yes") {
         setTimeout(()=>{
         navigation.navigate("SelectUser");
-        },10000)
+        },7000)
       } else {
         setTimeout(()=>{
         navigation.navigate("Introduction");
-        },10000)
+        },7000)
       }
       // console.log("isAlreadyIntroduced",isAlreadyIntroduced,gotLoginData)
     }
@@ -1252,7 +1252,7 @@ const Splash = ({ navigation }) => {
 
     for(var i=0;i<kycCompletedCount.length;i++)
     {
-      if(kycOption1.includes(kycCompletedCount[i]) )
+      if(kycOption1.includes(kycCompletedCount[i] ) )
       {
         count1 ++;
       }
@@ -1272,21 +1272,21 @@ const Splash = ({ navigation }) => {
     {
       for(var i=0;i<kycOption2.length;i++)
       {
-        if(kycOption2.includes("aadhar"))
+        if(kycOption2.includes("aadhar") && !kycCompletedCount.includes("aadhar"))
         {
           if(kycData.is_valid_aadhar)
           {
             kycCompletedCount.push("aadhar")
           }
         }
-        if(kycOption2.includes("gstin"))
+        if(kycOption2.includes("gstin") && !kycCompletedCount.includes("gstin"))
         {
           if(kycData.is_valid_gstin)
           {
             kycCompletedCount.push("gstin")
           }
         }
-        if(kycOption2.includes("pan"))
+        if(kycOption2.includes("pan") && !kycCompletedCount.includes("pan"))
         {
           if(kycData.is_valid_pan)
           {

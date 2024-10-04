@@ -665,7 +665,7 @@ const OrderHistory = ({ navigation }) => {
           {type !== "registration_bonus" && (
             <PoppinsTextMedium
               style={{ fontSize: 15, color: "black", marginTop: 5 }}
-              content={`Total Qty : ${Number(qty)}`}
+              content={`Total Qty : ${Math.trunc(qty)}`}
             ></PoppinsTextMedium>
           )}
           {type === "registration_bonus" && (
@@ -751,7 +751,7 @@ const OrderHistory = ({ navigation }) => {
                 fontSize: 16,
                 color: !billType == true ? "red" : "black",
               }}
-              content={`${billType ? " +" : " -"} ${Number(amount)}`}
+              content={`${billType ? " +" : " -"} ${Math.trunc(amount)}`}
             ></PoppinsTextMedium>
           </View>
           {is_reverted && (

@@ -169,7 +169,7 @@ const TargetAchievementDetails = ({ navigation, route }) => {
                 color:item?.matched ? 'white' : "black",
                 width: "54%",
                 textAlign: "center", // Center the text
-                borderRightWidth: 1, // Add right border
+                // borderRightWidth: 1, // Add right border
                 borderColor: "black",
                 paddingVertical: 8, // Adjust for better vertical alignment
               }}
@@ -177,7 +177,7 @@ const TargetAchievementDetails = ({ navigation, route }) => {
             />
 
             {/* Third column (Gift) */}
-            <PoppinsTextMedium
+            {/* <PoppinsTextMedium
               style={{
                 fontWeight: "600",
                 fontSize: 14,
@@ -186,8 +186,8 @@ const TargetAchievementDetails = ({ navigation, route }) => {
                 textAlign: "center", // Center the text
                 paddingVertical: 8, // Adjust for better vertical alignment
               }}
-              content={(item.gift_id && item.matched ? 1 : 0) }
-            />
+              content={(item.gift_id && item.matched ? item.gift_id : 0) }
+            /> */}
           </View>
         </View>
       );
@@ -230,7 +230,7 @@ const TargetAchievementDetails = ({ navigation, route }) => {
             }}
             content="Boxes Purchased"
           ></PoppinsTextMedium>
-          <View style={{ height: "100%", width: 2 }}></View>
+          {/* <View style={{ height: "100%", width: 2 }}></View>
           <PoppinsTextMedium
             style={{
               fontWeight: "800",
@@ -239,7 +239,7 @@ const TargetAchievementDetails = ({ navigation, route }) => {
               width: "20%",
             }}
             content="Combo Achievement"
-          ></PoppinsTextMedium>
+          ></PoppinsTextMedium> */}
         </View>
 
         {data.map((item, index) => {
@@ -835,7 +835,7 @@ const TargetAchievementDetails = ({ navigation, route }) => {
           }}
         >
           <PoppinsTextMedium
-            content={`${moment(selectedDataStart).format("MM/YYYY")}`}
+            content={`${moment(selectedDataStart).format("MMM YYYY")}`}
             style={{ fontSize: 16, fontWeight: "700", color: "black" }}
           />
           <TouchableOpacity

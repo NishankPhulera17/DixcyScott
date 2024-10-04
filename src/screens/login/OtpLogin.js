@@ -21,7 +21,7 @@ import ButtonNavigateArrow from "../../components/atoms/buttons/ButtonNavigateAr
 import { useGetLoginOtpMutation } from "../../apiServices/login/otpBased/SendOtpApi";
 import ButtonNavigate from "../../components/atoms/buttons/ButtonNavigate";
 import ErrorModal from "../../components/modals/ErrorModal";
-import { useGetNameMutation } from "../../apiServices/login/GetNameByMobile";
+import { useGetNameMutation, useGetUserExistanceMutation } from "../../apiServices/login/GetNameByMobile";
 import TextInputRectangularWithPlaceholder from "../../components/atoms/input/TextInputRectangularWithPlaceholder";
 import { useIsFocused } from "@react-navigation/native";
 import PoppinsTextLeftMedium from "../../components/electrons/customFonts/PoppinsTextLeftMedium";
@@ -42,6 +42,7 @@ const OtpLogin = ({ navigation, route }) => {
   const [error, setError] = useState(false);
   const [isChecked, setIsChecked] = useState(false);
   const [hideButton, setHideButton] = useState(false);
+  const [isEditable, setIsEditable] = useState(true);
   const [alert, setAlert] = useState(false);
   const { t } = useTranslation();
   // fetching theme for the screen-----------------------
@@ -97,6 +98,16 @@ const OtpLogin = ({ navigation, route }) => {
     },
   ] = useGetNameMutation();
 
+  const [
+    getUserExistanceFunc,
+    {
+      data: getUserExistanceData,
+      error: getUserExistanceError,
+      isLoading: getUserExistanceLoading,
+      isError: getUserExistanceIsError,
+    },
+  ] = useGetUserExistanceMutation();
+
   const needsApproval = route?.params?.needsApproval;
   const user_type_id = route?.params?.userId;
   const user_type = route?.params?.userType;
@@ -128,10 +139,25 @@ const OtpLogin = ({ navigation, route }) => {
   }, [getTermsData, getTermsError]);
 
   useEffect(() => {
+    if (getUserExistanceData) {
+      console.log("getUserExistanceData", getUserExistanceData);
+      if(getUserExistanceData?.body){
+        setError(true)
+        setMessage("User Already Exists")
+      }
+      else{
+        handleButtonPress()
+      }
+    } else if (getUserExistanceError) {
+      console.log("getUserExistanceError", getUserExistanceError);
+    }
+  }, [getUserExistanceData, getUserExistanceError]);
+
+  useEffect(() => {
     if (sendOtpData) {
       console.log("sendOtpData", sendOtpData);
       if (sendOtpData?.success === true && mobile.length === 10) {
-        if (Object.keys(getNameData.body).length != 0) {
+        if (Object.keys(getNameData.body)?.length != 0) {
           const nameData = getNameData?.body;
           navigation.navigate("VerifyOtp", {
             navigationParams,
@@ -165,6 +191,9 @@ const OtpLogin = ({ navigation, route }) => {
           setError(true)
           setMessage("Invalid UID")
         }
+
+        setIsEditable(checkKyc())
+
       }
     } else if (getNameError) {
       console.log("getNameError", getNameError);
@@ -189,6 +218,10 @@ const OtpLogin = ({ navigation, route }) => {
     // getNameFunc({ mobile: data })
     if (data.length === 6) getNameFunc({ uid: data });
 
+    if(getNameData?.body.mobile && data.length !== 6){
+        setMobile("")
+    }
+
     //     Keyboard.dismiss();
     //   }
     //   else{
@@ -198,6 +231,27 @@ const OtpLogin = ({ navigation, route }) => {
     // }
     // }
   };
+
+  const checkKyc = () =>{
+    if(getNameData?.body?.is_valid_aadhar && getNameData?.body?.is_valid_pan){
+      return false
+    }else if(getNameData?.body?.is_valid_gstin && getNameData?.body?.is_valid_aadhar){
+      return false
+    }
+  }
+
+  const checkNumberEligibility = () =>{
+    if(getNameData?.body?.mobile == mobile){
+      handleButtonPress()
+    }
+    else{
+      getUserExistanceFunc({
+        user_id: name,
+        mobile:mobile
+      })
+    }
+  
+  }
 
   const fetchTerms = async () => {
     const credentials = await Keychain.getGenericPassword();
@@ -215,10 +269,14 @@ const OtpLogin = ({ navigation, route }) => {
       const mobReg = new RegExp(reg);
 
       setMobile(data);
+      // console.log("userexistbody",name, mobile,data)
+
       if (data !== undefined) {
         if (data.length === 10) {
           if (mobReg.test(data)) {
             setMobile(data);
+          
+            
           } else {
             Alert.alert("Kindly enter a valid UID ");
             setMobile("");
@@ -282,7 +340,7 @@ const OtpLogin = ({ navigation, route }) => {
       } else {
         if (mobile?.length != 10) {
           setError(true);
-          setMessage("Please enter your 10 digit mobile number");
+          setMessage("Please enter correct UID");
         } else if (name == undefined || name == "") {
           setError(true);
           setMessage("Please enter name");
@@ -290,6 +348,10 @@ const OtpLogin = ({ navigation, route }) => {
         else if(!(getNameData?.body?.name)){
           setError(true);
           setMessage("Invalid UID");
+        }
+        else if(!getUserExistanceData?.body){
+          setError(true);
+          setMessage("User Already Exists");
         }
       }
     } else {
@@ -401,6 +463,7 @@ const OtpLogin = ({ navigation, route }) => {
               handleData={getMobile}
               value={mobile}
               maxLength={10}
+             editable = {false}
               keyboardType="numeric"
             ></TextInputRectangularWithPlaceholder>
           </View>
@@ -453,7 +516,7 @@ const OtpLogin = ({ navigation, route }) => {
 
           <ButtonNavigateArrow
             success={success}
-            handleOperation={handleButtonPress}
+            handleOperation={checkNumberEligibility}
             backgroundColor={buttonThemeColor}
             style={{ color: "white", fontSize: 16 }}
             isLoading={sendOtpIsLoading}
@@ -462,7 +525,7 @@ const OtpLogin = ({ navigation, route }) => {
             navigationParams={navigationParams}
             mobileLength={mobile}
             isChecked={
-              !error && isChecked && mobile?.length == 10 && name != "" && !hideButton && getNameData?.body?.name
+              !error && isChecked && mobile?.length == 10 && name != "" && !hideButton && getNameData?.body?.name 
             }
           ></ButtonNavigateArrow>
 

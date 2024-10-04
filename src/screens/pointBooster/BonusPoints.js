@@ -305,7 +305,33 @@ const BonusPoints = ({ navigation }) => {
                   marginLeft: "auto",
                   marginRight: 5,
                 }}
-                content={"" + data.total_earned + ""}
+                content={"" + Math.trunc(data.total_earned) + ""}
+              ></PoppinsTextMedium>
+            </View>
+            <View
+              style={{
+                width: "100%",
+                borderColor: "white",
+                borderBottomWidth: 1,
+                alignItems: "flex-start",
+                flexDirection: "row",
+                marginTop: 10,
+                paddingBottom: 6,
+              }}
+            >
+              <PoppinsTextMedium
+                style={{ color: "white", fontSize: 14, fontWeight: "500" }}
+                content={"Yearly Bonus Points"}
+              ></PoppinsTextMedium>
+              <PoppinsTextMedium
+                style={{
+                  color: "white",
+                  fontSize: 14,
+                  fontWeight: "500",
+                  marginLeft: "auto",
+                  marginRight: 5,
+                }}
+                content={"" + Math.trunc(data.bonus) + ""}
               ></PoppinsTextMedium>
             </View>
             <View
@@ -443,11 +469,11 @@ const BonusPoints = ({ navigation }) => {
           height: "92%",
         }}
       >
-        {
+        {/* {
           <FilterSchemeComponent
             getDate={getSelectedDates}
           ></FilterSchemeComponent>
-        }
+        } */}
     
           {getBonusPointsData && (
             <NewSchemeComponent

@@ -1,4 +1,4 @@
-export const splash = require('../../assets/gif/vijetaSplash.gif')
+export const splash = require('../../assets/gif/vijetaSplash2.gif')
 export const splash2 = require('../../assets/images/Vijeta4X.png')
 export const icon = require('../../assets/images/splash2.png')
 export const needCaimpaign = false
