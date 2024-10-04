@@ -497,7 +497,8 @@ const RedeemedHistory = ({ navigation }) => {
 
       <View style={{ alignItems: "center", justifyContent: "flex-start", flexDirection: "row", width: '100%',  height: 50,backgroundColor:ternaryThemeColor, }}>
         <TouchableOpacity onPress={() => {
-          navigation.goBack()
+          // navigation.goBack()
+          navigation.navigate("Passbook")
         }}>
           <Image style={{ height: 24, width: 24, resizeMode: 'contain', marginLeft: 10 }} source={require('../../../assets/images/blackBack.png')}></Image>
 

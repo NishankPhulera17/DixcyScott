@@ -235,7 +235,7 @@ const BasePoints = ({navigation}) => {
               ></PoppinsTextMedium>
               <PoppinsTextMedium
                 style={{ color: "white", fontSize: 12, fontWeight: "500",marginLeft:'50%' }}
-                content={Number(props.data.points)}
+                content={Math.trunc(props.data.points)}
               ></PoppinsTextMedium>
               </View>
               <View style={{width:'100%',alignItems:'flex-start',paddingBottom:6,flexDirection:"row",marginTop:4,marginBottom:10}}>

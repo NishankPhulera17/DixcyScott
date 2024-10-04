@@ -20,6 +20,7 @@ export const salesBoosterApi = baseApi.injectEndpoints({
 
         getSalesBoosterFocusPoint:builder.mutation({
             query: (params) => {
+                console.log("papappapappa", params)
                 return {
                 method: "GET",
                 url: `/api/tenant/modenik/focus_brand?app_user_id=${params.appUserID}&sb_id=${params.sb_id}&month=${params.month}&year=${params.year}`,

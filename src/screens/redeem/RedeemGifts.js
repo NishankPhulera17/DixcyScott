@@ -28,6 +28,7 @@ import PointHistory from "../historyPages/PointHistory";
 import { useTranslation } from "react-i18next";
 import { use } from "i18next";
 import { check } from "react-native-permissions";
+import RewardBox from "../../components/molecules/RewardBox";
 
 const RedeemGifts = ({ navigation, route }) => {
   const [search, setSearch] = useState();
@@ -603,6 +604,7 @@ const RedeemGifts = ({ navigation, route }) => {
         height: "100%",
       }}
     >
+    
       {error && (
         <ErrorModal
           modalClose={modalClose}
@@ -675,6 +677,12 @@ const RedeemGifts = ({ navigation, route }) => {
           backgroundColor: "white",
         }}
       >
+               <View style={{ alignItems: "center", justifyContent: "center", width: '90%',backgroundColor:'white', marginTop:40 }}>
+                        <RewardBox ></RewardBox>
+                    </View>
+                    <ScrollView >
+
+                    
         <View
           style={{
             alignItems: "center",
@@ -774,7 +782,7 @@ const RedeemGifts = ({ navigation, route }) => {
                 content="All"
               ></PoppinsTextMedium>
             </TouchableOpacity>
-            <ScrollView
+            <View
               showsHorizontalScrollIndicator={false}
               horizontal={true}
             >
@@ -788,7 +796,7 @@ const RedeemGifts = ({ navigation, route }) => {
                     ></Categories>
                   );
                 })}
-            </ScrollView>
+            </View>
           </View>
         )}
         <View
@@ -904,6 +912,8 @@ const RedeemGifts = ({ navigation, route }) => {
             alignItems: "center",
             borderRadius: 30,
             justifyContent: "center",
+            alignSelf:'center',
+            marginBottom:30,
             height: 50,
             width: "60%",
             backgroundColor: 'black',
@@ -916,6 +926,8 @@ const RedeemGifts = ({ navigation, route }) => {
             content={t("Proceed")}
           ></PoppinsTextMedium>
         </TouchableOpacity>
+
+        </ScrollView>
       </View>
     </View>
   );

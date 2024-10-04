@@ -105,6 +105,7 @@ const GSTINVerificationComp = (props) => {
               <TextInput
               autoCapitalize='characters'
                 value={gstin}
+                editable={!gstinVerified}
                 placeholder="Enter GSTIN Number"
                 maxLength={15}
                 onChangeText={(text) => {

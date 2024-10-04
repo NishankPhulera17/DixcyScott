@@ -77,10 +77,10 @@ const RewardBox = () => {
                 }
 
                 {
-                   userPointData && <RewardSquare amount={ Number(userPointData.body.point_balance) + Number(userPointData.body.point_reserved)} color="#DCFCE7" image={require('../../../assets/images/points.png')} title={t("Total Earned Points")}></RewardSquare>
+                   userPointData && <RewardSquare amount={ Math.trunc(userPointData.body.point_balance) + Math.trunc(userPointData.body.point_reserved)} color="#DCFCE7" image={require('../../../assets/images/coinDixy.png')} title={t("Total Earned Points")}></RewardSquare>
                 }
                 {
-                    userPointData && <RewardSquare amount={Number(userPointData.body.point_balance)} color="#FFF4DE" image={require('../../../assets/images/redeemIcon.png')} title={t("Eligible for Redemption")}></RewardSquare>
+                    userPointData && <RewardSquare amount={Math.trunc(userPointData.body.point_balance)} color="#FFF4DE" image={require('../../../assets/images/coinDixy.png')} title={t("Eligible for Redemption")}></RewardSquare>
                 }
                 {/* {
                     userPointData && <RewardSquare amount={userPointData.body.point_balance} color="#DCFCE7" image={require('../../../assets/images/points.png')} title={t("balance points")}></RewardSquare>

@@ -494,17 +494,17 @@ const VerifyOtp = ({ navigation, route }) => {
     const kycCompletedCount = [];
 
     for (var i = 0; i < kycOption1.length; i++) {
-      if (kycOption1.includes("aadhar")) {
+      if (kycOption1.includes("aadhar"  && !kycCompletedCount.includes("aadhar"))) {
         if (kycData.is_valid_aadhar) {
           kycCompletedCount.push("aadhar");
         }
       }
-      if (kycOption1.includes("gstin")) {
+      if (kycOption1.includes("gstin")  && !kycCompletedCount.includes("gstin")) {
         if (kycData.is_valid_gstin) {
           kycCompletedCount.push("gstin");
         }
       }
-      if (kycOption1.includes("pan")) {
+      if (kycOption1.includes("pan") && !kycCompletedCount.includes("pan")) {
         if (kycData.is_valid_pan) {
           kycCompletedCount.push("pan");
         }
@@ -528,7 +528,7 @@ const VerifyOtp = ({ navigation, route }) => {
     if (!checkKycOption1) {
       console.log("enter to !kyc op 2")
       for (var i = 0; i < kycOption2.length; i++) {
-        if (kycOption2.includes("aadhar")&& !kycCompletedCount.includes("aadhar")) {
+        if (kycOption2.includes("aadhar") && !kycCompletedCount.includes("aadhar")) {
           if (kycData.is_valid_aadhar) {
             console.log("aadhar done")
             kycCompletedCount.push("aadhar");

@@ -303,6 +303,22 @@ const CustomDrawer = () => {
               else if (props.title.toLowerCase() === "feedback") {
                 navigation.navigate('Feedback')
               }
+              else if (props.title.toLowerCase() === "gift tracker") {
+                navigation.navigate('ComingSoonScreen')
+              }
+              else if (props.title.toLowerCase() === "vijeta 4x") {
+                navigation.navigate('Scheme')
+              }
+              else if (props.title.toLowerCase() === "dream gift") {
+                navigation.navigate('ComingSoonScreen')
+              }
+              else if (props.title.toLowerCase() === "check update") {
+                navigation.navigate('ComingSoonScreen')
+              }
+              else if (props.title.toLowerCase() === "my rewards") {
+                navigation.navigate('RedeemGifts')
+              }
+              
               else if (props.title.toLowerCase() === "media") {
                 navigation.navigate('VideoGallery')
               }

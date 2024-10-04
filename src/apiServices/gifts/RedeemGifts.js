@@ -8,7 +8,7 @@ export const RedeemGiftsApi = baseApi.injectEndpoints({
               console.log("params",params)
               return {
                 method: "POST",
-                url: `/api/app/giftRedemptions/add`,
+                url: `/api/app/giftRedemptions/add-v2`,
                 headers: {
                   "Content-Type": "application/json",
                   slug: slug,

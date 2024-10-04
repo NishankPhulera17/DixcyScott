@@ -109,7 +109,7 @@ const SchemePointDetails = ({ navigation, route }) => {
       // }
 
       console.log("basePoint11", base_point);
-      setTotalPoints(base_point+total_points)
+      setTotalPoints(total_points);
       setBasePoints(base_point);
     } else if (getSalesBoosterOrderError) {
       console.log("getSalesBoosterOrderError", getSalesBoosterOrderError);
@@ -345,7 +345,7 @@ const SchemePointDetails = ({ navigation, route }) => {
                 fontSize: 15,
                 fontWeight: "600",
               }}
-              content={Number(boxes)}
+              content={Math.trunc(boxes)}
             ></PoppinsTextMedium>
           </View>
           <View
@@ -383,7 +383,7 @@ const SchemePointDetails = ({ navigation, route }) => {
                 fontSize: 15,
                 fontWeight: "600",
               }}
-              content={matched ? Number(mtdBoxes) : ""}
+              content={matched ? Math.trunc(mtdBoxes) : ""}
             ></PoppinsTextMedium>
           </View>
           <View
@@ -402,7 +402,7 @@ const SchemePointDetails = ({ navigation, route }) => {
                 fontSize: 15,
                 fontWeight: "600",
               }}
-              content={matched ? Number(earnPoint) : ""}
+              content={matched ? Math.trunc(earnPoint) : ""}
             ></PoppinsTextMedium>
           </View>
         </View>
@@ -619,7 +619,7 @@ const SchemePointDetails = ({ navigation, route }) => {
                   fontSize: 14,
                   color: backGroundColor ? "white" : "black",
                 }}
-                content={points}
+                content={Number(points) ? Math.trunc(points): ""}
               ></PoppinsTextMedium>
             </View>
           </View>
@@ -738,7 +738,7 @@ const SchemePointDetails = ({ navigation, route }) => {
           }}
         >
           <PoppinsTextMedium
-            content={`${moment(selectedDataStart).format("MM/YYYY")}`}
+            content={`${moment(selectedDataStart).format("MMM YYYY")}`}
             style={{ fontSize: 16, fontWeight: "700", color: "black" }}
           />
           <TouchableOpacity
@@ -895,17 +895,23 @@ const SchemePointDetails = ({ navigation, route }) => {
                 <ShowCategoryTable
                   data={getSalesBoosterOrderData.body.triggers}
                 ></ShowCategoryTable>
-                <View style={{justifyContent:'space-between', flexDirection:'row',backgroundColor:ternaryThemeColor, height:30, alignItems:'center',}}>
-                  <View style={{marginLeft:30}}>
-                  {/* <Text style={{color:'white', fontWeight:'bold'}}>Total Points</Text> */}
-
+                <View
+                  style={{
+                    justifyContent: "space-between",
+                    flexDirection: "row",
+                    backgroundColor: ternaryThemeColor,
+                    height: 30,
+                    alignItems: "center",
+                  }}
+                >
+                  <View style={{ marginLeft: 30 }}>
+                    <Text style={{color:'white', fontWeight:'bold'}}>Multiplier Points</Text>
                   </View>
-                  <View style={{marginRight:40}}>
-                  <Text style={{color:'white', fontWeight:'900'}}>{totalPoints ? totalPoints: ""}</Text>
-
+                  <View style={{ marginRight: 50 }}>
+                    <Text style={{ color: "white", fontWeight: "900" }}>
+                      {totalPoints ? Math.trunc(totalPoints).toFixed() : ""}
+                    </Text>
                   </View>
-
-
                 </View>
               </View>
             )}
@@ -925,7 +931,7 @@ const SchemePointDetails = ({ navigation, route }) => {
             }}
           >
             {type == "target category" && (
-              <View>
+              <View style={{justifyContent:'space-between', flexDirection:'row'}}>
                 <Text
                   style={{
                     color: "black",
@@ -934,6 +940,15 @@ const SchemePointDetails = ({ navigation, route }) => {
                   }}
                 >
                   STYLE WISE BASIC POINTS
+                </Text>
+                <Text
+                  style={{
+                    color: "black",
+                    fontWeight: "800",
+                    marginTop: "13%",
+                  }}
+                >
+                  COUNT : {getSalesBoosterOrderData && getSalesBoosterOrderData?.body?.ranges ? getSalesBoosterOrderData.body?.ranges.length :0}
                 </Text>
               </View>
             )}

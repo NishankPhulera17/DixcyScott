@@ -9,6 +9,7 @@ import {
 } from "react-native";
 import DotHorizontalList from "../../components/molecules/DotHorizontalList";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import Pdf from "react-native-pdf";
 
 const Introduction = ({ navigation }) => {
   const [imageIndex, setImageIndex] = useState(0);
@@ -19,7 +20,7 @@ const Introduction = ({ navigation }) => {
   const storeData = async () => {
     try {
       await AsyncStorage.setItem("isAlreadyIntroduced", "Yes");
-      //   console.log("saved")
+        console.log("saved")
     } catch (e) {
       // saving error
       console.log("error", e);
@@ -44,11 +45,16 @@ const Introduction = ({ navigation }) => {
       if (imageIndex == descriptionImages?.length - 1) {
         storeData();
         // navigation.navigate("SelectUser");
-        navigation.navigate("SelectUser");
+        navigation.navigate("PdfIntroduction",{pdf: "https://genefied-saas-partner-staging.s3.ap-south-1.amazonaws.com/Step-3.pdf"});
 
       } else {
+        storeData();
         setImageIndex(imageIndex + 1);
       }
+    }
+    else{
+      storeData();
+
     }
   };
 

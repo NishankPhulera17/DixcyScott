@@ -1206,7 +1206,7 @@ export default function Scheme({ navigation }) {
           ></Image>
         </TouchableOpacity>
         <PoppinsTextMedium
-          content="Scheme"
+          content="4X"
           style={{
             marginLeft: 10,
             fontSize: 16,

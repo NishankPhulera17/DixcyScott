@@ -409,7 +409,7 @@ const getPermission = async () => {
     setTimeout(()=>{
       navigation.navigate("SelectUser");
 
-    },10000)
+    },7000)
   };
 
   useEffect(() => {
@@ -1110,6 +1110,7 @@ const onUpdateDownloaded = () => {
     checkKYCDoneStatus(parsedJsonValues)
     
     const value = await AsyncStorage.getItem("isAlreadyIntroduced");
+    console.log("Valuesisisisis", value)
 
     if (value != null && jsonValue != null) {
       // value previously stored
@@ -1309,21 +1310,21 @@ const onUpdateDownloaded = () => {
     
       for(var i=0;i<kycOption1.length;i++)
       {
-        if(kycOption1.includes("aadhar"))
+        if(kycOption1.includes("aadhar") && !kycCompletedCount.includes("aadhar"))
         {
-          if(kycData.is_valid_aadhar)
+          if(kycData.is_valid_aadhar )
           {
             kycCompletedCount.push("aadhar")
           }
         }
-        if(kycOption1.includes("gstin"))
+        if(kycOption1.includes("gstin") && !kycCompletedCount.includes("gstin"))
         {
           if(kycData.is_valid_gstin)
           {
             kycCompletedCount.push("gstin")
           }
         } 
-        if(kycOption1.includes("pan"))
+        if(kycOption1.includes("pan") && !kycCompletedCount.includes("pan"))
         {
           if(kycData.is_valid_pan)
           {
@@ -1333,13 +1334,15 @@ const onUpdateDownloaded = () => {
       }
     
       var count1 =0;
+
     for(var i=0;i<kycCompletedCount.length;i++)
     {
-      if(kycOption1.includes(kycCompletedCount[i]))
+      if(kycOption1.includes(kycCompletedCount[i] ) )
       {
         count1 ++;
       }
     }
+
     console.log("count", count1,kycOption1.length)
     if(count1 == kycOption1.length)
     {
@@ -1354,21 +1357,21 @@ const onUpdateDownloaded = () => {
     {
       for(var i=0;i<kycOption2.length;i++)
       {
-        if(kycOption2.includes("aadhar"))
+        if(kycOption2.includes("aadhar") && !kycCompletedCount.includes("aadhar"))
         {
           if(kycData.is_valid_aadhar)
           {
             kycCompletedCount.push("aadhar")
           }
         }
-        if(kycOption2.includes("gstin"))
+        if(kycOption2.includes("gstin") && !kycCompletedCount.includes("gstin"))
         {
           if(kycData.is_valid_gstin)
           {
             kycCompletedCount.push("gstin")
           }
         }
-        if(kycOption2.includes("pan"))
+        if(kycOption2.includes("pan") && !kycCompletedCount.includes("pan"))
         {
           if(kycData.is_valid_pan)
           {
