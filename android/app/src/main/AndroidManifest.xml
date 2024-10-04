@@ -8,6 +8,10 @@
 <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.POST_NOTIFICATIONS"/>
 
+<uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+   
+
+
 
 <!-- Include this only if you are planning to use the microphone for video recording -->
 <uses-permission android:name="android.permission.RECORD_AUDIO"/>
@@ -19,8 +23,17 @@
       android:allowBackup="false"
       android:theme="@style/AppTheme"
       android:usesCleartextTraffic="true"
-     
+      android:requestLegacyExternalStorage="true"
       >
+      <provider
+        android:name="androidx.core.content.FileProvider"
+        android:authorities="${applicationId}.provider"
+        android:exported="false"
+        android:grantUriPermissions="true">
+        <meta-data
+            android:name="android.support.FILE_PROVIDER_PATHS"
+            android:resource="@xml/file_paths" />
+    </provider>
       <activity
         android:name=".MainActivity"
         android:label="@string/app_name"
@@ -28,6 +41,9 @@
         android:launchMode="singleTask"
         android:windowSoftInputMode="adjustResize"
         android:exported="true">
+        <intent-filter>
+  <action android:name="android.intent.action.DOWNLOAD_COMPLETE" />
+</intent-filter>
         <intent-filter>
             <action android:name="android.intent.action.MAIN" />
             <category android:name="android.intent.category.LAUNCHER" />

@@ -323,7 +323,7 @@ const AddedUserScanList = ({ navigation, route }) => {
                         <View style={{ alignItems: 'center' }}>
                             {/* <PoppinsTextLeftMedium style={{ marginLeft: 5, color: 'black', fontWeight: '800', fontSize: 20, }} content={` ${inactive}`}></PoppinsTextLeftMedium> */}
 
-                            <PoppinsTextLeftMedium style={{ marginLeft: 5, color: 'black', fontWeight: '800', fontSize: 20, }} content={String(Number(userPointData?.body?.point_reserved) + Number(userPointData?.body?.point_earned)).substring(0, 6)} ></PoppinsTextLeftMedium>
+                            <PoppinsTextLeftMedium style={{ marginLeft: 5, color: 'black', fontWeight: '800', fontSize: 20, }} content={String(Math.trunc(userPointData?.body?.point_reserved) + Math.trunc(userPointData?.body?.point_earned)).substring(0, 6)} ></PoppinsTextLeftMedium>
 
                             <PoppinsTextLeftMedium style={{ marginLeft: 5, color: 'black', fontWeight: '600' }} content={`Total Points`} ></PoppinsTextLeftMedium>
 

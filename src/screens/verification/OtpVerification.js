@@ -51,6 +51,8 @@ const OtpVerification = ({ navigation, route }) => {
     []
   );
   const walletBalance = useSelector((state) => state.pointWallet.walletBalance);
+  // const address = useSelector(state=>state.address.address)
+
   const pointsConversion = useSelector(
     (state) => state.redemptionData.pointConversion
   );
@@ -414,11 +416,14 @@ const OtpVerification = ({ navigation, route }) => {
             remarks: "demo",
             type: "point",
             address_id: address.id,
+            address:address
+            
           };
           const params = {
             token: token,
             data: data,
           };
+          console.log("data of redeem", data)
           redeemGiftsFunc(params);
         } else {
           const data = {
@@ -432,6 +437,7 @@ const OtpVerification = ({ navigation, route }) => {
             token: token,
             data: data,
           };
+      
           redeemSchemeApiFunc(params);
         }
       } else if (type === "Cashback") {

@@ -531,7 +531,7 @@ const EditProfile = ({ navigation, route }) => {
             ></Image>
           )}
         </View>
-        <TouchableOpacity
+        {/* <TouchableOpacity
           onPress={() => {
             setModalVisible(true);
           }}
@@ -555,7 +555,7 @@ const EditProfile = ({ navigation, route }) => {
             }}
             content={t("Change Profile Picture")}
           ></PoppinsTextMedium>
-        </TouchableOpacity>
+        </TouchableOpacity> */}
       </View>
       <View
         style={{
@@ -610,7 +610,24 @@ const EditProfile = ({ navigation, route }) => {
                       photo={require("../../../assets/images/eye.png")}
                     ></DisplayOnlyTextInput>
                   );
-                } else if (item.name === "name") {
+                } 
+                else if (item.name === "gstin") {
+                  return (
+                    <DisplayOnlyTextInput
+                      key={index}
+                      data={
+                        formValues[index] === null ||
+                        formValues[index] === undefined
+                          ? "No data available"
+                          : formValues[index]
+                      }
+                      title={item.label == "Pan" ? t("Pan") : item.label}
+                      photo={require("../../../assets/images/eye.png")}
+                    ></DisplayOnlyTextInput>
+                  );
+                } 
+                
+                else if (item.name === "name") {
                   return (
                     <DisplayOnlyTextInput
                       key={index}

@@ -5,6 +5,8 @@ import { useNavigation } from '@react-navigation/native';
 
 const ModalWithBorder = (props) => {
   const [modalVisible, setModalVisible] = useState(false);
+  console.log("closable modal with border", props.closable)
+  let closable = (props.closable == false) ? false : true;
 
   const ternaryThemeColor = useSelector(
     state => state.apptheme.ternaryThemeColor,
@@ -41,7 +43,8 @@ const ModalWithBorder = (props) => {
         transparent={true}
         visible={modalVisible}
         onRequestClose={() => {
-          closeModal()
+          closable ?
+          closeModal() : ""
         }}>
         <View style={styles.centeredView}>
           <View style={[styles.modalView, { borderWidth: 3, borderColor: ternaryThemeColor, }]}>

@@ -88,6 +88,12 @@ import OrderHistory from '../screens/historyPages/OrderHistory';
 import SchemePointDetails from '../screens/scheme/SchemePointDetails';
 import CameraCapture from '../screens/camera/CameraCapture';
 import TargetVsAchievement from '../screens/pointBooster/TargetVsAchievement';
+import BasePoints from '../screens/pointBooster/BasePoints';
+import BonusPoints from '../screens/pointBooster/BonusPoints';
+import TargetAchievementDetails from '../screens/scheme/TargetAchievementDetails';
+import ComingSoonScreen from '../comingsoon/ComingSoon';
+import PdfIntroduction from '../screens/pdf/PdfIntroduction';
+
 
 
 const Stack = createNativeStackNavigator()
@@ -107,6 +113,16 @@ const StackNavigator = () => {
                         headerShown: false
                     }
                 } name="TargetVsAchievement" component={TargetVsAchievement}></Stack.Screen>
+                   <Stack.Screen options={
+                    {
+                        headerShown: false
+                    }
+                } name="ComingSoonScreen" component={ComingSoonScreen}></Stack.Screen>
+                <Stack.Screen options={
+                    {
+                        headerShown: false
+                    }
+                } name="BasePoints" component={BasePoints}></Stack.Screen>
                 <Stack.Screen options={
                     {
                         headerShown: false
@@ -148,6 +164,16 @@ const StackNavigator = () => {
                         headerShown: false
                     }
                 } name="EnableCameraScreen" component={EnableCameraScreen}></Stack.Screen>
+                                <Stack.Screen options={
+                    {
+                        headerShown: false
+                    }
+                } name="BonusPoints" component={BonusPoints}></Stack.Screen>
+                                      <Stack.Screen options={
+                    {
+                        headerShown: false
+                    }
+                } name="TargetAchievementDetails" component={TargetAchievementDetails}></Stack.Screen>
                 <Stack.Screen options={
                     {
                         headerShown: false
@@ -331,6 +357,11 @@ const StackNavigator = () => {
                         headerShown: false
                     }
                 } name="PdfComponent" component={PdfComponent}></Stack.Screen>
+                        <Stack.Screen options={
+                    {
+                        headerShown: false
+                    }
+                } name="PdfIntroduction" component={PdfIntroduction}></Stack.Screen>
                 <Stack.Screen options={
                     {
                         headerShown: false

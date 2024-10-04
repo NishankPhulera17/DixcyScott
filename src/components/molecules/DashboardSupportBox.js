@@ -11,6 +11,7 @@ const DashboardSupportBox = (props) => {
    const borderColor =props?.borderColor
     const fontWeight =Platform.OS==='ios' ? '400' : '800'
     const fontSize =Platform.OS==='ios' ? 10 : 12
+    const pdfLink = props?.pdf
 
     // console.log("text support",text)
 
@@ -26,10 +27,22 @@ const handleNavigation=()=>{
     {
         navigation.navigate('HelpAndSupport')
     }
+    else if(text ==="product")
+        {
+            navigation.navigate('ProductCatalogue')
+        }
+        else if(text ==="media")
+            {
+                navigation.navigate('VideoGallery')
+            }
+            else if(text ==="program brochure"){
+               navigation.navigate('PdfComponent', { pdf: pdfLink })
+
+            }
 }
 
     return (
-        <TouchableOpacity onPress={()=>{handleNavigation()}}  style={{height:140,width:'28%',margin:8,borderTopLeftRadius:100,borderTopRightRadius:100,borderBottomRightRadius:10,borderBottomLeftRadius:10,backgroundColor:backgroundColor,alignItems:"center",justifyContent:"center",borderWidth:0.4,borderColor:borderColor}}>
+        <TouchableOpacity onPress={()=>{handleNavigation()}}  style={{height:140,width:120,margin:8,borderTopLeftRadius:100,borderTopRightRadius:100,borderBottomRightRadius:10,borderBottomLeftRadius:10,backgroundColor:backgroundColor,alignItems:"center",justifyContent:"center",borderWidth:0.4,borderColor:borderColor}}>
             <View style={{height:80,width:80,borderRadius:40,backgroundColor:"white",alignItems:"center",justifyContent:"center",marginBottom:10}}>
                 <Image style={{height:80,width:80,resizeMode:'contain'}} source={image}></Image>
             </View>

@@ -769,7 +769,7 @@ const Profile = ({ navigation }) => {
                   justifyContent: "center",
                 }}
               >
-                <View
+                {/* <View
                   style={{
                     height: 100,
                     width: "90%",
@@ -790,7 +790,7 @@ const Profile = ({ navigation }) => {
                     title="Check Passbook"
                     image={require("../../../assets/images/passbook_icon.png")}
                   ></ProfileBox>
-                </View>
+                </View> */}
               </View>
             )}
             {/* ------------------------------- */}

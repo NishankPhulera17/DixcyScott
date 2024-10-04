@@ -15,6 +15,7 @@ import { useCashPerPointMutation, useFetchUserPointsMutation } from '../../apiSe
 import { useGetkycStatusMutation } from '../../apiServices/kyc/KycStatusApi';
 import ErrorModal from '../../components/modals/ErrorModal';
 import MessageModal from '../../components/modals/MessageModal';
+import moment from 'moment';
 
 const Passbook = ({ navigation }) => {
     const [warrantyOptionEnabled, setWarrantyOptionEnabled] = useState(false)
@@ -378,8 +379,8 @@ const Passbook = ({ navigation }) => {
             <TouchableOpacity onPress={() => {
                 navigateToPages(title)
             }} style={{ flexDirection: "row", alignItems: "center", justifyContent: "flex-start", borderBottomWidth: 1, width: '100%', borderColor: '#EEEEEE', padding: 6, paddingTop: 8, paddingBottom: 8 }}>
-                <View style={{ height: 44, width: 44, alignItems: "center", justifyContent: "center", borderRadius: 4, borderColor: ternaryThemeColor, borderWidth: 1, marginLeft: 10 }}>
-                    <Image style={{ height: 26, width: 26, resizeMode: "contain" }} source={image}></Image>
+                <View style={{ height: 44, width: 44, alignItems: "center", justifyContent: "center", borderRadius: 4, borderColor: ternaryThemeColor,  marginLeft: 10 }}>
+                    <Image style={{ height: 40, width: 40, resizeMode: "contain" }} source={image}></Image>
                 </View>
                 <View style={{  width: 210, alignItems: "flex-start", justifyContent: "center", marginLeft: 14 }}>
                     <PoppinsText style={{ color: 'black', fontSize: 14 }} content={visibleTitle}></PoppinsText>
@@ -449,9 +450,9 @@ const Passbook = ({ navigation }) => {
             <View>
                 <TouchableOpacity onPress={() => {
                     navigateToPages(title)
-                }} style={{ flexDirection: "column", borderWidth: 2, width: 70, height: 70, borderColor: ternaryThemeColor, padding: 6, marginTop: 15, marginHorizontal: 22, alignItems: 'center' }}>
+                }} style={{ flexDirection: "column",width: 70, height: 70, borderColor: ternaryThemeColor, padding: 6, marginTop: 15, marginHorizontal: 22, alignItems: 'center' }}>
                     <View style={{ height: 44, width: 44, alignItems: "center", justifyContent: "center", }}>
-                        <Image style={{ height: 40, width: 40, resizeMode: "contain", }} source={image}></Image>
+                        <Image style={{ height: 60, width: 60, resizeMode: "contain", }} source={image}></Image>
                     </View>
                 </TouchableOpacity>
 
@@ -515,7 +516,7 @@ const Passbook = ({ navigation }) => {
                 <View style={{ width: '100%', backgroundColor: ternaryThemeColor, alignItems: "center", justifyContent: 'center',paddingBottom:16 }}>
 
                     <View style={{ alignItems: "center", justifyContent: "flex-start", flexDirection: "row", width: '100%', marginTop: 10, height: 40, marginLeft: 20 }}>
-                        <TouchableOpacity onPress={() => { navigation.goBack() }}>
+                        <TouchableOpacity onPress={() => { navigation.navigate("Dashboard") }}>
                             <Image style={{ height: 30, width: 30, resizeMode: 'contain' }} source={require('../../../assets/images/blackBack.png')}></Image>
                         </TouchableOpacity>
                         <PoppinsTextMedium content={t("Passbook" )}style={{ marginLeft: 10, fontSize: 18, fontWeight: '700', color: 'white' }}></PoppinsTextMedium>
@@ -590,12 +591,16 @@ const Passbook = ({ navigation }) => {
                             pointsOptionEnabled && neededHistory.includes("points") &&
                             <NavigateTO visibleTitle={t("points history")} title={"Points History"} discription={t("list of points redeemed by you")} image={require('../../../assets/images/coinStack.png')}></NavigateTO>
                         }
+                              {/* {
+                            true &&
+                            <NavigateTO visibleTitle={t("Ledger")} title={"Ledger"} discription={t("all list of ledger by you")} image={require('../../../assets/images/ledger.png')}></NavigateTO>
+                        } */}
 
                         {/* ozone change */}
                         {userData.user_type !== "dealer" && neededHistory.includes("scanned") &&  <NavigateTO visibleTitle={t("scanned history")} title={"Scanned History"} discription={t('list of products scanned by you')} image={require('../../../assets/images/scannedHistory.png')}></NavigateTO>}
-                        {neededHistory.includes("order") &&   <NavigateTO visibleTitle={t("Order history")} title="Order History" discription={t("list of products ordered by you")} image={require('../../../assets/images/redeemed_icon.png')}></NavigateTO>}
+                        {neededHistory.includes("order") &&   <NavigateTO visibleTitle={t("Order history")} title="Order History" discription={t("list of products ordered by you")} image={require('../../../assets/images/OrderHistory.png')}></NavigateTO>}
                        
-                      {neededHistory.includes("redeemed") &&   <NavigateTO visibleTitle={t("redeemed history")} title="Redeemed History" discription={t("list of products redeemed by you")} image={require('../../../assets/images/redeemed_icon.png')}></NavigateTO>}
+                      {neededHistory.includes("redeemed") &&   <NavigateTO visibleTitle={t("redeemed history")} title="Redeemed History" discription={t("list of products redeemed by you")} image={require('../../../assets/images/giftOpen.png')}></NavigateTO>}
                         { neededHistory.includes("cashback") &&<NavigateTO visibleTitle={t("cashback history")} title="Cashback History" discription={t("list of cashback claimed by you")} image={require('../../../assets/images/cashbackBlack.png')}></NavigateTO>}
                         {
                             // couponOptionEnabled &&
@@ -663,10 +668,14 @@ const Passbook = ({ navigation }) => {
                             } */}
                             {/* ozone change */}
 
+                     
+
+                            {/* <GridVIew title={t("Ledger")}  discription="all list of ledger by you" image={require('../../../assets/images/ledger.png')}></GridVIew> */}
+
                             {/* {userData.user_type !== "dealer" && <GridVIew title={t("scanned history")} discription="" image={require('../../../assets/images/scannedHistory.png')}></GridVIew>} */}
-                            <GridVIew title={t("Order history")}  discription=" list of products ordered by you" image={require('../../../assets/images/redeemed_icon.png')}></GridVIew>
+                            <GridVIew title={t("Order history")}  discription=" list of products ordered by you" image={require('../../../assets/images/OrderHistory.png')}></GridVIew>
                             
-                            <GridVIew title={t("redeemed history")}  discription=" list of products redeemed by you" image={require('../../../assets/images/redeemed_icon.png')}></GridVIew>
+                            <GridVIew title={t("redeemed history")}  discription=" list of products redeemed by you" image={require('../../../assets/images/giftOpen.png')}></GridVIew>
                             {/* <GridVIew title={t("cashback history")} discription=" list of cashback redeemed by you" image={require('../../../assets/images/cashbackBlack.png')}></GridVIew> */}
                             {/* {
                                 couponOptionEnabled &&
