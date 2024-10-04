@@ -122,7 +122,7 @@ const BasePoints = ({navigation}) => {
           }}
         >
           <PoppinsTextMedium
-            content={`${moment(selectedDataStart).format("YYYY")}`}
+            content={`${moment(selectedDataStart).format("MMM YYYY")}`}
             style={{ fontSize: 16, fontWeight: "700", color:'black', borderBottomWidth:0.5 }}
           />
           <TouchableOpacity
@@ -217,7 +217,7 @@ const BasePoints = ({navigation}) => {
                   resizeMode: "contain",
                   borderRadius: 10,
                 }}
-                source={require("../../../assets/images/giftBlue.png")}
+                source={require("../../../assets/images/basePointImage.png")}
               ></Image>
             </View>
               </View>

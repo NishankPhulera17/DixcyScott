@@ -24,7 +24,7 @@ import { additem } from '../../../redux/slices/rewardCartSlice';
 import { useTranslation } from 'react-i18next';
 
 const CartList = ({ navigation, route }) => {
-  const [cart, setCart] = useState(route.params.cart);
+  const [cart, setCart] = useState(route.params?.cart);
   const [cartId, setCartId] = useState([])
 
   const [showSubmitButtons, setShowSubmitButtons] = useState(false)
@@ -53,7 +53,7 @@ const CartList = ({ navigation, route }) => {
   console.log('userdata', cart);
   const height = Dimensions.get('window').height
 
-  console.log("cart is",route.params.cart)
+  console.log("cart is",route.params?.cart)
 
   const modalClose = () => {
     setError(false);

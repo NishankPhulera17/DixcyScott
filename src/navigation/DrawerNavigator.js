@@ -333,6 +333,12 @@ const CustomDrawer = () => {
                 navigation.dispatch(DrawerActions.closeDrawer());
                 
               }
+              else if (props.title.toLowerCase() === "terms and conditions") {
+                // navigation.navigate('QueryList')
+                navigation.navigate('PdfComponent', { pdf: getTermsData })
+
+                
+              }
               else if (props.title.toLowerCase() === "share app") {
                 const options = {
                   title: "Share APP",

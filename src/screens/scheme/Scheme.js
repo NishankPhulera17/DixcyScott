@@ -1262,9 +1262,9 @@ export default function Scheme({ navigation }) {
                     data={item}
                     key={index}
                     name={item.name}
+                    image={item.image}
                     worth={"10000"}
                     coin={10}
-                    image={""}
                     earnedPoints={100}
                   ></NewSchemeComponent>
                 );

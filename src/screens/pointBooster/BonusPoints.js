@@ -250,7 +250,7 @@ const BonusPoints = ({ navigation }) => {
                 resizeMode: "contain",
                 borderRadius: 10,
               }}
-              source={require("../../../assets/images/giftBlue.png")}
+              source={require("../../../assets/images/bonusPointImage.png")}
             ></Image>
 
               }
