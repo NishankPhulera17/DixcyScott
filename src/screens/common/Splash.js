@@ -1176,15 +1176,15 @@ const onUpdateDownloaded = () => {
       console.log("minVersionSupport while login", minVersionSupport);
       __DEV__ && setMinVersionSupport(true);
 
-      // if (value === "Yes") {
-      //   setTimeout(()=>{
-      //   navigation.navigate("Introduction");
-      //   },10000)
-      // } else {
-      //   setTimeout(()=>{
-      //   navigation.navigate("Introduction");
-      //   },10000)
-      // }
+      if (value === "Yes") {
+        setTimeout(()=>{
+        navigation.navigate("SelectUser");
+        },7000)
+      } else {
+        setTimeout(()=>{
+        navigation.navigate("Introduction");
+        },7000)
+      }
       // console.log("isAlreadyIntroduced",isAlreadyIntroduced,gotLoginData)
     }
   };

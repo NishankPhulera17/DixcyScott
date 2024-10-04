@@ -580,9 +580,9 @@ const Dashboard = ({ navigation }) => {
           resizeMode={FastImage.resizeMode.contain}
         />
       }
-          <View style={{ width: '100%', alignItems: "center", justifyContent: "center", marginBottom: 20 }}>
+          {/* <View style={{ width: '100%', alignItems: "center", justifyContent: "center", marginBottom: 20 }}>
             {showKyc && <KYCVerificationComponent buttonTitle={t("Complete Your KYC")} title={t("Your KYC is not completed")}></KYCVerificationComponent>}
-          </View>
+          </View> */}
           {/* <View style={{ flexDirection: "row", width: '100%', alignItems: "center", justifyContent: 'space-evenly' }}> */}
           <ScrollView contentContainerStyle={{}}  horizontal={true}>
           <DashboardSupportBox title={t("Program Brochure")} text="program brochure" backgroundColor="#D8C8C8" borderColor="#FDDADA" image={require('../../../assets/images/vijetaDashboard.png')} pdf={programBrochure?.files?.length> 0 ? programBrochure.files[0] : "" } ></DashboardSupportBox>
