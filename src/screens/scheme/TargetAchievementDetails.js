@@ -933,7 +933,7 @@ const TargetAchievementDetails = ({ navigation, route }) => {
           </TouchableOpacity>
 
           <PoppinsTextMedium
-            content="View Points"
+            content="View Purchase"
             style={{
               marginLeft: 10,
               fontSize: 16,

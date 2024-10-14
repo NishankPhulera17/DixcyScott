@@ -1206,7 +1206,7 @@ export default function Scheme({ navigation }) {
           ></Image>
         </TouchableOpacity>
         <PoppinsTextMedium
-          content="4X"
+          content="Vijeta 4x"
           style={{
             marginLeft: 10,
             fontSize: 16,

@@ -456,7 +456,7 @@ const SchemePointDetails = ({ navigation, route }) => {
         >
           <PoppinsTextMedium
             style={{ color: "#171717", fontSize: 16, fontWeight: "600" }}
-            content="Monthly Vol Based Multiplier"
+            content="Monthly Volume Based Multiplier"
           ></PoppinsTextMedium>
         </View>
         <View
@@ -480,7 +480,7 @@ const SchemePointDetails = ({ navigation, route }) => {
           >
             <PoppinsTextMedium
               style={{ color: "#171717", fontSize: 15, fontWeight: "600" }}
-              content="Boxes in Month"
+              content="Boxes in the Month"
             ></PoppinsTextMedium>
           </View>
           <View
@@ -794,7 +794,6 @@ const SchemePointDetails = ({ navigation, route }) => {
           justifyContent: "center",
           width: "100%",
           backgroundColor: ternaryThemeColor,
-          height: "100%",
         }}
       >
         <View
@@ -824,7 +823,7 @@ const SchemePointDetails = ({ navigation, route }) => {
             ></Image>
           </TouchableOpacity>
           <PoppinsTextMedium
-            content="View Points"
+            content= {schemeData?.trigger_key == "target category" ? "2x Style Points" :schemeData?.trigger_key ==  "purchase limit" ? "2x Bonanza Points" : "View Points"}
             style={{
               marginLeft: 10,
               fontSize: 16,
@@ -839,17 +838,17 @@ const SchemePointDetails = ({ navigation, route }) => {
             borderTopRightRadius: 30,
             borderTopLeftRadius: 30,
             backgroundColor: "white",
-            marginTop: 10,
+            // marginTop: 10,
             alignItems: "center",
             justifyContent: "flex-start",
             width: "100%",
-            paddingBottom: 10,
-            height: "90%",
+            // paddingBottom: 10,
+            height: "95%",
           }}
         >
           <FilterScheme title={"Filter Date"}></FilterScheme>
 
-          <View style={{ width: "90%", height: "30%", marginTop: 20 }}>
+          <View style={{ width: "90%",  marginTop: 20 }}>
             {type == "target category" && (
               <View
                 style={{
@@ -926,12 +925,12 @@ const SchemePointDetails = ({ navigation, route }) => {
           <ScrollView
             contentContainerStyle={{
               width: "100%",
-              marginTop: 20,
               paddingBottom: 20,
+
             }}
           >
             {type == "target category" && (
-              <View style={{justifyContent:'space-between', flexDirection:'row'}}>
+              <View style={{justifyContent:'space-between', flexDirection:'row',}}>
                 <Text
                   style={{
                     color: "black",

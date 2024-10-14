@@ -52,6 +52,7 @@ const CheckKycOptions = ({navigation,route}) => {
   const timer = useRef(0);
   const imageData = route?.params?.imageData
   console.log("imageData", imageData)
+  
   const [
     updateProfileFunc,
     {
