@@ -24,6 +24,7 @@ import { useFetchLegalsMutation } from '../apiServices/fetchLegal/FetchLegalApi'
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import ErrorModal from '../components/modals/ErrorModal';
 import VersionCheck from 'react-native-version-check';
+import { DrawerActions } from '@react-navigation/native';
 import { useTranslation } from 'react-i18next';
 
 
@@ -302,14 +303,41 @@ const CustomDrawer = () => {
               else if (props.title.toLowerCase() === "feedback") {
                 navigation.navigate('Feedback')
               }
+              else if (props.title.toLowerCase() === "gift tracker") {
+                navigation.navigate('ComingSoonScreen')
+              }
+              else if (props.title.toLowerCase() === "vijeta 4x") {
+                navigation.navigate('Scheme')
+              }
+              else if (props.title.toLowerCase() === "dream gift") {
+                navigation.navigate('ComingSoonScreen')
+              }
+              else if (props.title.toLowerCase() === "check update") {
+                navigation.navigate('ComingSoonScreen')
+              }
+              else if (props.title.toLowerCase() === "my rewards") {
+                navigation.navigate('RedeemGifts')
+              }
+              
               else if (props.title.toLowerCase() === "media") {
-                navigation.navigate('WhatsNew')
+                navigation.navigate('VideoGallery')
               }
               else if (props.title.toLowerCase() === "add user") {
                 navigation.navigate('ListUsers')
               }
               else if (props.title.toLowerCase() === "query list") {
                 navigation.navigate('QueryList')
+              }
+              else if (props.title.toLowerCase() === "home") {
+                // navigation.navigate('QueryList')
+                navigation.dispatch(DrawerActions.closeDrawer());
+                
+              }
+              else if (props.title.toLowerCase() === "terms and conditions") {
+                // navigation.navigate('QueryList')
+                navigation.navigate('PdfComponent', { pdf: getTermsData })
+
+                
               }
               else if (props.title.toLowerCase() === "share app") {
                 const options = {
@@ -482,7 +510,7 @@ const CustomDrawer = () => {
           {userData && <Text style={{ color: 'white', margin: 0, textTransform: "capitalize" }}>{userData.user_type} Account</Text>}
 
           {!Object.values(kycData).includes(false) ? <View style={{ flexDirection: 'row', marginTop: 4 }}>
-            <View
+            {/* <View
               style={{
                 height: 22,
                 width: 80,
@@ -492,14 +520,14 @@ const CustomDrawer = () => {
                 justifyContent: 'center',
                 flexDirection: 'row',
                 marginTop: 2,
-              }}>
-              <Image style={{ height: 10, width: 10, resizeMode: 'contain' }} source={require('../../assets/images/tickBlue.png')}></Image>
-              <Text style={{ marginLeft: 4, color: 'black', fontSize: 10, fontWeight: '500' }}>KYC Status</Text>
-            </View>
+              }}> */}
+              {/* <Image style={{ height: 10, width: 10, resizeMode: 'contain' }} source={require('../../assets/images/tickBlue.png')}></Image>
+              <Text style={{ marginLeft: 4, color: 'black', fontSize: 10, fontWeight: '500' }}>KYC Status</Text> */}
+            {/* </View> */}
 
           </View> :
             <View style={{ flexDirection: 'row', marginTop: 4 }}>
-              <View
+              {/* <View
                 style={{
                   height: 22,
                   width: 80,
@@ -512,14 +540,14 @@ const CustomDrawer = () => {
                 }}>
                 <Image style={{ height: 10, width: 10, resizeMode: 'contain' }} source={require('../../assets/images/cancel.png')}></Image>
                 <Text style={{ marginLeft: 4, color: 'black', fontSize: 10, fontWeight: '500' }}>KYC Status</Text>
-              </View>
+              </View> */}
 
             </View>
           }
         </View>
         <PoppinsTextMedium content={`Version : ${currentVersion}`} style={{ position: 'absolute', bottom: 4, right: 10, color: 'white', fontSize: 12 }}></PoppinsTextMedium>
       </View>
-      <ScrollView contentContainerStyle={{}} style={{ width: '100%', height: '100%' }} >
+      <ScrollView contentContainerStyle={{backgroundColor:'white'}} style={{ width: '100%', height: '100%',backgroundColor:'white'}} >
 
         {
           drawerData !== undefined && drawerData.app_menu.map((item, index) => {
@@ -823,18 +851,18 @@ const CustomDrawer = () => {
         </View> */}
         {/* Knowledge Hub*/}
 
-        <TouchableOpacity style={{ backgroundColor: ternaryThemeColor, height: 70, justifyContent: 'center', width: '100%', alignItems: 'center' }} onPress={() => {
-
-          handleLogout()
-
-
-        }}>
-          <PoppinsTextLeftMedium style={{ color: 'white' }} content={t("LOG OUT")}></PoppinsTextLeftMedium>
-        <PoppinsTextLeftMedium style={{color:'white',fontSize:10,position:'absolute',bottom:2}} content ="Designed and developed by Genefied"></PoppinsTextLeftMedium>
-
-        </TouchableOpacity>
       </ScrollView>
 
+      <TouchableOpacity style={{ backgroundColor: ternaryThemeColor, height: 70, justifyContent: 'center', width: '100%', alignItems: 'center' }} onPress={() => {
+
+handleLogout()
+
+
+}}>
+<PoppinsTextLeftMedium style={{ color: 'white' }} content={t("LOG OUT")}></PoppinsTextLeftMedium>
+<PoppinsTextLeftMedium style={{color:'white',fontSize:10,position:'absolute',bottom:2}} content ="Designed and developed by Genefied"></PoppinsTextLeftMedium>
+
+</TouchableOpacity>
 
 
     </View>

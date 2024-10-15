@@ -24,7 +24,7 @@ import { additem } from '../../../redux/slices/rewardCartSlice';
 import { useTranslation } from 'react-i18next';
 
 const CartList = ({ navigation, route }) => {
-  const [cart, setCart] = useState(route.params.cart);
+  const [cart, setCart] = useState(route.params?.cart);
   const [cartId, setCartId] = useState([])
 
   const [showSubmitButtons, setShowSubmitButtons] = useState(false)
@@ -53,7 +53,7 @@ const CartList = ({ navigation, route }) => {
   console.log('userdata', cart);
   const height = Dimensions.get('window').height
 
-  console.log("cart is",route.params.cart)
+  console.log("cart is",route.params?.cart)
 
   const modalClose = () => {
     setError(false);
@@ -142,15 +142,14 @@ const CartList = ({ navigation, route }) => {
           backgroundColor: ternaryThemeColor,
           height: 50,
           width: '90%',
-          borderRadius: 10,
+          borderRadius: 30,
           flexDirection: 'row',
-
           marginBottom: 20
         }}>
         {!redeem && (
           <>
             <PoppinsTextMedium
-              content="Redeem"
+              content="Proceed To Redeem"
               style={{ color: 'white', fontWeight: '700' }}></PoppinsTextMedium>
             <Image
               style={{
@@ -226,13 +225,15 @@ const CartList = ({ navigation, route }) => {
           style={{
             height: 50,
             width: '46%',
-            backgroundColor: '#CD0505',
+            // backgroundColor: '#CD0505',
+            borderColor:"#CD0505",
+            borderWidth:1,
             alignItems: 'center',
             justifyContent: 'center',
-            borderRadius: 6,
+            borderRadius: 30,
           }}>
           <PoppinsTextMedium
-            style={{ color: 'white', fontWeight: '700' }}
+            style={{ color: '#CD0505', fontWeight: '700' }}
             content="Cancel"></PoppinsTextMedium>
         </TouchableOpacity>
         <TouchableOpacity
@@ -244,7 +245,7 @@ const CartList = ({ navigation, route }) => {
             alignItems: 'center',
             justifyContent: 'center',
             marginLeft: 10,
-            borderRadius: 6,
+            borderRadius: 30,
           }}>
           <PoppinsTextMedium
             style={{ color: 'white', fontWeight: '700' }}
@@ -281,12 +282,13 @@ const CartList = ({ navigation, route }) => {
             alignItems: 'center',
             justifyContent: 'center',
             flexDirection: 'row',
-
+            marginLeft:10,
+            marginRight:10
           }}>
           <Image
-            style={{ height: 30, width: 30, resizeMode: 'contain' }}
-            source={require('../../../assets/images/reward.png')}></Image>
-          <PoppinsTextMedium style={{ color: 'black', fontSize: 16, fontWeight: '700' }} content={pointsConsumed}></PoppinsTextMedium>
+            style={{ height: 20, width: 20, resizeMode: 'contain' }}
+            source={require('../../../assets/images/coin.png')}></Image>
+          <PoppinsTextMedium style={{ color: ternaryThemeColor, fontSize: 16, fontWeight: '700' }} content={pointsConsumed}></PoppinsTextMedium>
 
         </View>
       </View>

@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { View, StyleSheet, ScrollView, Platform, TouchableOpacity,Image, Button,BackHandler} from 'react-native';
+import { View, StyleSheet, ScrollView, Platform, TouchableOpacity,Image, Button,BackHandler, Text} from 'react-native';
 import MenuItems from '../../components/atoms/MenuItems';
 import { BaseUrl } from '../../utils/BaseUrl';
 import * as Keychain from 'react-native-keychain';
@@ -38,6 +38,7 @@ import ErrorModal from '../../components/modals/ErrorModal';
 import { useTranslation } from 'react-i18next';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { needCaimpaign } from '../../utils/HandleClientSetup';
+import { useFetchLegalsMutation } from '../../apiServices/fetchLegal/FetchLegalApi';
 
 
 
@@ -94,6 +95,16 @@ const Dashboard = ({ navigation }) => {
     isError: getKycStatusIsError
   }] = useGetkycStatusMutation()
 
+  const [
+    getPdfScheme,
+    {
+      data: getTermsData,
+      error: getTermsError,
+      isLoading: termsLoading,
+      isError: termsIsError,
+    },
+  ] = useFetchLegalsMutation();
+
   const [userPointFunc, {
     data: userPointData,
     error: userPointError,
@@ -135,6 +146,36 @@ const Dashboard = ({ navigation }) => {
     }
     
   },[locationSetup])
+
+
+  const [programBrochure, setProgramBrochure] = useState(null);
+
+  useEffect(() => {
+    // console.log("currentVersion", currentVersion);
+
+
+
+      const fetchTerms = async () => {
+        // const credentials = await Keychain.getGenericPassword();
+        // const token = credentials.username;
+        const params = {
+          type: "yearly-scheme",
+        };
+        getPdfScheme(params);
+      };
+      fetchTerms();
+
+
+
+    
+  }, []);
+
+  useEffect(()=>{
+    if(getTermsData && getTermsData.body && getTermsData.body.data && getTermsData.body.data.length > 0){
+      console.log("getTermsData dash", getTermsData.body?.data[0])
+      setProgramBrochure(getTermsData.body.data[0]);
+    }
+  },[getTermsData])
 
   useEffect(() => {
     const handleBackPress = () => {
@@ -242,8 +283,8 @@ const Dashboard = ({ navigation }) => {
         handleLogout();
       }
       else{
-        setError(true)
-      setMessage("problem in fetching membership, kindly retry.")
+      //   setError(true)
+      // setMessage("problem in fetching membership, kindly retry.")
       console.log("getActiveMembershipError", getActiveMembershipError)
       }
       
@@ -459,7 +500,7 @@ const Dashboard = ({ navigation }) => {
       <ScrollView style={{ width: '100%', marginBottom: platformMarginScroll, height: '100%' }}>
       <DrawerHeader></DrawerHeader>
       <View style={{width:'100%',alignItems:'center',justifyContent:'flex-start',flexDirection:'row',marginBottom:10}}>
-      <PoppinsTextLeftMedium style={{color:ternaryThemeColor, fontWeight:'bold', fontSize:19,marginLeft:20}} content={`${t("welcome")} ${userData?.name}`}></PoppinsTextLeftMedium>
+      <PoppinsTextLeftMedium style={{color:ternaryThemeColor, fontWeight:'bold', fontSize:16,marginLeft:20}} content={`${t("welcome")} ${userData?.name}`}></PoppinsTextLeftMedium>
       {getActiveMembershipData?.body!==null && <View
               style={{
                 flexDirection: 'row',
@@ -496,7 +537,7 @@ const Dashboard = ({ navigation }) => {
           }  
           </View>
          
-            <View style={{ width: "90%",  backgroundColor: 'white', marginBottom: 20, flexDirection: 'row', alignItems: 'center', borderColor: '#808080', borderWidth: 0.3, borderRadius: 10,paddingBottom:10,justifyContent:'center',paddingTop:10,minHeight:50 }}>
+            {/* <View style={{ width: "90%",  backgroundColor: 'white', marginBottom: 20, flexDirection: 'row', alignItems: 'center', borderColor: '#808080', borderWidth: 0.3, borderRadius: 10,paddingBottom:10,justifyContent:'center',paddingTop:10,minHeight:50 }}>
 
             <View style={{ backgroundColor: 'white', width: '42%', marginHorizontal: 20,alignItems:'center',justifyContent:'center' }}>
              {userPointData?.body?.point_balance ? <PoppinsText content={`${t("balance points")} ${userPointData?.body?.point_balance ? userPointData?.body?.point_balance : "loading"}`} style={{ color: 'black', fontWeight: 'bold' }}></PoppinsText> : <AnimatedDots color={'black'}/>} 
@@ -512,7 +553,7 @@ const Dashboard = ({ navigation }) => {
               </TouchableOpacity>
             </View>}
 
-          </View>
+          </View> */}
          {(userData?.user_type).toLowerCase() !== "dealer" ? (userData?.user_type).toLowerCase() !== "sales" ? scanningDetails && scanningDetails?.data.length!==0 &&  <ScannedDetailsBox lastScannedDate={moment(scanningDetails?.data[0]?.created_at).format("DD MMM YYYY")} scanCount={scanningDetails.total}></ScannedDetailsBox>:<></> :<></>}
           {/* <ScrollView showsHorizontalScrollIndicator={false} horizontal={true} style={{ paddingLeft: 10, paddingRight: 10, paddingBottom: 4 }}>
             <DashboardDataBox header="Total Points"  data="5000" image={require('../../../assets/images/coin.png')} ></DashboardDataBox>
@@ -520,6 +561,15 @@ const Dashboard = ({ navigation }) => {
 
           </ScrollView> */}
           {dashboardData && !userPointIsLoading && <DashboardMenuBox requiresLocation = {requiresLocation} navigation={navigation} data={dashboardData}></DashboardMenuBox>}
+
+          {/* <View>
+          <TouchableOpacity onPress={()=>{
+               navigation.navigate('PdfComponent', { pdf: "https://genefied-saas-partner-staging.s3.ap-south-1.amazonaws.com/Vijeta+Annual+Scheme+2024+FV+3-5-24+18-9-2024.pdf"})
+            }} style={{width:'100%',height:80,alignItems:'center',justifyContent:'center',borderRadius:4}}>
+            <Image source={require('../../../assets/images/vijeta.png')} style={{width:200,height:200}} resizeMode='contain'></Image>
+            </TouchableOpacity>
+          </View> */}
+
           {
         userPointIsLoading && <FastImage
           style={{ width: 100, height: 100, alignSelf: 'center',marginTop:20 }}
@@ -530,15 +580,21 @@ const Dashboard = ({ navigation }) => {
           resizeMode={FastImage.resizeMode.contain}
         />
       }
-          <View style={{ width: '100%', alignItems: "center", justifyContent: "center", marginBottom: 20 }}>
+          {/* <View style={{ width: '100%', alignItems: "center", justifyContent: "center", marginBottom: 20 }}>
             {showKyc && <KYCVerificationComponent buttonTitle={t("Complete Your KYC")} title={t("Your KYC is not completed")}></KYCVerificationComponent>}
-          </View>
-          <View style={{ flexDirection: "row", width: '100%', alignItems: "center", justifyContent: 'space-evenly' }}>
-            {(userData.user_type).toLowerCase()!=="sales" &&<DashboardSupportBox title={t("rewards")} text="Rewards" backgroundColor="#D9C7B6" borderColor="#FEE8D4" image={require('../../../assets/images/reward_dashboard.png')} ></DashboardSupportBox>}
+          </View> */}
+          {/* <View style={{ flexDirection: "row", width: '100%', alignItems: "center", justifyContent: 'space-evenly' }}> */}
+          <ScrollView contentContainerStyle={{}}  horizontal={true}>
+          <DashboardSupportBox title={t("Program Brochure")} text="program brochure" backgroundColor="#D8C8C8" borderColor="#FDDADA" image={require('../../../assets/images/vijetaDashboard.png')} pdf={programBrochure?.files?.length> 0 ? programBrochure.files[0] : "" } ></DashboardSupportBox>
+
+          <DashboardSupportBox title={"Product Catalogue"} text="product" backgroundColor="#FBFFC6" borderColor="#FEE8D4" image={require('../../../assets/images/productCatalogue.png')} ></DashboardSupportBox>
+            <DashboardSupportBox title={t("Media")} text="media" backgroundColor="#D9C7B6" borderColor="#FEE8D4" image={require('../../../assets/images/mediaDashboard.png')} ></DashboardSupportBox>
             <DashboardSupportBox title={t("customer support")} text="Customer Support" backgroundColor="#BCB5DC" borderColor="#E4E0FC" image={require('../../../assets/images/support.png')} ></DashboardSupportBox>
             <DashboardSupportBox title={t("feedback")} text="Feedback" backgroundColor="#D8C8C8" borderColor="#FDDADA" image={require('../../../assets/images/feedback.png')} ></DashboardSupportBox>
-
-          </View>
+            
+            
+            </ScrollView>
+          {/* </View> */}
           {/* <Button
         title="Add To Basket"
         onPress={async () =>

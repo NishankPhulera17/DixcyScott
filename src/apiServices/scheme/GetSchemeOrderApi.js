@@ -21,3 +21,9 @@ export const GetSchemeOrderApi = baseApi.injectEndpoints({
 });
 
 export const {useGetSchemeOrderMutation} = GetSchemeOrderApi;
+
+// POST api/tenant/modenik/app-user-check
+// body {
+//     user_id :
+//     mobile :
+// }

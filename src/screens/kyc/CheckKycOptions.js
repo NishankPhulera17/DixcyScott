@@ -26,12 +26,14 @@ import Icon from 'react-native-vector-icons/Feather';
 import Close from 'react-native-vector-icons/Ionicons';
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import LeftIcon from 'react-native-vector-icons/AntDesign'
+import ButtonOval from "../../components/atoms/buttons/ButtonOval";
 
 const CheckKycOptions = ({navigation,route}) => {
   const [checked, setChecked] = React.useState();
   const [gotShopImage, setGotShopImage] = useState(false);
   const [shopData, setShopData] = useState()
   const [openModalWithBorder, setModalWithBorder] = useState(false)
+  const [openModalWithBorderSuccess, setModalWithBorderSuccess] = useState(false);
   const [message, setMessage] = useState("")
   const [showOptions, setShowOptions] = useState(false)
   const [clickedSubmit, setClickedSubmit] = useState(true)
@@ -50,6 +52,7 @@ const CheckKycOptions = ({navigation,route}) => {
   const timer = useRef(0);
   const imageData = route?.params?.imageData
   console.log("imageData", imageData)
+  
   const [
     updateProfileFunc,
     {
@@ -70,6 +73,10 @@ const CheckKycOptions = ({navigation,route}) => {
     }
     
   },[imageData])
+  
+  useEffect(()=>{
+
+  },[checked])
 
   useEffect(()=>{
     if(kycOption2.length == 0)
@@ -79,7 +86,7 @@ const CheckKycOptions = ({navigation,route}) => {
     else{
       setShowOptions(true)
     }
-  },[])
+  },[]) 
 
   const modalClose = () => {
     setMessage('')
@@ -120,7 +127,7 @@ const CheckKycOptions = ({navigation,route}) => {
       setClickedSubmit(true)
       setModalWithBorder(true)
       setGotShopImage(false)
-      setMessage("Congratulation, your account has been successfully updated.")
+      setMessage("Congratulation, You are successfully Enrolled in the Modenik Vijeta retailer Loyalty program.")
       createValidatedJson(updateProfileData?.body)
       // setTimeout(() => {
       //   console.log("running2")
@@ -136,7 +143,12 @@ const CheckKycOptions = ({navigation,route}) => {
   useEffect(()=>{
     console.log("checked status",checked,kycOption1,kycOption2)
     tempData={}
-
+    setAadharDetails(null)
+    setAadharNumber("")
+    setGotAadhar("")
+    setGotPan("")
+    setGstinDetails(null)
+    setPanDetails(null)
   },[checked])
 
   const createValidatedJson=async(profileData)=>{
@@ -225,6 +237,37 @@ const CheckKycOptions = ({navigation,route}) => {
     storeData(temp)
   }
 
+  const ModalContentSuccess = () => {
+    return (
+      <View style={{ width: '100%', alignItems: "center", justifyContent: "center" }}>
+        <View style={{ marginTop: 30, alignItems: 'center', maxWidth: '80%' }}>
+          <Icon name="check-circle" size={53} color={ternaryThemeColor} />
+          <PoppinsTextMedium style={{ fontSize: 27, fontWeight: '600', color: ternaryThemeColor, marginLeft: 5, marginTop: 5 }} content={"Success ! !"}></PoppinsTextMedium>
+          
+          
+          <ActivityIndicator size={'small'} animating={true} color={ternaryThemeColor} />
+
+          <View style={{ marginTop: 10, marginBottom: 30 }}>
+            <PoppinsTextMedium style={{ fontSize: 16, fontWeight: '600', color: "#000000", marginLeft: 5, marginTop: 5, }} content={"Congratulation, Your account has been succesfully updated."}></PoppinsTextMedium>
+          </View>
+
+
+          {/* <View style={{ alignItems: 'center', marginBottom: 30 }}>
+            <ButtonOval handleOperation={modalWithBorderClose} backgroundColor="#000000" content="OK" style={{ color: 'white', paddingVertical: 4 }} />
+          </View> */}
+
+        </View>
+
+        <TouchableOpacity style={[{
+          backgroundColor: ternaryThemeColor, padding: 6, borderRadius: 5, position: 'absolute', top: -10, right: -10,
+        }]} onPress={modalClose} >
+          <Close name="close" size={17} color="#ffffff" />
+        </TouchableOpacity>
+
+      </View>
+    )
+  }
+
   const submitKycData =async()=>{
     let tempData = {}
     const credentials = await Keychain.getGenericPassword();
@@ -260,7 +303,30 @@ const CheckKycOptions = ({navigation,route}) => {
       const params = {token:token,data:tempData}
       console.log("FINAL FORM SUBMISSION", params)
       setClickedSubmit(false)
-      updateProfileFunc(params)
+      
+    
+
+      console.log("first second", gstinDetails, checked)
+
+
+      if(gstinDetails.GSTIN && checked){
+        updateProfileFunc(params)
+        console.log("idhar idhar") 
+      }
+      else{
+        let firstNamePan = panDetails.registered_name && (panDetails?.registered_name).split()[0]?.trim().toLowerCase()
+        let firstaadharName = aadharDetails?.body.name  && (aadharDetails?.name).split()[0].trim().toLowerCase()
+
+        if(firstNamePan.toLowerCase() == firstaadharName.toLowerCase()){
+        console.log("idhar udhar")
+
+          updateProfileFunc(params)
+        }
+        else{
+          alert("Names from PAN and Aadhar do not match. Please correct them")
+        } 
+      }
+
     }
 
       }
@@ -273,6 +339,7 @@ const CheckKycOptions = ({navigation,route}) => {
             missingFields +=  " "+kycOption1[i]
           }
         }
+        
         alert("Missing fields "+missingFields)
       }
     }
@@ -291,9 +358,30 @@ const CheckKycOptions = ({navigation,route}) => {
     else{
       tempData={...tempData, "profile_pic" : shopData.value,"is_online_verification":true}
       const params = {token:token,data:tempData}
-      console.log("FINAL FORM SUBMISSION", params)
+      console.log("FINAL FORM SUBMISSION",  aadharDetails)
       setClickedSubmit(false)
-      updateProfileFunc(params)
+     
+
+      console.log("first second", gstinDetails, checked)
+
+
+
+      if((gstinDetails?.GSTIN!==undefined) && checked){
+        updateProfileFunc(params)
+        console.log("idhar idhar") 
+      }
+      else{
+      let firstNamePan = panDetails?.registered_name ? (panDetails?.registered_name)?.split(" ")[0]?.toLowerCase() : ""
+      let firstaadharName = aadharDetails?.body.name ? (aadharDetails?.body?.name)?.split(" ")[0].toLowerCase() : ""
+        if(firstNamePan == firstaadharName){
+        console.log("idhar udhar")
+          updateProfileFunc(params)
+        }
+        else{
+          alert("Names from PAN and Aadhar do not match. Please correct them")
+        } 
+      }
+
     }
       }
       else{
@@ -314,38 +402,55 @@ const CheckKycOptions = ({navigation,route}) => {
   }
   const modalWithBorderClose = () => {
     setModalWithBorder(false);
-    setMessage('')
-    navigation.navigate("Dashboard")
+    setMessage('')  
 
+  };
+
+
+  const modalWithBorderAgree = () => {
+    setModalWithBorder(false);
+    setMessage('')  
     
-    
+    setTimeout(()=>{
+      setModalWithBorderSuccess(true)
+    },1000)
+
+    setTimeout(()=>{
+      navigation.navigate("Dashboard")
+      setModalWithBorderSuccess(false)
+    },2000)
+  };
+
+  const modalWithBorderSuccessClose = () => {
+    setModalWithBorderSuccess(false);
+    setMessage('')
+    // navigation.navigate("Dashboard")    
   };
 
   const ModalContent = () => {
     return (
-      <View style={{ width: '100%', alignItems: "center", justifyContent: "center" }}>
-        <View style={{ marginTop: 30, alignItems: 'center', maxWidth: '80%' }}>
-          <Icon name="check-circle" size={53} color={ternaryThemeColor} />
-          <PoppinsTextMedium style={{ fontSize: 27, fontWeight: '600', color: ternaryThemeColor, marginLeft: 5, marginTop: 5 }} content={"Success ! !"}></PoppinsTextMedium>
+      <View style={{ width: '100%', alignItems: "center", justifyContent: "center",}}>
+        <ScrollView contentContainerStyle={{ marginTop: 10, alignItems: 'center', maxWidth: '96%',marginTop:40 }}>
+         
+          <PoppinsTextMedium style={{ fontSize: 20, fontWeight: '800', color: ternaryThemeColor, marginLeft: 5, marginTop: 5 }} content={"Legal Notice & Consent - During validation of Aadhaar, PAN & GSTIN"}></PoppinsTextMedium>
+          <PoppinsTextMedium style={{color:'black',fontWeight:'800',marginTop:10}} content="Aadhaar validation"></PoppinsTextMedium>
+          <PoppinsTextMedium style={{color:'black'}} content="We, DIXCY industries Ltd, are in the business of manufacturing & selling of electrical cables & wires. We respect your privacy and handle your personal data in accordance with the applicable data protection laws. DIXCY may need to process your personal data for the purpose of future communications and incentive schemes, if any. The personal data collected may include but is not limited to name, address, contact details etc. We may share your personal data with service providers, business associates etc. or where required or permitted by law. All personal data processed is stored and retained in compliance with legal, regulatory and best practice business requirements."></PoppinsTextMedium>
+          <PoppinsTextMedium style={{color:'black',fontWeight:'800',marginTop:10}} content="PAN validation"></PoppinsTextMedium>
+          <PoppinsTextMedium style={{color:'black'}} content="We, DIXCY industries Ltd, are in the business of manufacturing & selling of electrical cables & wires. We respect your privacy and handle your personal data in accordance with the applicable data protection laws. DIXCY may need to process your personal data for the purpose of future communications and incentive schemes, if any. The personal data collected may include but is not limited to name, address, contact details etc. We may share your personal data with service providers, business associates etc. or where required or permitted by law. All personal data processed is stored and retained in compliance with legal, regulatory and best practice business requirements."></PoppinsTextMedium>
           
-          <ActivityIndicator size={'small'} animating={true} color={ternaryThemeColor} />
 
-          <View style={{ marginTop: 10, marginBottom: 30 }}>
-            <PoppinsTextMedium style={{ fontSize: 16, fontWeight: '600', color: "#000000", marginLeft: 5, marginTop: 5, }} content={message}></PoppinsTextMedium>
+
+          <View style={{ alignItems: 'center', marginBottom: 30 }}>
+            <ButtonOval handleOperation={modalWithBorderAgree} backgroundColor="#000000" content="I Agree" style={{ color: 'white', paddingVertical: 4 }} />
           </View>
 
-
-          {/* <View style={{ alignItems: 'center', marginBottom: 30 }}>
-            <ButtonOval handleOperation={modalWithBorderClose} backgroundColor="#000000" content="OK" style={{ color: 'white', paddingVertical: 4 }} />
-          </View> */}
-
-        </View>
-
+        </ScrollView>
+{/* 
         <TouchableOpacity style={[{
-          backgroundColor: ternaryThemeColor, padding: 6, borderRadius: 5, position: 'absolute', top: -10, right: -10,
+          backgroundColor: ternaryThemeColor, padding: 6, borderRadius: 5, position: 'absolute', top: 4, right: 0,
         }]} onPress={modalClose} >
           <Close name="close" size={17} color="#ffffff" />
-        </TouchableOpacity>
+        </TouchableOpacity> */}
 
       </View>
     )
@@ -440,7 +545,7 @@ const CheckKycOptions = ({navigation,route}) => {
               justifyContent: "center",
               height: 40,
               padding:8,
-              borderRadius: 14,
+              borderRadius: 30,
               borderWidth: 2,
               borderColor: "black",
               flexDirection: "row",
@@ -463,7 +568,7 @@ const CheckKycOptions = ({navigation,route}) => {
               justifyContent: "center",
               height: 40,
               padding:8,
-              borderRadius: 14,
+              borderRadius: 30,
               borderWidth: 2,
               borderColor: "black",
               flexDirection: "row",
@@ -501,19 +606,20 @@ const CheckKycOptions = ({navigation,route}) => {
                     <GSTINVerificationComp key = {`Option1${index}`} required = {true} verify= {true} showDetails={true} gstinData={gstinData} ></GSTINVerificationComp>
                   )
                 }
+                else if(item == "pan")
+                  {
+                    return(
+                      <PanVerificationComp key = {`Option1${index}`} required = {true} verify= {true} showDetails={true} panData={panData}></PanVerificationComp>
+  
+                    )
+                  }
                 else if(item == "aadhar")
                 {
                   return(
                     <AADHAARVerificationComp key = {`Option1${index}`} required = {true} verify= {true} showDetails={true} aadharData={aadharData}></AADHAARVerificationComp>
                   )
                 }
-                else if(item == "pan")
-                {
-                  return(
-                    <PanVerificationComp key = {`Option1${index}`} required = {true} verify= {true} showDetails={true} panData={panData}></PanVerificationComp>
-
-                  )
-                }
+       
               })
             }
             
@@ -547,11 +653,12 @@ const CheckKycOptions = ({navigation,route}) => {
                   marginTop: 20,
                   alignItems: "center",
                   justifyContent: "center",
+                  marginBottom:20
                 }}
               >
                 <PoppinsTextMedium
                   style={{ color: "white", fontSize: 18, fontWeight: "600" }}
-                  content="Submit"
+                  content="NEXT"
                 ></PoppinsTextMedium>
               </TouchableOpacity>
             
@@ -575,19 +682,20 @@ const CheckKycOptions = ({navigation,route}) => {
                     <GSTINVerificationComp key = {`Option2${index}`} required = {true} verify= {true} showDetails={true} gstinData={gstinData} ></GSTINVerificationComp>
                   )
                 }
+                if(item === "pan")
+                  {
+                    return(
+                      <PanVerificationComp key = {`Option2${index}`} required = {true} verify= {true} showDetails={true} panData={panData}></PanVerificationComp>
+  
+                    )
+                  }
                  if(item === "aadhar")
                 {
                   return(
                     <AADHAARVerificationComp key = {`Option2${index}`} required = {true} verify= {true} showDetails={true} aadharData={aadharData}></AADHAARVerificationComp>
                   )
                 }
-                 if(item === "pan")
-                {
-                  return(
-                    <PanVerificationComp key = {`Option2${index}`} required = {true} verify= {true} showDetails={true} panData={panData}></PanVerificationComp>
-
-                  )
-                }
+     
               })
             }
               <View style={{ marginTop: 20 }}>
@@ -628,12 +736,22 @@ const CheckKycOptions = ({navigation,route}) => {
             
           </View>
         )}
-        {openModalWithBorder &&
+           {openModalWithBorder &&
           <ModalWithBorder
             modalClose={modalWithBorderClose}
             message={message}
+            closable = {false}
             openModal={openModalWithBorder}
             comp={ModalContent}>
+          </ModalWithBorder>}
+          
+        {openModalWithBorderSuccess &&
+          <ModalWithBorder
+            modalClose={modalWithBorderSuccessClose}
+            message={message}
+            navigateTo = {"Dashboard"}
+            openModal={openModalWithBorderSuccess}
+            comp={ModalContentSuccess}>
           </ModalWithBorder>}
       </ScrollView>
     </ScrollView>

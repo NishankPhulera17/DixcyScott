@@ -16,6 +16,7 @@ import { ActivityIndicator, RadioButton } from "react-native-paper";
 import Cross from "react-native-vector-icons/Entypo";
 import { useSendAadharOtpMutation,useVerifyAadharMutation } from "../../../apiServices/verification/AadharVerificationApi";
 import OtpInput from "../OtpInput";
+import FastImage from "react-native-fast-image";
 
 const AADHAARVerificationComp = (props) => {
   const [otpSent, setOtpSent] = useState(false);
@@ -32,6 +33,7 @@ const AADHAARVerificationComp = (props) => {
   const ternaryThemeColor = useSelector(
     (state) => state.apptheme.ternaryThemeColor
   );
+  const gifUri = Image.resolveAssetSource(require('../../../../assets/gif/loader.gif')).uri;
 
   const [
     sendAadharOtpFunc,
@@ -154,7 +156,8 @@ const AADHAARVerificationComp = (props) => {
         <TextInput
           value={aadhar}
           placeholder="Enter Aadhaar Number"
-          maxLength={15}
+          maxLength={12}
+          editable={!aadharVerified}
           onChangeText={(text) => {
             setAadhar(text);
           }}
@@ -193,13 +196,22 @@ const AADHAARVerificationComp = (props) => {
       </View>
       {loadingAadhaar && (
         <View style={{ marginTop: 10 }}>
-          <ActivityIndicator
+          {/* <ActivityIndicator
             size={30}
             color={ternaryThemeColor}
-          ></ActivityIndicator>
+          ></ActivityIndicator> */}
+              <FastImage
+    style={{ width: 30, height: 30, alignSelf: 'center'}}
+    source={{
+      uri: gifUri, // Update the path to your GIF
+      priority: FastImage.priority.normal,
+    }}
+    resizeMode={FastImage.resizeMode.contain}
+  />
+          
         </View>
       )}
-      {sendAadharOtpError && (
+      {/* {sendAadharOtpError && (
         <View style={{ marginTop: 10 }}>
           <PoppinsTextMedium
             style={{
@@ -210,7 +222,14 @@ const AADHAARVerificationComp = (props) => {
             content={sendAadharOtpError?.data?.Error?.message}
           ></PoppinsTextMedium>
         </View>
-      )}
+      )} */}
+
+      {console.log("Eorrr", sendAadharOtpError?.data?.message)}
+
+
+
+
+
       {otpSent && sendAadharOtpData && !loadingAadhaar && (
         <View style={{ marginTop: 10 }}>
           <OtpInput
@@ -265,6 +284,18 @@ const AADHAARVerificationComp = (props) => {
             paddingBottom: 10,
           }}
         >
+             <PoppinsTextMedium
+            style={{
+              color: "#171717",
+              fontSize: 16,
+              fontWeight: "500",
+              marginLeft: 10,
+              marginTop: 4,
+              textAlign: "left",
+            }}
+            content={` Name : ${verifyAadharData?.body?.name}`}
+          ></PoppinsTextMedium>
+          
           <PoppinsTextMedium
             style={{
               color: "#171717",
@@ -296,6 +327,22 @@ const AADHAARVerificationComp = (props) => {
           style={{ color: "red", fontSize: 14, fontWeight: "600" }}
           content={verifyAadharError?.data?.Error?.message}
         ></PoppinsTextMedium>
+      )}
+
+      {sendAadharOtpError && !loadingAadhaar &&  (
+        <View style={{ marginTop: 10 }}>
+       
+          <PoppinsTextMedium
+            style={{
+              color: "red",
+              fontSize: 14,
+              fontWeight: "600",
+              paddingLeft: 20,
+              paddingRight: 20,
+            }}
+            content={sendAadharOtpError?.data?.message }
+          ></PoppinsTextMedium>
+        </View>
       )}
     </View>
   );
