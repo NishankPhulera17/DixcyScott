@@ -39,6 +39,8 @@ import { useTranslation } from 'react-i18next';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { needCaimpaign } from '../../utils/HandleClientSetup';
 import { useFetchLegalsMutation } from '../../apiServices/fetchLegal/FetchLegalApi';
+import { useGetAppDashboardDataMutation } from '../../apiServices/dashboard/AppUserDashboardApi';
+import { setDashboardData } from '../../../redux/slices/dashboardDataSlice';
 
 
 
@@ -120,6 +122,16 @@ const Dashboard = ({ navigation }) => {
     isError: fetchUserPointsHistoryIsError
 }] = useFetchUserPointsHistoryMutation()
 
+const [
+  getDashboardFunc,
+  {
+    data: getDashboardData,
+    error: getDashboardError,
+    isLoading: getDashboardIsLoading,
+    isError: getDashboardIsError,
+  },
+] = useGetAppDashboardDataMutation();
+
   
   const id = useSelector(state => state.appusersdata.id);
   const {t} = useTranslation();
@@ -135,6 +147,10 @@ const Dashboard = ({ navigation }) => {
     fetchUserPointsHistoryFunc(params)
 
   }
+
+
+
+
 
   useEffect(()=>{
     if(locationSetup)

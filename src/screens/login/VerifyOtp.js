@@ -60,7 +60,9 @@ import { kycOption1, kycOption2 } from "../../utils/HandleClientSetup";
 import LeftIcon from "react-native-vector-icons/AntDesign";
 
 const VerifyOtp = ({ navigation, route }) => {
-  const [mobile, setMobile] = useState(route.params.navigationParams.mobile);
+  const [mobile, setMobile] = useState(route.params?.navigationParams?.mobile);
+  const [isMpin, setIsMpin] = useState(route?.params?.navigationParams.isMpin);
+
   const [otp, setOtp] = useState("");
   const [checkForKyc, setCheckForKyc] = useState();
   const [checkKycOption1, setCheckKycOption1] = useState();
@@ -76,6 +78,7 @@ const VerifyOtp = ({ navigation, route }) => {
     []
   );
 
+  console.log("IsMPINNNNNN", isMpin)
   //modal
   const [openModalWithBorder, setModalWithBorder] = useState(false);
 
@@ -224,6 +227,7 @@ const VerifyOtp = ({ navigation, route }) => {
 
   // console.log("Navigation Params are", route.params.navigationParams)
   const navigationParams = route?.params?.navigationParams;
+  
   const kycData = route.params.kycData;
   console.log("KYC DATA IN OTP VERIFICATION PAGE", kycData);
   //   const needsApproval = route.params.navigationParams.needsApproval;
@@ -418,6 +422,24 @@ const VerifyOtp = ({ navigation, route }) => {
     }
   }, [getBannerError, getBannerData]);
 
+  async function updateTokenInAsync (newToken) {
+
+    const jsonValue = await AsyncStorage.getItem("loginData");
+
+    const parsedJsonValues = JSON.parse(jsonValue);
+    
+    console.log("oldToken", parsedJsonValues?.token)
+    const newJsonValues = { ...parsedJsonValues , token : newToken};
+    console.log("newToken", newJsonValues?.token);
+
+    await AsyncStorage.setItem("kycData", JSON.stringify(newJsonValues));
+
+
+    const check = await AsyncStorage.getItem("loginData");
+
+    console.log("check", JSON.parse(check)?.token);
+  }
+
   useEffect(() => {
     if (verifyOtpData) {
       console.log("user Login Data", verifyOtpData);
@@ -426,10 +448,11 @@ const VerifyOtp = ({ navigation, route }) => {
           verifyOtpData?.body?.user_type_id,
           verifyOtpData?.body?.name,
           verifyOtpData?.body?.user_type
-        );
+        ); 
         setParsedJsonValue(verifyOtpData?.body);
         console.log("successfullyLoggedIn");
         saveToken(verifyOtpData?.body?.token);
+        updateTokenInAsync(verifyOtpData?.body?.token)
         storeData(verifyOtpData?.body);
         saveUserDetails(verifyOtpData?.body);
         verifyOtpData?.body?.token &&
@@ -476,14 +499,26 @@ const VerifyOtp = ({ navigation, route }) => {
   }, [verifyLoginOtpData, verifyLoginOtpError]);
 
   useEffect(() => {
-    if (checkKycOption1) {
-      navigation.reset({ index: "0", routes: [{ name: "Dashboard" }] });
-      // !checkForKyc && navigation.navigate("CheckKycOptions")
-    } else if (checkKycOption2) {
-      navigation.reset({ index: "0", routes: [{ name: "Dashboard" }] });
-    } else if (checkKycOption1 == false && checkKycOption2 == false) {
-      navigation.reset({ index: "0", routes: [{ name: "CheckKycOptions" }] });
+    if(from == ""){
+
     }
+    else{
+      if (checkKycOption1) {
+        isMpin ?
+        navigation.reset({ index: "0", routes: [{ name: "Dashboard" }] }) :
+        navigation.reset({ index: "0", routes: [{ name: "MpinSetupScreen" }] });
+  
+        // !checkForKyc && navigation.navigate("CheckKycOptions")
+      } else if (checkKycOption2) {
+        isMpin ?
+        navigation.reset({ index: "0", routes: [{ name: "Dashboard" }] }):
+        navigation.reset({ index: "0", routes: [{ name: "MpinSetupScreen" }] });
+  
+      } else if (checkKycOption1 == false && checkKycOption2 == false) {
+        navigation.reset({ index: "0", routes: [{ name: "CheckKycOptions",params:{isMPin:isMpin} }] });
+      }
+    }
+ 
   }, [checkKycOption1, checkKycOption2]);
 
   // -------------------------------------------------
@@ -775,6 +810,7 @@ const VerifyOtp = ({ navigation, route }) => {
             source={{ uri: icon }}
           ></Image>
         </View>
+
         <View
           style={{
             alignItems: "flex-start",

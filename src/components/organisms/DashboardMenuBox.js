@@ -7,7 +7,7 @@ import { useSelector } from 'react-redux';
 
 const DashboardMenuBox=(props)=>{
     const dataa = props?.data
-    console.log("dashboard menu box data",dataa)
+    // console.log("dashboard menu box data",dataa)
     const navigation = props.navigation
     const colorShades = useSelector(state=>state.apptheme.colorShades)
     const width = Dimensions.get('window').width
