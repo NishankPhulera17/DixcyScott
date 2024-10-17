@@ -14,7 +14,7 @@ import RedeemRewardHistory from "../screens/historyPages/RedeemRewardHistory";
 import AddBankAccountAndUpi from "../screens/payments/AddBankAccountAndUpi";
 import Profile from "../screens/profile/Profile";
 import { useNavigation } from "@react-navigation/native";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import Icon from "react-native-vector-icons/FontAwesome";
 import { useGetAppDashboardDataMutation } from "../apiServices/dashboard/AppUserDashboardApi";
 import { useGetAppMenuDataMutation } from "../apiServices/dashboard/AppUserDashboardMenuAPi.js";
@@ -66,6 +66,8 @@ const CustomDrawer = () => {
     : "#FF9B00";
   const userData = useSelector((state) => state.appusersdata.userData);
   const kycData = useSelector((state) => state.kycDataSlice.kycData);
+
+  const dispatch = useDispatch()
 
   const [
     getFAQ,
@@ -297,7 +299,10 @@ const CustomDrawer = () => {
                 props.title.toLowerCase() === "bank account"
               ) {
                 navigation.navigate("BankAccounts");
-              } else if (props.title.toLowerCase() === "profile") {
+              } else if (props.title.toLowerCase() === "faq") {
+                navigation.navigate("FAQ");
+              }
+               else if (props.title.toLowerCase() === "profile") {
                 navigation.navigate("Profile");
               } else if (props.title.toLowerCase() === "refer and earn") {
                 navigation.navigate("ReferAndEarn");

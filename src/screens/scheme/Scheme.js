@@ -3,7 +3,7 @@ import {
   View,
   StyleSheet,
   TouchableOpacity,
-  Image,
+  Image, 
   ScrollView,
   Dimensions,
   Linking,
@@ -476,7 +476,7 @@ export default function Scheme({ navigation }) {
         const params = {
           appUserID: userData.id,
           token: token,
-          type: "focus_brand",
+          type: "",
           month: month+"",
           year: year+"",
         };
@@ -485,6 +485,8 @@ export default function Scheme({ navigation }) {
     };
     getToken();
   }, [selectedDataStart]);
+
+  
 
   const getSelectedDates = useCallback((startDate) => {
     // Convert the input start date to a JavaScript Date object
@@ -519,38 +521,54 @@ export default function Scheme({ navigation }) {
 
   const FilterSchemeComponent = React.memo((props) => {
     const [openStart, setOpenStart] = useState(false);
-    
 
     const handleDateChange = (date) => {
       setOpenStart(false);
       setSelectedDataStart(date);
       props.getDate(selectedDataStart);
+    };
 
-    }
-  
     return (
-      <View style={{ alignItems: 'center', justifyContent: 'flex-start', width: '100%', flexDirection: 'row', marginBottom: 10 }}>
+      <View
+        style={{
+          alignItems: "center",
+          justifyContent: "flex-start",
+          width: "100%",
+          flexDirection: "row",
+          marginBottom: 10,
+        }}
+      >
         <View
           style={{
             padding: 10,
             width: "90%",
             alignItems: "center",
             justifyContent: "flex-start",
-            flexDirection: 'row',
-            marginLeft: 20
+            flexDirection: "row",
+            marginLeft: 20,
           }}
         >
           <PoppinsTextMedium
-            content={`${moment(selectedDataStart).format("MM/YYYY")}`}
-            style={{ fontSize: 16, fontWeight: "700" }}
+            content={`${moment(selectedDataStart).format("MMM YYYY")}`}
+            style={{
+              fontSize: 16,
+              fontWeight: "700",
+              color: "black",
+              borderBottomWidth: 0.5,
+            }}
           />
           <TouchableOpacity
             style={{
-              backgroundColor: ternaryThemeColor,
+              backgroundColor: "white",
               paddingLeft: 10,
-              borderRadius: 6,
-              padding: 6,
-              marginLeft: 10
+              borderRadius: 30,
+              paddingHorizontal: 10,
+              paddingVertical: 8,
+              marginLeft: "auto",
+              borderWidth: 0.5,
+              borderColor: "#808080",
+              flexDirection: "row",
+              justifyContent: "center",
             }}
             onPress={() => setOpenStart(!openStart)}
           >
@@ -563,8 +581,18 @@ export default function Scheme({ navigation }) {
               onCancel={() => setOpenStart(false)}
             />
             <PoppinsTextMedium
-              style={{ color: "white", fontWeight: "700" }}
-              content="Select Date"
+              style={{ color: "#808080", fontWeight: "600", marginRight: 10 }}
+              content={"Select Month & Year"}
+            />
+            <Image
+              style={{
+                height: 13,
+                width: 12,
+                resizeMode: "contain",
+                marginTop: 2,
+                marginLeft: 5,
+              }}
+              source={require("../../../assets/images/arrowDown.png")}
             />
           </TouchableOpacity>
         </View>
@@ -605,7 +633,19 @@ export default function Scheme({ navigation }) {
                 borderColor: "white",
               }}
             >
-              <Image
+              {
+                image!=undefined && image ? 
+                <Image
+                style={{
+                  height: 65,
+                  width: 65,
+                  resizeMode: "contain",
+                  borderRadius: 10,
+                }}
+                source={{uri:image}}
+              ></Image>
+                :
+                <Image
                 style={{
                   height: 65,
                   width: 65,
@@ -614,6 +654,9 @@ export default function Scheme({ navigation }) {
                 }}
                 source={require("../../../assets/images/giftBlue.png")}
               ></Image>
+
+              }
+          
             </View>
           </View>
          <View style={{width:'70%',alignItems:'flex-start',justifyContent:'center'}}>
@@ -657,7 +700,7 @@ export default function Scheme({ navigation }) {
           </View>
          </View>
         </View>
-        <View style={{width:'96%',height:1,backgroundColor:'white'}}></View>
+        <View style={{width:'96%',height:1,backgroundColor:'white', marginTop:10}}></View>
         <View style={{width:'100%',flexDirection:'row',alignItems:'center',justifyContent:'space-between',marginTop:10,padding:6}}>
           <TouchableOpacity onPress={()=>{
            
@@ -1021,7 +1064,7 @@ export default function Scheme({ navigation }) {
           ></Image>
         </TouchableOpacity>
         <PoppinsTextMedium
-          content="Scheme"
+          content="Vijeta 4x"
           style={{
             marginLeft: 10,
             fontSize: 16,
@@ -1077,7 +1120,7 @@ export default function Scheme({ navigation }) {
                     name={item.name}
                     worth={"10000"}
                     coin={10}
-                    image={""}
+                    image={item.image}
                     earnedPoints={100}
                   ></NewSchemeComponent>
                 );

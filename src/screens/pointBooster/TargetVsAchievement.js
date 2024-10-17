@@ -471,7 +471,7 @@ const TargetVsAchievement = ({ navigation }) => {
             }}
             style={{
               height: 30,
-              width: 100,
+              width: 140,
               alignItems: "center",
               justifyContent: "center",
               backgroundColor: "#C6280A",
@@ -480,7 +480,7 @@ const TargetVsAchievement = ({ navigation }) => {
             }}
           >
             <PoppinsTextMedium
-              content="View Points"
+              content="View Purchase"
               style={{ color: "white" }}
             ></PoppinsTextMedium>
           </TouchableOpacity>

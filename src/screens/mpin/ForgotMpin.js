@@ -8,6 +8,7 @@ import {
   TouchableOpacity,
   Image,
   KeyboardAvoidingView,
+  Alert
 } from "react-native";
 import { useSelector } from "react-redux";
 import TextInputRectangularWithPlaceholder from "../../components/atoms/input/TextInputRectangularWithPlaceholder";
@@ -22,6 +23,7 @@ const ForgotMpin = (params) => {
   const [error, setError] = useState(false);
   const [message, setMessage] = useState();
   const [isEditable, setIsEditable] = useState(true);
+  const[alert, setAlert] = useState()
 
   const ternaryThemeColor = useSelector(
     (state) => state.apptheme.ternaryThemeColor
@@ -31,8 +33,13 @@ const ForgotMpin = (params) => {
   let navigationParams = params.route.params
   console.log("parraaa", navigationParams)
 
-  const user_type_id = params.route.params.user_type_id;
-  const user_type = params.route.params.user_type;
+
+
+  const userData = useSelector(state => state.appusersdata.userData);
+
+    const user_type_id = userData.user_type_id;
+  const user_type = userData.user_type;
+
 
   const [
     sendOtpFunc,

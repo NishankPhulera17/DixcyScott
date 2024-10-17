@@ -61,7 +61,7 @@ import LeftIcon from "react-native-vector-icons/AntDesign";
 
 const VerifyOtp = ({ navigation, route }) => {
   const [mobile, setMobile] = useState(route.params?.navigationParams?.mobile);
-  const [isMpin, setIsMpin] = useState(route?.params?.navigationParams.isMpin);
+  const [isMpin, setIsMpin] = useState();
 
   const [otp, setOtp] = useState("");
   const [checkForKyc, setCheckForKyc] = useState();
@@ -81,6 +81,20 @@ const VerifyOtp = ({ navigation, route }) => {
   console.log("IsMPINNNNNN", isMpin)
   //modal
   const [openModalWithBorder, setModalWithBorder] = useState(false);
+
+  useEffect(()=>{
+    const checkIsMpin = async()=>{
+      const data = await AsyncStorage.getItem('userMpin');
+      console.log("asyc data", data)
+      if(data != null && data != undefined && data!= ""){
+        setIsMpin(true)
+      }
+      else{
+        setIsMpin(false)
+      }
+    }
+    checkIsMpin()
+  },[])
 
   const dispatch = useDispatch();
   // fetching theme for the screen-----------------------
@@ -383,7 +397,7 @@ const VerifyOtp = ({ navigation, route }) => {
     console.log("storeDataloginData", value);
     try {
       const jsonValue = JSON.stringify(value);
-      await AsyncStorage.setItem("loginData", jsonValue);
+      // await AsyncStorage.setItem("loginData", jsonValue);
     } catch (e) {
       console.log("Error while saving loginData", e);
     }
@@ -424,15 +438,26 @@ const VerifyOtp = ({ navigation, route }) => {
 
   async function updateTokenInAsync (newToken) {
 
-    const jsonValue = await AsyncStorage.getItem("loginData");
+    console.log("updateTokenInAsync",newToken)
+    try {
+      const jsonValue = JSON.stringify(newToken);
+      await AsyncStorage.setItem("loginData", jsonValue);
+    } catch (e) {
+      
+      console.log("error in updating token",e)
+    }
+    
 
     const parsedJsonValues = JSON.parse(jsonValue);
+
+
     
     console.log("oldToken", parsedJsonValues?.token)
     const newJsonValues = { ...parsedJsonValues , token : newToken};
     console.log("newToken", newJsonValues?.token);
 
     await AsyncStorage.setItem("kycData", JSON.stringify(newJsonValues));
+    await AsyncStorage.setItem("loginData", JSON.stringify(newJsonValues));
 
 
     const check = await AsyncStorage.getItem("loginData");
@@ -452,7 +477,7 @@ const VerifyOtp = ({ navigation, route }) => {
         setParsedJsonValue(verifyOtpData?.body);
         console.log("successfullyLoggedIn");
         saveToken(verifyOtpData?.body?.token);
-        updateTokenInAsync(verifyOtpData?.body?.token)
+        updateTokenInAsync(verifyOtpData?.body)
         storeData(verifyOtpData?.body);
         saveUserDetails(verifyOtpData?.body);
         verifyOtpData?.body?.token &&

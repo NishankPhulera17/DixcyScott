@@ -149,7 +149,7 @@ const MpinValidationScreen = (params) => {
     },
   ] = useGetWorkflowMutation();
 
-  let uid = params.route.params.name;
+  // let uid = params.route.params.name;
   const userData = useSelector((state) => state.appusersdata.userData);
 
   const navigation = useNavigation();
@@ -475,6 +475,16 @@ const MpinValidationScreen = (params) => {
     }
   };
 
+  const clearMpin =async()=>{
+    try{
+        AsyncStorage.removeItem("userMpin")
+        navigation.navigate("SelectUser")
+    }
+    catch(e){
+      console.log("error", e)
+    }
+  }
+
   // Handle input changes
   const handleInputChange = (text, index) => {
     const newMpin = [...mpin];
@@ -517,22 +527,23 @@ const MpinValidationScreen = (params) => {
   const validateMpin = async () => {
     const enteredMpin = mpin.join("");
     // const storedMpin = await AsyncStorage.getItem('userMpin');
-    let data = {
-      user_id: uid,
-      mpin: enteredMpin,
-    };
+    let mPin = await AsyncStorage.getItem("userMpin")
 
-    console.log("firstsss", uid, mpin.length);
-    if (uid != null && mpin.length == 4) {
-      mpinLoginFunc(data);
-    } else {
-      Alert.alert("Error", "Incorrect MPIN. Please try again.");
+    if(enteredMpin == mPin){
+      navigation.navigate("Dashboard")
     }
+
+
+    // if (uid != null && mpin.length == 4) {
+    //   mpinLoginFunc(data);
+    // } else {
+    //   Alert.alert("Error", "Incorrect MPIN. Please try again.");
+    // }
   };
 
   return (
     <View style={styles.container}>
-      <TouchableOpacity
+      {/* <TouchableOpacity
         onPress={() => {
           navigation.goBack();
         }}
@@ -550,7 +561,7 @@ const MpinValidationScreen = (params) => {
           }}
           source={require("../../../assets/images/blackBack.png")}
         />
-      </TouchableOpacity>
+      </TouchableOpacity> */}
 
       <View
         style={{
@@ -603,7 +614,7 @@ const MpinValidationScreen = (params) => {
       </TouchableOpacity>
       <TouchableOpacity
         onPress={() => {
-          navigation.navigate("ForgotMpin", navigationParams);
+          clearMpin()
         }}
         style={{ marginTop: 30 }}
       >

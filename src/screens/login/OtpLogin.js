@@ -552,7 +552,7 @@ const OtpLogin = ({ navigation, route }) => {
             backgroundColor={buttonThemeColor}
             style={{ color: "white", fontSize: 16 }}
             isLoading={sendOtpIsLoading}
-            content={t("Login With OTP")}
+            content={t("Agree & Continue")}
             navigateTo="VerifyOtp"
             navigationParams={navigationParams}
             mobileLength={mobile}
@@ -566,7 +566,7 @@ const OtpLogin = ({ navigation, route }) => {
             }
           ></ButtonNavigateArrow>
 
-          <Text style = {{color:ternaryThemeColor, fontSize:20}}>OR</Text>
+          {/* <Text style = {{color:ternaryThemeColor, fontSize:20}}>OR</Text>
 
           <ButtonNavigateArrow
             success={success}
@@ -586,7 +586,7 @@ const OtpLogin = ({ navigation, route }) => {
               !hideButton &&
               getNameData?.body?.name
             }
-          ></ButtonNavigateArrow>
+          ></ButtonNavigateArrow> */}
 
           </View>
 

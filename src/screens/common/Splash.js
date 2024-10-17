@@ -412,7 +412,7 @@ const Splash = ({ navigation }) => {
     setShowLoading(false);
     setTimeout(() => {
       navigation.navigate("SelectUser");
-    }, 7000);
+    }, 8000);
   };
 
   useEffect(() => {
@@ -431,7 +431,7 @@ const Splash = ({ navigation }) => {
                 apiFetchingInterval
               ) {
                 console.log("Time limit exceeded refetching appmenu");
-                
+
                 dispatch(
                   setDashboardData(getDashboardData?.body?.app_dashboard)
                 );
@@ -441,7 +441,7 @@ const Splash = ({ navigation }) => {
               } else {
                 console.log("data already present saving appmenu");
                 dispatch(setDrawerData(jsonValue));
-               
+
                 dispatch(
                   setDashboardData(getDashboardData?.body?.app_dashboard)
                 );
@@ -482,7 +482,7 @@ const Splash = ({ navigation }) => {
               }
             } else {
               console.log("JsonValue is null", parsedJsonValue);
-              
+
               dispatch(setDashboardData(getDashboardData?.body?.app_dashboard));
               setShowLoading(false);
 
@@ -611,7 +611,7 @@ const Splash = ({ navigation }) => {
                       } else {
                         console.log("data already present saving appmenu");
                         dispatch(setDrawerData(jsonValue));
-                       
+
                         dispatch(setDashboardData(jsonValue));
                         console.log(
                           "navigate to dashboard error 632",
@@ -645,7 +645,7 @@ const Splash = ({ navigation }) => {
                       }
                     } else {
                       console.log("JsonValue is null", parsedJsonValue);
-                      
+
                       dispatch(
                         setDashboardData(getDashboardData?.body?.app_dashboard)
                       );
@@ -700,7 +700,7 @@ const Splash = ({ navigation }) => {
     } else if (getWorkflowError) {
       console.log("getWorkflowError", getWorkflowError);
       setError(true);
-      setMessage("Oops something went wrong");
+      setMessage("Oops something went wrong in workflow");
       if (getWorkflowError?.status == 401) {
         removerTokenData();
       }
@@ -1008,30 +1008,61 @@ const Splash = ({ navigation }) => {
   }, [getMinVersionSupportData, getMinVersionSupportError]);
 
   useEffect(() => {
-    console.log("jjndnjdjnd", checkKycOption1, checkKycOption2)
-    if(checkKycOption1!=undefined || checkKycOption2!=undefined)
-      {
-    console.log("uidfqwghbdhjcbasnmbcbhbsahjbchas",checkKycOption1,checkKycOption2)
+    console.log("jjndnjdjnd", checkKycOption1, checkKycOption2);
+    console.log("parsed Json Val111", parsedJsonValue);
+
+    const checkMpin = async () => {
+      if (checkKycOption1 != undefined || checkKycOption2 != undefined) {
+        console.log(
+          "uidfqwghbdhjcbasnmbcbhbsahjbchas",
+          checkKycOption1,
+          checkKycOption2
+        );
+
+       let mPin = await AsyncStorage.getItem("userMpin")
+
 
         if (checkKycOption1 == true || checkKycOption2 == true) {
-
           dispatch(setAppUserId(parsedJsonValue.user_type_id));
           dispatch(setAppUserName(parsedJsonValue.name));
           dispatch(setAppUserType(parsedJsonValue.user_type));
           dispatch(setUserData(parsedJsonValue));
           dispatch(setId(parsedJsonValue.id));
+          if(mPin != "" && mPin != undefined && mPin != null){
 
-          getFormData &&
-          parsedJsonValue &&
+              getFormData &&
+            parsedJsonValue &&
             (!__DEV__ ? minVersionSupport : true) &&
             getDashboardData &&
             getWorkflowData &&
-            navigation.reset({
-              index: "0",
-              routes: [{ name: "Dashboard" }],
-            });
-        } else if (checkKycOption1== false  || checkKycOption2 == false)   {
+            setTimeout(()=>{
+              navigation.reset({
+                index: "0",
+                routes: [{ name: "MpinValidationScreen" }],
+              });
+            },5000)
+         
 
+            // navigation.reset({
+            //   index: "0",
+            //   routes: [{ name: "MpinValidationScreen" }],
+            // });
+          }
+          else{
+            navigation.navigate("SelectUser")
+          }
+        
+          // getFormData &&
+          //   parsedJsonValue &&
+          //   (!__DEV__ ? minVersionSupport : true) &&
+          //   getDashboardData &&
+          //   getWorkflowData &&
+          //   navigation.reset({
+          //     index: "0",
+          //     routes: [{ name: "Dashboard" }],
+          //   });
+
+        } else if (checkKycOption1 == false || checkKycOption2 == false) {
           dispatch(setAppUserId(parsedJsonValue.user_type_id));
           dispatch(setAppUserName(parsedJsonValue.name));
           dispatch(setAppUserType(parsedJsonValue.user_type));
@@ -1049,14 +1080,21 @@ const Splash = ({ navigation }) => {
             });
         }
       }
-   
-  }, [checkKycOption1, checkKycOption2,getFormData,getDashboardData,getWorkflowData,minVersionSupport,parsedJsonValue ]);
+    };
+    checkMpin();
+  }, [
+    checkKycOption1,
+    checkKycOption2,
+    getFormData,
+    getDashboardData,
+    getWorkflowData,
+    minVersionSupport,
+    parsedJsonValue,
+  ]);
 
-  useEffect(()=>{
-    parsedJsonValue &&
-    checkKYCDoneStatus(parsedJsonValue);
-
-  },[parsedJsonValue])
+  useEffect(() => {
+    parsedJsonValue && checkKYCDoneStatus(parsedJsonValue);
+  }, [parsedJsonValue]);
 
   useEffect(() => {
     console.log("internet status", isConnected);
@@ -1140,7 +1178,6 @@ const Splash = ({ navigation }) => {
     const parsedJsonValues = JSON.parse(jsonValue);
     console.log("parsedJsonValue", parsedJsonValue);
     setParsedJsonValue(parsedJsonValues);
-    
 
     const value = await AsyncStorage.getItem("isAlreadyIntroduced");
     console.log("Valuesisisisis", value, jsonValue);
@@ -1212,11 +1249,11 @@ const Splash = ({ navigation }) => {
       if (value === "Yes") {
         setTimeout(() => {
           navigation.navigate("SelectUser");
-        }, 7000);
+        }, 8000);
       } else {
         setTimeout(() => {
           navigation.navigate("Introduction");
-        }, 7000);
+        }, 8000);
       }
       // console.log("isAlreadyIntroduced",isAlreadyIntroduced,gotLoginData)
     }
@@ -1342,7 +1379,7 @@ const Splash = ({ navigation }) => {
     let kycOptions1;
     let kycOptions2;
 
-    console.log("the kyc dataaaaa=>", kycData)
+    console.log("the kyc dataaaaa=>", kycData);
 
     for (var i = 0; i < kycOption1.length; i++) {
       if (
@@ -1378,16 +1415,16 @@ const Splash = ({ navigation }) => {
 
     if (count1 == kycOption1.length) {
       setCheckKycOption1(true);
-      kycOptions1 = true
+      kycOptions1 = true;
     } else {
-      kycOptions1 = false
+      kycOptions1 = false;
       setCheckKycOption1(false);
     }
-    console.log("new clg", checkKycOption1,kycOptions1);
+    console.log("new clg", checkKycOption1, kycOptions1);
 
     if (kycOptions1 == false && kycOptions1 != undefined) {
       for (var i = 0; i < kycOption2.length; i++) {
-        console.log("inside option 2 array",kycOptions1,kycData)
+        console.log("inside option 2 array", kycOptions1, kycData);
         if (
           kycOption2.includes("aadhar") &&
           !kycCompletedCount.includes("aadhar")
@@ -1416,17 +1453,22 @@ const Splash = ({ navigation }) => {
           count2++;
         }
       }
-      console.log("count2 from option array 2", count2, kycData)
+      console.log("count2 from option array 2", count2, kycData);
       if (count2 == kycOption2.length) {
-        kycOptions2 = true
+        kycOptions2 = true;
         setCheckKycOption2(true);
       } else {
-        kycOptions2 = false
+        kycOptions2 = false;
         setCheckKycOption2(false);
       }
-    console.log("new clg two", kycCompletedCount.length, kycOption1.length);
-    console.log("hagshdhasfhgdfuygwgqd",checkKycOption1,checkKycOption2,kycOptions1,kycOptions2 )
-
+      console.log("new clg two", kycCompletedCount.length, kycOption1.length);
+      console.log(
+        "hagshdhasfhgdfuygwgqd",
+        checkKycOption1,
+        checkKycOption2,
+        kycOptions1,
+        kycOptions2
+      );
     }
   };
 

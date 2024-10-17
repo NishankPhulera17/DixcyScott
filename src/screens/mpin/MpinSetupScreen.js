@@ -13,6 +13,7 @@ import { useSelector } from "react-redux";
 import { useNavigation } from "@react-navigation/native";
 import { useUpdateMpinMutation } from "../../apiServices/login/otpBased/OtpLoginApi";
 import { setUserData } from "../../../redux/slices/appUserDataSlice";
+import ErrorModal from "../../components/modals/ErrorModal";
 
 const MpinSetupScreen = (params) => {
   const [mpin, setMpin] = useState(["", "", "", ""]);
@@ -107,6 +108,11 @@ const MpinSetupScreen = (params) => {
     }
   };
 
+  const modalClose = () => {
+    setError(false);
+
+  };
+
   // Handle key press to move back on backspace
   const handleKeyPress = (e, index) => {
     if (e.nativeEvent.key === "Backspace") {
@@ -131,15 +137,13 @@ const MpinSetupScreen = (params) => {
   const saveMpin = async () => {
     const fullMpin = mpin.join("");
     if (fullMpin.length == 4) {
-      // await AsyncStorage.setItem('userMpin', fullMpin);
-      // Alert.alert("Success", "MPIN has been set up!");
-      let data = {
-        mpin: fullMpin,
-        mobile: mobile,
-        token: token,
-      };
-      mpinupdateLoginFunc(data);
-      // navigation.replace('MpinValidation'); // Navigate to validation screen after setting up
+     
+  
+      console.log("Full Mpin", fullMpin)
+
+      await AsyncStorage.setItem("userMpin",fullMpin)
+      navigation.navigate("Dashboard")
+
     } else {
       // Alert.alert("Error", "Please enter all 4 digits of your MPIN.");
       setError(true);
@@ -205,6 +209,13 @@ const MpinSetupScreen = (params) => {
           />
         ))}
       </View>
+      {error && (
+        <ErrorModal
+          modalClose={modalClose}
+          message={message}
+          openModal={error}
+        ></ErrorModal>
+      )}
       <TouchableOpacity
         style={{ ...styles.button, backgroundColor: ternaryThemeColor }}
         onPress={saveMpin}

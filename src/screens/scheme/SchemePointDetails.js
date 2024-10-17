@@ -659,7 +659,8 @@ const SchemePointDetails = ({ navigation, route }) => {
           >
             <PoppinsTextMedium
               style={{ fontWeight: "800", fontSize: 16, color: "black" }}
-              content="Sub-Category"
+              // content="Sub-Category"
+              content="Style"
             ></PoppinsTextMedium>
           </View>
           <View
