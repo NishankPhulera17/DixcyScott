@@ -190,6 +190,19 @@ const OtpLogin = ({ navigation, route }) => {
     if (getNameData) {
       console.log("getNameData", getNameData);
       if (getNameData?.success) {
+
+
+        // const storeData = async (value) => {
+        //   try {
+        //     const jsonValue = JSON.stringify(value);
+        //     await AsyncStorage.setItem('kycData', jsonValue);
+        //   } catch (e) {
+        //     console.log(first)
+        //   }
+        // };
+        // storeData(getNameData.body)
+
+
         if (getNameData?.body?.mobile) {
           setMobile(getNameData?.body.mobile);
           setIsMpin(getNameData?.body.is_mpin);
@@ -266,7 +279,13 @@ const OtpLogin = ({ navigation, route }) => {
   };
 
   const navigateToMPIN = () => {
-    navigation.navigate("MpinValidationScreen", navigationParams)
+    if(isMpin){
+      navigation.navigate("MpinValidationScreen", navigationParams)
+    }
+    else{
+      setError(true)
+      setMessage("Please Generate MPIN First Using OTP Login")
+    }
   }
 
   const fetchTerms = async () => {
@@ -343,7 +362,7 @@ const OtpLogin = ({ navigation, route }) => {
             }
           } else {
             setError(true);
-            setMessage("Please enter your 6 digit UID");
+            setMessage("Please enter your 7 digit UID");
           }
           // setName('')
           // setMobile('')

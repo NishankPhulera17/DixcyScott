@@ -190,6 +190,8 @@ const MpinValidationScreen = (params) => {
         });
         // console.log("tempDrawerData", JSON.stringify(tempDrawerData))
         tempDrawerData && dispatch(setDrawerData(tempDrawerData[0]));
+        mpinLoginData &&  checkKYCDoneStatus(mpinLoginData.body);
+
         setModalWithBorder(true);
       }
     } else if (getAppMenuError) {
@@ -324,18 +326,11 @@ const MpinValidationScreen = (params) => {
   }, [getDashboardData, getDashboardError]);
 
   async function updateToken(newToken) {
-    const jsonValue = await AsyncStorage.getItem("loginData");
+    
+    
+    await AsyncStorage.setItem("loginData", JSON.stringify(newToken));
+    dispatch(setUserData(newToken));
 
-    const parsedJsonValues = JSON.parse(jsonValue);
-
-    console.log("oldToken", parsedJsonValues);
-    const newJsonValues = { ...parsedJsonValues, token: newToken };
-    const newUserData = { ...userData, token: newToken };
-
-    await AsyncStorage.setItem("kycData", JSON.stringify(newJsonValues));
-    setUserData(newUserData);
-
-    console.log("newToken", newJsonValues?.token);
 
 
     const check = await AsyncStorage.getItem("loginData");
@@ -346,15 +341,16 @@ const MpinValidationScreen = (params) => {
   useEffect(() => {
     if (mpinLoginData) {
       console.log("mpinLoginData", mpinLoginData);
+
       saveUserDetails(mpinLoginData?.body);
       setParsedJsonValue(mpinLoginData?.body);
       console.log("successfullyLoggedIn", mpinLoginData?.body?.token);
       saveToken(mpinLoginData?.body?.token);
-      updateToken(mpinLoginData?.body.token);
+      updateToken(mpinLoginData?.body);
       storeData(mpinLoginData?.body);
       saveUserDetails(mpinLoginData?.body);
       mpinLoginData?.body?.token &&
-        getDashboardFunc(mpinLoginData?.body?.token);
+      getDashboardFunc(mpinLoginData?.body?.token);
       setMessage("Successfully Logged In");
       setSuccess(true);
     } else {
@@ -366,7 +362,7 @@ const MpinValidationScreen = (params) => {
   const modalWithBorderClose = async () => {
     setModalWithBorder(false);
     setMessage("");
-    navigation.navigate("Dashboard");
+    // navigation.navigate("Dashboard");
   };
 
   const storeData = async (value) => {
@@ -389,6 +385,93 @@ const MpinValidationScreen = (params) => {
       dispatch(setId(data?.id));
     } catch (e) {
       console.log("error", e);
+    }
+  };
+
+  const checkKYCDoneStatus = (kycData) => {
+    const kycCompletedCount = [];
+    
+    console.log("the kyc dataaaaa=>", kycData)
+
+    for (var i = 0; i < kycOption1.length; i++) {
+      if (
+        kycOption1.includes("aadhar") &&
+        !kycCompletedCount.includes("aadhar")
+      ) {
+        if (kycData.is_valid_aadhar) {
+          kycCompletedCount.push("aadhar");
+        }
+      }
+      if (
+        kycOption1.includes("gstin") &&
+        !kycCompletedCount.includes("gstin")
+      ) {
+        if (kycData.is_valid_gstin) {
+          kycCompletedCount.push("gstin");
+        }
+      }
+      if (kycOption1.includes("pan") && !kycCompletedCount.includes("pan")) {
+        if (kycData.is_valid_pan) {
+          kycCompletedCount.push("pan");
+        }
+      }
+    }
+    console.log("completed kyc from the first array", kycCompletedCount)
+    var count1 = 0;
+
+    for (var i = 0; i < kycCompletedCount.length; i++) {
+      if (kycOption1.includes(kycCompletedCount[i])) {
+        count1++;
+      }
+    }
+
+    console.log("count", count1, kycOption1.length);
+    if (count1 == kycOption1.length) {
+      setCheckKycOption1(true);
+    } else {
+      setCheckKycOption1(false);
+    }
+    console.log("new clg", kycCompletedCount.length, kycOption1.length);
+
+    if (checkKycOption1 == false && checkKycOption1 != undefined) {
+      for (var i = 0; i < kycOption2.length; i++) {
+        if (
+          kycOption2.includes("aadhar") &&
+          !kycCompletedCount.includes("aadhar")
+        ) {
+          if (kycData.is_valid_aadhar) {
+            kycCompletedCount.push("aadhar");
+          }
+        }
+        if (
+          kycOption2.includes("gstin") &&
+          !kycCompletedCount.includes("gstin")
+        ) {
+          if (kycData.is_valid_gstin) {
+            kycCompletedCount.push("gstin");
+          }
+        }
+        if (kycOption2.includes("pan") && !kycCompletedCount.includes("pan")) {
+          if (kycData.is_valid_pan) {
+            kycCompletedCount.push("pan");
+          }
+        }
+      }
+    console.log("completed kyc from the second array", kycCompletedCount)
+
+      var count2 = 0;
+      for (var i = 0; i < kycCompletedCount.length; i++) {
+        if (kycOption2.includes(kycCompletedCount[i])) {
+          count2++;
+        }
+      }
+      if (count2 == kycOption2.length) {
+        setCheckKycOption2(true);
+      } else {
+        setCheckKycOption2(false);
+      }
+    console.log("new clg 2", kycCompletedCount.length, kycOption1.length);
+
     }
   };
 

@@ -272,7 +272,7 @@ const VerifyOtp = ({ navigation, route }) => {
         const tempDrawerData = getAppMenuData.body.filter((item) => {
           return item.user_type === parsedJsonValue.user_type;
         });
-        // console.log("tempDrawerData", JSON.stringify(tempDrawerData))
+        console.log("tempDrawerData", JSON.stringify(tempDrawerData))
         tempDrawerData && dispatch(setDrawerData(tempDrawerData[0]));
         setModalWithBorder(true);
       }
@@ -499,10 +499,8 @@ const VerifyOtp = ({ navigation, route }) => {
   }, [verifyLoginOtpData, verifyLoginOtpError]);
 
   useEffect(() => {
-    if(from == ""){
 
-    }
-    else{
+
       if (checkKycOption1) {
         isMpin ?
         navigation.reset({ index: "0", routes: [{ name: "Dashboard" }] }) :
@@ -517,7 +515,7 @@ const VerifyOtp = ({ navigation, route }) => {
       } else if (checkKycOption1 == false && checkKycOption2 == false) {
         navigation.reset({ index: "0", routes: [{ name: "CheckKycOptions",params:{isMPin:isMpin} }] });
       }
-    }
+    
  
   }, [checkKycOption1, checkKycOption2]);
 

@@ -33,6 +33,7 @@ import ErrorModal from "../components/modals/ErrorModal";
 import VersionCheck from "react-native-version-check";
 import { DrawerActions } from "@react-navigation/native";
 import { useTranslation } from "react-i18next";
+import { setDrawerData } from "../../redux/slices/drawerDataSlice";
 
 const Drawer = createDrawerNavigator();
 const CustomDrawer = () => {
@@ -76,6 +77,8 @@ const CustomDrawer = () => {
     },
   ] = useFetchLegalsMutation();
 
+  
+
   // console.log("kycCompleted", kycData)
 
   const navigation = useNavigation();
@@ -99,6 +102,42 @@ const CustomDrawer = () => {
       isError: getActiveMembershipIsError,
     },
   ] = useGetActiveMembershipMutation();
+
+  const [
+    getAppMenuFunc,
+    {
+      data: getAppMenuData,
+      error: getAppMenuError,
+      isLoading: getAppMenuIsLoading,
+      isError: getAppMenuIsError,
+    },
+  ] = useGetAppMenuDataMutation();
+
+  useEffect(()=>{
+    const getData = async()=>{
+      const credentials = await Keychain.getGenericPassword();
+      const token = credentials.username;
+      getAppMenuFunc(token);
+    }
+    if(drawerData == undefined || Object.keys(drawerData).length == 0 || Object.keys(drawerData).length == undefined ||  Object.keys(drawerData).length == null )
+    getData()
+
+  },[])
+
+  useEffect(() => {
+    if (getAppMenuData) {
+
+        const tempDrawerData = getAppMenuData.body.filter((item) => {
+          return item.user_type === userData.user_type;
+        });
+        console.log("tempDrawerData", JSON.stringify(tempDrawerData))
+        tempDrawerData && dispatch(setDrawerData(tempDrawerData[0]));
+
+
+    } else if (getAppMenuError) {
+      console.log("getAppMenuError", getAppMenuError);
+    }
+  }, [getAppMenuData, getAppMenuError]);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -604,7 +643,7 @@ const CustomDrawer = () => {
         contentContainerStyle={{ backgroundColor: "white" }}
         style={{ width: "100%", height: "100%", backgroundColor: "white" }}
       >
-        {drawerData !== undefined &&
+        {Object.keys(drawerData).length!=0 &&  drawerData !== undefined &&
           drawerData.app_menu.map((item, index) => {
             return (
               <DrawerItems

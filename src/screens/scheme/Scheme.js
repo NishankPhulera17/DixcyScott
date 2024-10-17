@@ -423,13 +423,16 @@ export default function Scheme({ navigation }) {
   
   useEffect(() => {
     const getToken = async () => {
+      const month = String(selectedDataStart.getMonth() + 1).padStart(2, '0'); // Adding 1 because getMonth() is 0-based (0 for January, 1 for February, etc.)
+      const year = selectedDataStart.getFullYear();
+
       const credentials = await Keychain.getGenericPassword();
       if (credentials) {
         console.log(
           "Credentials successfully loaded for user " + credentials.username
         );
         const token = credentials.username;
-        const params = {appUserID:userData.id, token:token}
+        const params = {appUserID:userData.id, token:token, month: month, year: year,}
         getAllSalesBoosterFunc(params);
       }
     };
@@ -453,6 +456,35 @@ export default function Scheme({ navigation }) {
       console.log("getAllSalesBoosterError", getAllSalesBoosterError);
     }
   }, [getAllSalesBoosterData, getAllSalesBoosterError]);
+
+  useEffect(() => {
+    const getToken = async () => {
+      const credentials = await Keychain.getGenericPassword();
+      if (credentials) {
+        console.log(
+          "Credentials successfully loaded for user " + credentials.username
+        );
+
+        console.log("Selected start date", selectedDataStart);
+
+        const month = String(selectedDataStart.getMonth() + 1).padStart(2, '0'); // Adding 1 because getMonth() is 0-based (0 for January, 1 for February, etc.)
+        const year = selectedDataStart.getFullYear();
+
+        console.log("mont year", month, year)
+
+        const token = credentials.username;
+        const params = {
+          appUserID: userData.id,
+          token: token,
+          type: "focus_brand",
+          month: month+"",
+          year: year+"",
+        };
+        getAllSalesBoosterFunc(params);
+      }
+    };
+    getToken();
+  }, [selectedDataStart]);
 
   const getSelectedDates = useCallback((startDate) => {
     // Convert the input start date to a JavaScript Date object

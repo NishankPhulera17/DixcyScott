@@ -7,7 +7,6 @@ export const AppUserDashboardMenuAPi = baseApi.injectEndpoints({
     endpoints: (builder) =>({
         getAppMenuData : builder.mutation({
             query(token){
-                
                 console.log("from app drawer, token is ",token)
                 return {
                     url:`/api/admin/appUserMenu/${slug}`,
