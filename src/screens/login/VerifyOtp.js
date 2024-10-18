@@ -547,17 +547,25 @@ const VerifyOtp = ({ navigation, route }) => {
   // -------------------------------------------------
 
   const checkKYCDoneStatus = (kycData) => {
-    console.log("do it", kycData, kycOption1, kycOption2);
-
     const kycCompletedCount = [];
+    let kycOptions1;
+    let kycOptions2;
+
+    console.log("the kyc dataaaaa=>", kycData);
 
     for (var i = 0; i < kycOption1.length; i++) {
-      if (kycOption1.includes("aadhar"  && !kycCompletedCount.includes("aadhar"))) {
+      if (
+        kycOption1.includes("aadhar") &&
+        !kycCompletedCount.includes("aadhar")
+      ) {
         if (kycData.is_valid_aadhar) {
           kycCompletedCount.push("aadhar");
         }
       }
-      if (kycOption1.includes("gstin")  && !kycCompletedCount.includes("gstin")) {
+      if (
+        kycOption1.includes("gstin") &&
+        !kycCompletedCount.includes("gstin")
+      ) {
         if (kycData.is_valid_gstin) {
           kycCompletedCount.push("gstin");
         }
@@ -570,62 +578,69 @@ const VerifyOtp = ({ navigation, route }) => {
     }
 
     var count1 = 0;
+
     for (var i = 0; i < kycCompletedCount.length; i++) {
       if (kycOption1.includes(kycCompletedCount[i])) {
         count1++;
       }
     }
-    console.log("count", count1, kycOption1.length, kycCompletedCount);
+
     if (count1 == kycOption1.length) {
       setCheckKycOption1(true);
+      kycOptions1 = true;
     } else {
+      kycOptions1 = false;
       setCheckKycOption1(false);
     }
-    console.log("new clg", kycCompletedCount.length, kycOption1.length, checkKycOption1);
+    console.log("new clg", checkKycOption1, kycOptions1);
 
-    if (!checkKycOption1) {
-      console.log("enter to !kyc op 2")
+    if (kycOptions1 == false && kycOptions1 != undefined) {
       for (var i = 0; i < kycOption2.length; i++) {
-        if (kycOption2.includes("aadhar") && !kycCompletedCount.includes("aadhar")) {
+        console.log("inside option 2 array", kycOptions1, kycData);
+        if (
+          kycOption2.includes("aadhar") &&
+          !kycCompletedCount.includes("aadhar")
+        ) {
           if (kycData.is_valid_aadhar) {
-            console.log("aadhar done")
             kycCompletedCount.push("aadhar");
           }
         }
-        if (kycOption2.includes("gstin") && !kycCompletedCount.includes("gstin")) {
+        if (
+          kycOption2.includes("gstin") &&
+          !kycCompletedCount.includes("gstin")
+        ) {
           if (kycData.is_valid_gstin) {
-            console.log("gst done")
             kycCompletedCount.push("gstin");
           }
         }
         if (kycOption2.includes("pan") && !kycCompletedCount.includes("pan")) {
           if (kycData.is_valid_pan) {
-            console.log("pan done")
-
             kycCompletedCount.push("pan");
           }
         }
       }
-      console.log("now kycCompleted count is", kycCompletedCount)
-
       var count2 = 0;
       for (var i = 0; i < kycCompletedCount.length; i++) {
-        if (kycOption2.includes(kycCompletedCount[i])  ) {
-          console.log("let's count", count2)
-          
+        if (kycOption2.includes(kycCompletedCount[i])) {
           count2++;
         }
       }
-
-      console.log("let's count lenght chefck", count2, kycOption2.length)
-
-
+      console.log("count2 from option array 2", count2, kycData);
       if (count2 == kycOption2.length) {
+        kycOptions2 = true;
         setCheckKycOption2(true);
-        
       } else {
+        kycOptions2 = false;
         setCheckKycOption2(false);
       }
+      console.log("new clg two", kycCompletedCount.length, kycOption1.length);
+      console.log(
+        "hagshdhasfhgdfuygwgqd",
+        checkKycOption1,
+        checkKycOption2,
+        kycOptions1,
+        kycOptions2
+      );
     }
   };
 

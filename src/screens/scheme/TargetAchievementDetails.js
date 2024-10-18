@@ -46,13 +46,20 @@ const TargetAchievementDetails = ({ navigation, route }) => {
     },
   ] = useGetSalesBoosterFocusPointMutation();
 
+  let date = route.params.date ? route.params.date  : "";
+
+  const month = moment(date).month() + 1; // Get month number (0-indexed, so add 1)
+  const year = moment(date).year(); // Get the year
+
   useEffect(() => {
     const getToken = async () => {
       const credentials = await Keychain.getGenericPassword();
       const token = credentials.username;
       const currDate = new Date();
-      const currMonth = moment(currDate).format("MM");
-      const currYear = moment(currDate).format("YYYY");
+      // const currMonth = moment(currDate).format("MM");
+      const currMonth = month
+      // const currYear = moment(currDate).format("YYYY");
+      const currYear = year;
       console.log("month time data", currMonth, currYear);
       const params = {
         appUserID: userData.id,
@@ -73,8 +80,11 @@ const TargetAchievementDetails = ({ navigation, route }) => {
       const credentials = await Keychain.getGenericPassword();
       const token = credentials.username;
       const currDate = selectedDataStart ? selectedDataStart : new Date();
-      const currMonth = moment(currDate).format("MM");
-      const currYear = moment(currDate).format("YYYY");
+      // const currMonth = moment(currDate).format("MM");
+      const currMonth = month;
+      // const currYear = moment(currDate).format("YYYY");
+      const currYear = year;
+
       console.log("month time data", currMonth, currYear);
       const params = {
         appUserID: userData.id,
@@ -835,10 +845,10 @@ const TargetAchievementDetails = ({ navigation, route }) => {
           }}
         >
           <PoppinsTextMedium
-            content={`${moment(selectedDataStart).format("MMM YYYY")}`}
+            content={`${moment(date).format("MMM YYYY")}`}
             style={{ fontSize: 16, fontWeight: "700", color: "black" }}
           />
-          <TouchableOpacity
+          {/* <TouchableOpacity
             style={{
               backgroundColor: "white",
               paddingLeft: 10,
@@ -861,7 +871,7 @@ const TargetAchievementDetails = ({ navigation, route }) => {
               style={{ color: "#808080" }}
               content="Select Month & Year"
             />
-          </TouchableOpacity>
+          </TouchableOpacity> */}
         </View>
       </View>
     );

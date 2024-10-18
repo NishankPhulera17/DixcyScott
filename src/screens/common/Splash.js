@@ -1040,16 +1040,17 @@ const Splash = ({ navigation }) => {
                 index: "0",
                 routes: [{ name: "MpinValidationScreen" }],
               });
-            },5000)
-         
-
-            // navigation.reset({
-            //   index: "0",
-            //   routes: [{ name: "MpinValidationScreen" }],
-            // });
+            },7000)
           }
           else{
-            navigation.navigate("SelectUser")
+            getFormData &&
+            parsedJsonValue &&
+            (!__DEV__ ? minVersionSupport : true) &&
+            getDashboardData &&
+            getWorkflowData &&
+            setTimeout(()=>{
+              navigation.navigate("SelectUser")
+            },7000)
           }
         
           // getFormData &&

@@ -202,9 +202,10 @@ const TargetVsAchievement = ({ navigation }) => {
     const [openStart, setOpenStart] = useState(false);
 
     const handleDateChange = (date) => {
+      console.log("thedate",date)
       setOpenStart(false);
       setSelectedDataStart(date);
-      props.getDate(selectedDataStart);
+      props.getDate(date);
     };
 
     return (
@@ -467,6 +468,7 @@ const TargetVsAchievement = ({ navigation }) => {
                 type: "20-20",
                 data: props.data,
                 sb_id: props.sb_id,
+                date:selectedDataStart
               });
             }}
             style={{
