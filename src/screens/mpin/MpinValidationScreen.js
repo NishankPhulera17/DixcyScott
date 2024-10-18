@@ -43,6 +43,7 @@ import {
   setWarrantyFormId,
 } from "../../../redux/slices/formSlice";
 import { kycOption1, kycOption2 } from "../../utils/HandleClientSetup";
+import ErrorModal from "../../components/modals/ErrorModal";
 
 const MpinValidationScreen = (params) => {
   const [mpin, setMpin] = useState(["", "", "", ""]);
@@ -69,15 +70,15 @@ const MpinValidationScreen = (params) => {
 
   const dispatch = useDispatch();
 
-  const [
-    mpinLoginFunc,
-    {
-      data: mpinLoginData,
-      error: mpinLoginError,
-      isLoading: mpinLoginIsLoading,
-      isError: mpinLoginIsError,
-    },
-  ] = useGetMPINLoginMutation();
+  // const [
+  //   mpinLoginFunc,
+  //   {
+  //     data: mpinLoginData,
+  //     error: mpinLoginError,
+  //     isLoading: mpinLoginIsLoading,
+  //     isError: mpinLoginIsError,
+  //   },
+  // ] = useGetMPINLoginMutation();
 
   const [
     getTermsAndCondition,
@@ -190,7 +191,7 @@ const MpinValidationScreen = (params) => {
         });
         // console.log("tempDrawerData", JSON.stringify(tempDrawerData))
         tempDrawerData && dispatch(setDrawerData(tempDrawerData[0]));
-        mpinLoginData &&  checkKYCDoneStatus(mpinLoginData.body);
+        // mpinLoginData &&  checkKYCDoneStatus(mpinLoginData.body);
 
         setModalWithBorder(true);
       }
@@ -338,25 +339,25 @@ const MpinValidationScreen = (params) => {
     console.log("check", JSON.parse(check)?.token);
   }
 
-  useEffect(() => {
-    if (mpinLoginData) {
-      console.log("mpinLoginData", mpinLoginData);
+  // useEffect(() => {
+  //   if (mpinLoginData) {
+  //     console.log("mpinLoginData", mpinLoginData);
 
-      saveUserDetails(mpinLoginData?.body);
-      setParsedJsonValue(mpinLoginData?.body);
-      console.log("successfullyLoggedIn", mpinLoginData?.body?.token);
-      saveToken(mpinLoginData?.body?.token);
-      updateToken(mpinLoginData?.body);
-      storeData(mpinLoginData?.body);
-      saveUserDetails(mpinLoginData?.body);
-      mpinLoginData?.body?.token &&
-      getDashboardFunc(mpinLoginData?.body?.token);
-      setMessage("Successfully Logged In");
-      setSuccess(true);
-    } else {
-      console.log("mpinLoginError", mpinLoginError);
-    }
-  }, [mpinLoginData, mpinLoginError]);
+  //     saveUserDetails(mpinLoginData?.body);
+  //     setParsedJsonValue(mpinLoginData?.body);
+  //     console.log("successfullyLoggedIn", mpinLoginData?.body?.token);
+  //     saveToken(mpinLoginData?.body?.token);
+  //     updateToken(mpinLoginData?.body);
+  //     storeData(mpinLoginData?.body);
+  //     saveUserDetails(mpinLoginData?.body);
+  //     mpinLoginData?.body?.token &&
+  //     getDashboardFunc(mpinLoginData?.body?.token);
+  //     setMessage("Successfully Logged In");
+  //     setSuccess(true);
+  //   } else {
+  //     console.log("mpinLoginError", mpinLoginError);
+  //   }
+  // }, [mpinLoginData, mpinLoginError]);
 
   //function to handle Modal
   const modalWithBorderClose = async () => {
@@ -532,6 +533,10 @@ const MpinValidationScreen = (params) => {
     if(enteredMpin == mPin){
       navigation.navigate("Dashboard")
     }
+    else{
+      setError(true)
+      setMessage("Incorrect MPIN. Please try again.");
+    }
 
 
     // if (uid != null && mpin.length == 4) {
@@ -540,6 +545,11 @@ const MpinValidationScreen = (params) => {
     //   Alert.alert("Error", "Incorrect MPIN. Please try again.");
     // }
   };
+
+  const modalClose = () => {
+    setError(false);
+  };
+
 
   return (
     <View style={styles.container}>
@@ -644,6 +654,7 @@ const styles = StyleSheet.create({
   },
   input: {
     borderBottomWidth: 2,
+    color:'black',
     borderBottomColor: "#000",
     fontSize: 24,
     textAlign: "center",
