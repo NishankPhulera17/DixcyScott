@@ -195,7 +195,7 @@ const [
 
   useEffect(() => {
     const handleBackPress = () => {
-      navigation.goBack(); // Navigate back when back button is pressed
+      // navigation.goBack(); // Navigate back when back button is pressed
       return true; // Prevent default back press behavior
   };
     const backHandler = BackHandler.addEventListener('hardwareBackPress', handleBackPress);

@@ -153,7 +153,7 @@ const MpinSetupScreen = (params) => {
 
   return (
     <View style={styles.container}>
-      <TouchableOpacity
+      {/* <TouchableOpacity
         onPress={() => {
           navigation.goBack();
         }}
@@ -171,7 +171,7 @@ const MpinSetupScreen = (params) => {
           }}
           source={require("../../../assets/images/blackBack.png")}
         ></Image>
-      </TouchableOpacity>
+      </TouchableOpacity> */}
 
       <View
         style={{
@@ -248,6 +248,7 @@ const styles = StyleSheet.create({
     fontSize: 24,
     textAlign: "center",
     width: 40,
+    color:'black',
     marginHorizontal: 5,
   },
   button: {

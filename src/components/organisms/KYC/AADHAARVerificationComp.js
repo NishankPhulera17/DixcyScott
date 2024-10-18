@@ -230,7 +230,7 @@ const AADHAARVerificationComp = (props) => {
 
 
 
-      {otpSent && sendAadharOtpData && !loadingAadhaar && (
+      {otpSent && sendAadharOtpData && !loadingAadhaar && !aadharVerified && (
         <View style={{ marginTop: 10 }}>
           <OtpInput
             getOtpFromComponent={getOtpFromComponent}
