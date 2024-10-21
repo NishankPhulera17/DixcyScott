@@ -7,11 +7,13 @@ import { useSelector } from 'react-redux';
 
 const DashboardMenuBox=(props)=>{
     const dataa = props?.data
-    console.log("dashboard menu box data",dataa)
+    // console.log("dashboard menu box data",dataa)
     const navigation = props.navigation
     const colorShades = useSelector(state=>state.apptheme.colorShades)
     const width = Dimensions.get('window').width
     const requiresLocation = props.requiresLocation
+
+    console.log("sadsahjdghjsaghdgadgyuqwqgy",dataa)
     const handleMenuItemPress=(data)=>{
         if(data.substring(0,4).toLowerCase()==="scan" )
         {
@@ -91,7 +93,7 @@ const DashboardMenuBox=(props)=>{
             <Image source={require('../../../assets/images/vijeta.png')} style={{width:'90%',height:'90%'}} resizeMode='contain'></Image>
             </TouchableOpacity>
         {
-            dataa.map((item,index)=>{
+           Object.keys(dataa).length!=0 && dataa.map((item,index)=>{
                 return(
                     <MenuItems handlePress={handleMenuItemPress} key={index} image={item?.icon} content={item?.name}></MenuItems>
                 )

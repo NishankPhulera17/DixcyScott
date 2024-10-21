@@ -28,10 +28,53 @@ export const OtpLoginApi = baseApi.injectEndpoints({
                    
                 }
             }
+        }),
+        getMPINLogin : builder.mutation({
+            query({user_id,mpin}){
+                
+                return {
+                    url:`/api/app/mpin/login`,
+                    method:'post',
+                    headers:{
+                        "slug":slug,
+                        "Content-Type": "application/json"
+                    },
+                    body:{
+                        "user_id" : user_id,
+                        "mpin":mpin,
+                        
+                        
+                    }
+                    
+                   
+                }
+            }
+        }),
+        updateMpin : builder.mutation({
+            query({mobile,mpin,token}){
+                console.log("param pinnn", mobile, mpin)
+                return {
+                    url:`/api/app/mpin/forget`,
+                    method:'post',
+                    headers:{
+                        "slug":slug,
+                        Authorization: 'Bearer ' + token,
+                        "Content-Type": "application/json"
+                    },
+                    body:{
+                        "mobile" : mobile,
+                        "mpin":mpin,
+                        
+                        
+                    }
+                    
+                   
+                }
+            }
         })
     })
 });
 
 
-export const {useGetAppLoginMutation} = OtpLoginApi
+export const {useGetAppLoginMutation, useGetMPINLoginMutation, useUpdateMpinMutation} = OtpLoginApi
 

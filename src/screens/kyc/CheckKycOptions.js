@@ -51,7 +51,10 @@ const CheckKycOptions = ({navigation,route}) => {
   );
   const timer = useRef(0);
   const imageData = route?.params?.imageData
-  console.log("imageData", imageData)
+  const isMPIn = route?.params?.isMPin
+  console.log("the routttttt", route)
+  console.log("imageData", imageData, )
+  
   const [
     updateProfileFunc,
     {
@@ -90,7 +93,9 @@ const CheckKycOptions = ({navigation,route}) => {
   const modalClose = () => {
     setMessage('')
     setModalWithBorder(false)
-    navigation.navigate("Dashboard")
+    isMPIn ? 
+    navigation.navigate("Dashboard") :
+    navigation.navigate("MpinSetupScreen")
   };
   
   const getShowImage = (data) => {
@@ -415,7 +420,10 @@ const CheckKycOptions = ({navigation,route}) => {
     },1000)
 
     setTimeout(()=>{
-      navigation.navigate("Dashboard")
+      isMPIn ? 
+      navigation.navigate("Dashboard"):
+      navigation.navigate("MpinSetupScreen")
+
       setModalWithBorderSuccess(false)
     },2000)
   };
@@ -748,7 +756,7 @@ const CheckKycOptions = ({navigation,route}) => {
           <ModalWithBorder
             modalClose={modalWithBorderSuccessClose}
             message={message}
-            navigateTo = {"Dashboard"}
+            navigateTo = {isMPIn ? "Dashboard" : "MpinSetupScreen"}
             openModal={openModalWithBorderSuccess}
             comp={ModalContentSuccess}>
           </ModalWithBorder>}

@@ -9,6 +9,7 @@ import {
   TouchableOpacity,
   Keyboard,
   Alert,
+  Text
 } from "react-native";
 import { useSelector, useDispatch } from "react-redux";
 import { BaseUrl } from "../../utils/BaseUrl";
@@ -21,7 +22,10 @@ import ButtonNavigateArrow from "../../components/atoms/buttons/ButtonNavigateAr
 import { useGetLoginOtpMutation } from "../../apiServices/login/otpBased/SendOtpApi";
 import ButtonNavigate from "../../components/atoms/buttons/ButtonNavigate";
 import ErrorModal from "../../components/modals/ErrorModal";
-import { useGetNameMutation, useGetUserExistanceMutation } from "../../apiServices/login/GetNameByMobile";
+import {
+  useGetNameMutation,
+  useGetUserExistanceMutation,
+} from "../../apiServices/login/GetNameByMobile";
 import TextInputRectangularWithPlaceholder from "../../components/atoms/input/TextInputRectangularWithPlaceholder";
 import { useIsFocused } from "@react-navigation/native";
 import PoppinsTextLeftMedium from "../../components/electrons/customFonts/PoppinsTextLeftMedium";
@@ -34,6 +38,7 @@ import crashlytics from "@react-native-firebase/crashlytics";
 import LeftIcon from "react-native-vector-icons/AntDesign";
 import { useFetchLegalsMutation } from "../../apiServices/fetchLegal/FetchLegalApi";
 import { get } from "react-native/Libraries/TurboModule/TurboModuleRegistry";
+
 const OtpLogin = ({ navigation, route }) => {
   const [mobile, setMobile] = useState("");
   const [name, setName] = useState("");
@@ -44,6 +49,8 @@ const OtpLogin = ({ navigation, route }) => {
   const [hideButton, setHideButton] = useState(false);
   const [isEditable, setIsEditable] = useState(true);
   const [alert, setAlert] = useState(false);
+  const [isMpin, setIsMpin] = useState(false);
+
   const { t } = useTranslation();
   // fetching theme for the screen-----------------------
 
@@ -120,6 +127,7 @@ const OtpLogin = ({ navigation, route }) => {
     user_type: user_type,
     mobile: mobile,
     name: name,
+    isMpin: isMpin
   };
   console.log("navigationParams", navigationParams);
   const gifUri = Image.resolveAssetSource(
@@ -141,12 +149,11 @@ const OtpLogin = ({ navigation, route }) => {
   useEffect(() => {
     if (getUserExistanceData) {
       console.log("getUserExistanceData", getUserExistanceData);
-      if(getUserExistanceData?.body){
-        setError(true)
-        setMessage("User Already Exists")
-      }
-      else{
-        handleButtonPress()
+      if (getUserExistanceData?.body) {
+        setError(true);
+        setMessage("User Already Exists");
+      } else {
+        handleButtonPress();
       }
     } else if (getUserExistanceError) {
       console.log("getUserExistanceError", getUserExistanceError);
@@ -164,7 +171,6 @@ const OtpLogin = ({ navigation, route }) => {
             kycData: nameData,
           });
         }
-   
       } else {
         console.log("Trying to open error modal");
       }
@@ -184,16 +190,28 @@ const OtpLogin = ({ navigation, route }) => {
     if (getNameData) {
       console.log("getNameData", getNameData);
       if (getNameData?.success) {
-        if(getNameData?.body?.mobile){
+
+
+        // const storeData = async (value) => {
+        //   try {
+        //     const jsonValue = JSON.stringify(value);
+        //     await AsyncStorage.setItem('kycData', jsonValue);
+        //   } catch (e) {
+        //     console.log(first)
+        //   }
+        // };
+        // storeData(getNameData.body)
+
+
+        if (getNameData?.body?.mobile) {
           setMobile(getNameData?.body.mobile);
-        }
-        else{
-          setError(true)
-          setMessage("Invalid UID")
+          setIsMpin(getNameData?.body.is_mpin);
+        } else {
+          setError(true);
+          setMessage("Invalid UID");
         }
 
-        setIsEditable(checkKyc())
-
+        setIsEditable(checkKyc());
       }
     } else if (getNameError) {
       console.log("getNameError", getNameError);
@@ -218,8 +236,8 @@ const OtpLogin = ({ navigation, route }) => {
     // getNameFunc({ mobile: data })
     if (data.length === 6) getNameFunc({ uid: data });
 
-    if(getNameData?.body.mobile && data.length !== 6){
-        setMobile("")
+    if (getNameData?.body.mobile && data.length !== 6) {
+      setMobile("");
     }
 
     //     Keyboard.dismiss();
@@ -232,25 +250,42 @@ const OtpLogin = ({ navigation, route }) => {
     // }
   };
 
-  const checkKyc = () =>{
-    if(getNameData?.body?.is_valid_aadhar && getNameData?.body?.is_valid_pan){
-      return false
-    }else if(getNameData?.body?.is_valid_gstin && getNameData?.body?.is_valid_aadhar){
-      return false
+  const checkKyc = () => {
+    if (getNameData?.body?.is_valid_aadhar && getNameData?.body?.is_valid_pan) {
+      return false;
+    } else if (
+      getNameData?.body?.is_valid_gstin &&
+      getNameData?.body?.is_valid_aadhar
+    ) {
+      return false;
     }
-  }
+  };
 
-  const checkNumberEligibility = () =>{
-    if(getNameData?.body?.mobile == mobile){
-      handleButtonPress()
-    }
-    else{
+  const checkNumberEligibility = () => {
+    if (getNameData?.body?.mobile == mobile) {
+      handleButtonPress();
+    } else {
       getUserExistanceFunc({
         user_id: name,
-        mobile:mobile
-      })
+        mobile: mobile,
+      });
     }
-  
+  };
+
+  const mpinProcedure = () => {
+    if (getNameData?.body?.mobile == mobile) {
+      navigateToMPIN();
+    } 
+  };
+
+  const navigateToMPIN = () => {
+    if(isMpin){
+      navigation.navigate("MpinValidationScreen", navigationParams)
+    }
+    else{
+      setError(true)
+      setMessage("Please Generate MPIN First Using OTP Login")
+    }
   }
 
   const fetchTerms = async () => {
@@ -275,8 +310,6 @@ const OtpLogin = ({ navigation, route }) => {
         if (data.length === 10) {
           if (mobReg.test(data)) {
             setMobile(data);
-          
-            
           } else {
             Alert.alert("Kindly enter a valid UID ");
             setMobile("");
@@ -329,7 +362,7 @@ const OtpLogin = ({ navigation, route }) => {
             }
           } else {
             setError(true);
-            setMessage("Please enter your 6 digit UID");
+            setMessage("Please enter your 7 digit UID");
           }
           // setName('')
           // setMobile('')
@@ -344,12 +377,10 @@ const OtpLogin = ({ navigation, route }) => {
         } else if (name == undefined || name == "") {
           setError(true);
           setMessage("Please enter name");
-        }
-        else if(!(getNameData?.body?.name)){
+        } else if (!getNameData?.body?.name) {
           setError(true);
           setMessage("Invalid UID");
-        }
-        else if(!getUserExistanceData?.body){
+        } else if (!getUserExistanceData?.body) {
           setError(true);
           setMessage("User Already Exists");
         }
@@ -463,7 +494,7 @@ const OtpLogin = ({ navigation, route }) => {
               handleData={getMobile}
               value={mobile}
               maxLength={10}
-             editable = {false}
+              editable={false}
               keyboardType="numeric"
             ></TextInputRectangularWithPlaceholder>
           </View>
@@ -483,11 +514,11 @@ const OtpLogin = ({ navigation, route }) => {
               content={"I agree "}
               style={{
                 color: "black",
-              
+
                 marginBottom: 20,
                 fontSize: 15,
                 marginLeft: 8,
-                fontWeight:'600',
+                fontWeight: "600",
                 marginTop: 16,
               }}
             ></PoppinsTextLeftMedium>
@@ -505,15 +536,16 @@ const OtpLogin = ({ navigation, route }) => {
                   color: ternaryThemeColor,
                   marginBottom: 20,
                   fontSize: 15,
-                  borderBottomWidth:1,
+                  borderBottomWidth: 1,
 
-                  borderColor:ternaryThemeColor,
+                  borderColor: ternaryThemeColor,
                   marginTop: 16,
                 }}
               ></PoppinsTextLeftMedium>
             </TouchableOpacity>
           </View>
 
+          <View style={{alignItems:'center'}}>
           <ButtonNavigateArrow
             success={success}
             handleOperation={checkNumberEligibility}
@@ -525,9 +557,40 @@ const OtpLogin = ({ navigation, route }) => {
             navigationParams={navigationParams}
             mobileLength={mobile}
             isChecked={
-              !error && isChecked && mobile?.length == 10 && name != "" && !hideButton && getNameData?.body?.name 
+              !error &&
+              isChecked &&
+              mobile?.length == 10 &&
+              name != "" &&
+              !hideButton &&
+              getNameData?.body?.name
             }
           ></ButtonNavigateArrow>
+
+          {/* <Text style = {{color:ternaryThemeColor, fontSize:20}}>OR</Text>
+
+          <ButtonNavigateArrow
+            success={success}
+            handleOperation={mpinProcedure}
+            backgroundColor={buttonThemeColor}
+            style={{ color: "white", fontSize: 16 }}
+            isLoading={sendOtpIsLoading}
+            content={t("Login With MPIN")}
+            navigateTo="VerifyOtp"
+            navigationParams={navigationParams}
+            mobileLength={mobile}
+            isChecked={
+              !error &&
+              isChecked &&
+              mobile?.length == 10 &&
+              name != "" &&
+              !hideButton &&
+              getNameData?.body?.name
+            }
+          ></ButtonNavigateArrow> */}
+
+          </View>
+
+         
 
           {sendOtpIsLoading && (
             <FastImage

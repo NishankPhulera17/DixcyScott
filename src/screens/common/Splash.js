@@ -11,7 +11,7 @@ import {
   Linking,
   BackHandler,
   NativeModules,
-  Modal
+  Modal,
 } from "react-native";
 import { useGetAppThemeDataMutation } from "../../apiServices/appTheme/AppThemeApi";
 import { useSelector, useDispatch } from "react-redux";
@@ -105,12 +105,12 @@ import { useInternetSpeedContext } from "../../Contexts/useInternetSpeedContext"
 import { setSlowNetwork } from "../../../redux/slices/internetSlice";
 import { apiFetchingInterval } from "../../utils/apiFetchingInterval";
 import { splash } from "../../utils/HandleClientSetup";
-import { kycOption1, kycOption2 } from '../../utils/HandleClientSetup';
+import { kycOption1, kycOption2 } from "../../utils/HandleClientSetup";
 import FastImage from "react-native-fast-image";
-import { AppUpdate } from 'react-native-update-in-app';
-import RNFetchBlob from 'rn-fetch-blob';
-import RNFS from 'react-native-fs';
-import FileViewer from 'react-native-file-viewer';
+import { AppUpdate } from "react-native-update-in-app";
+import RNFetchBlob from "rn-fetch-blob";
+import RNFS from "react-native-fs";
+import FileViewer from "react-native-file-viewer";
 import RNApkInstaller from "@dominicvonk/react-native-apk-installer";
 import * as Progress from 'react-native-progress';
 import { useCheckLatestVersionForNonPlaystoreApiMutation } from "../../apiServices/minVersion/latestVersionForNonPlaystoreApi";
@@ -133,10 +133,10 @@ const Splash = ({ navigation }) => {
   const [dashboardDataLoaded, setDashboardDataLoaded] = useState(false);
   const [error, setError] = useState(false);
   const [checkedForInAppUpdate, setCheckedForInAppUpdate] = useState(false);
-  const [checkKycOption1, setCheckKycOption1] = useState()
-  const [checkKycOption2, setCheckKycOption2] = useState()
+  const [checkKycOption1, setCheckKycOption1] = useState();
+  const [checkKycOption2, setCheckKycOption2] = useState();
   const { responseTime, loading } = useInternetSpeedContext();
-  const { AppRestart } = NativeModules
+  const { AppRestart } = NativeModules;
   // const [isAlreadyIntroduced, setIsAlreadyIntroduced] = useState(null);
   // const [gotLoginData, setGotLoginData] = useState()
   const isConnected = useSelector((state) => state.internet.isConnected);
@@ -284,34 +284,39 @@ const Splash = ({ navigation }) => {
   const actualDownload = (url) => {
     const { dirs } = RNFetchBlob.fs;
     const dirToSave =
-        Platform.OS === 'ios' ? dirs.DocumentDir : dirs.DownloadDir;
+      Platform.OS === "ios" ? dirs.DocumentDir : dirs.DownloadDir;
 
     console.log("Saving file to directory", dirToSave);
 
     const configfb = {
-        fileCache: true,
-        addAndroidDownloads: {
-            useDownloadManager: true,
-            notification: true,
-            mediaScannable: true,
-            title: 'app-release.apk',
-            path: `${dirToSave}/app-release.apk`,
-        },
+      fileCache: true,
+      addAndroidDownloads: {
+        useDownloadManager: true,
+        notification: true,
+        mediaScannable: true,
+        title: "app-release.apk",
         path: `${dirToSave}/app-release.apk`,
+      },
+      path: `${dirToSave}/app-release.apk`,
     };
 
     const configOptions = Platform.select({
-        ios: configfb,
-        android: configfb,
+      ios: configfb,
+      android: configfb,
     });
 
     RNFetchBlob.config({
       // response data will be saved to this path if it has access right.
-      path : dirToSave + '/app-release.apk'
-    }).fetch('GET', url, {})
-        .progress((received, total) => {
-          console.log('progress', ((received / total)))
-          setDownloadProgress(((received / total)));
+      path: dirToSave + "/app-release.apk",
+    })
+      .fetch(
+        "GET",
+        "https://saas-apk.s3.ap-south-1.amazonaws.com/Lastest-APK/app-release.apk",
+        {}
+      )
+      .progress((received, total) => {
+        console.log("progress", received / total);
+        setDownloadProgress(received / total);
       })
         .then(res => {
             if (Platform.OS === 'ios') {
@@ -345,32 +350,33 @@ const getPermission = async (uri) => {
   }
 };
 
-// ---------------------------------------------------------
-  useEffect(()=>{
+  // ---------------------------------------------------------
+  useEffect(() => {
     const requestNotificationPermission = async () => {
-      if(Platform.OS ==="android"){
+      if (Platform.OS === "android") {
         try {
-          PermissionsAndroid.check('android.permission.POST_NOTIFICATIONS').then(
-            response => {
-              console.log("BACKGROUND NOTIFICATION",response)
-              if(!response){
-                PermissionsAndroid.request('android.permission.POST_NOTIFICATIONS',{
-                    title: 'Notification',
+          PermissionsAndroid.check("android.permission.POST_NOTIFICATIONS")
+            .then((response) => {
+              console.log("BACKGROUND NOTIFICATION", response);
+              if (!response) {
+                PermissionsAndroid.request(
+                  "android.permission.POST_NOTIFICATIONS",
+                  {
+                    title: "Notification",
                     message:
-                      'App needs access to your notification ' +
-                      'so you can get Updates',
-                    buttonNeutral: 'Ask Me Later',
-                    buttonNegative: 'Cancel',
-                    buttonPositive: 'OK',
-                })
+                      "App needs access to your notification " +
+                      "so you can get Updates",
+                    buttonNeutral: "Ask Me Later",
+                    buttonNegative: "Cancel",
+                    buttonPositive: "OK",
+                  }
+                );
               }
-            }
-          ).catch(
-            err => {
-              console.log("Notification Error=====>",err);
-            }
-          )
-        } catch (err){
+            })
+            .catch((err) => {
+              console.log("Notification Error=====>", err);
+            });
+        } catch (err) {
           console.log(err);
         }
       }
@@ -443,10 +449,9 @@ useEffect(()=>{
   const removerTokenData = async () => {
     await AsyncStorage.removeItem("loginData");
     setShowLoading(false);
-    setTimeout(()=>{
+    setTimeout(() => {
       navigation.navigate("SelectUser");
-
-    },7000)
+    }, 8000);
   };
 
   useEffect(() => {
@@ -465,11 +470,7 @@ useEffect(()=>{
                 apiFetchingInterval
               ) {
                 console.log("Time limit exceeded refetching appmenu");
-                dispatch(setAppUserId(parsedJsonValue.user_type_id));
-                dispatch(setAppUserName(parsedJsonValue.name));
-                dispatch(setAppUserType(parsedJsonValue.user_type));
-                dispatch(setUserData(parsedJsonValue));
-                dispatch(setId(parsedJsonValue.id));
+
                 dispatch(
                   setDashboardData(getDashboardData?.body?.app_dashboard)
                 );
@@ -479,55 +480,48 @@ useEffect(()=>{
               } else {
                 console.log("data already present saving appmenu");
                 dispatch(setDrawerData(jsonValue));
-                dispatch(setAppUserId(parsedJsonValue.user_type_id));
-                dispatch(setAppUserName(parsedJsonValue.name));
-                dispatch(setAppUserType(parsedJsonValue.user_type));
-                dispatch(setUserData(parsedJsonValue));
-                dispatch(setId(parsedJsonValue.id));
+
                 dispatch(
                   setDashboardData(getDashboardData?.body?.app_dashboard)
                 );
                 console.log(
-                  "navigate to dashboard error",
+                  "navigate to dashboard error 457",
                   !__DEV__ && minVersionSupport,
                   jsonValue,
                   getDashboardData,
                   getWorkflowData
-                
                 );
-                console.log("checkKycOptions", checkKycOption1,checkKycOption2)
-                  if((checkKycOption1 || checkKycOption2))
-                  {
-                    getFormData   &&
-                    (!__DEV__ ? minVersionSupport : true) &&
-                    jsonValue &&
-                    getDashboardData &&
-                    getWorkflowData &&
-                    navigation.reset({
-                      index: "0",
-                      routes: [{ name: "Dashboard" }],
-                    });
-                  }
-                  // else{
-                  //   getFormData   &&
-                  //   (!__DEV__ ? minVersionSupport : true) &&
-                  //   jsonValue &&
-                  //   getDashboardData &&
-                  //   getWorkflowData &&
-                  //   navigation.reset({
-                  //     index: "0",
-                  //     routes: [{ name: "Introduction" }],
-                  //   });
-                  // }
-                
+                // console.log(
+                //   "checkKycOptions",
+                //   checkKycOption1,
+                //   checkKycOption2
+                // );
+                // if (checkKycOption1 || checkKycOption2) {
+                //   getFormData &&
+                //     (!__DEV__ ? minVersionSupport : true) &&
+                //     jsonValue &&
+                //     getDashboardData &&
+                //     getWorkflowData &&
+                //     navigation.reset({
+                //       index: "0",
+                //       routes: [{ name: "Dashboard" }],
+                //     });
+                // }
+                // else{
+                //   getFormData   &&
+                //   (!__DEV__ ? minVersionSupport : true) &&
+                //   jsonValue &&
+                //   getDashboardData &&
+                //   getWorkflowData &&
+                //   navigation.reset({
+                //     index: "0",
+                //     routes: [{ name: "Introduction" }],
+                //   });
+                // }
               }
             } else {
               console.log("JsonValue is null", parsedJsonValue);
-              dispatch(setAppUserId(parsedJsonValue.user_type_id));
-              dispatch(setAppUserName(parsedJsonValue.name));
-              dispatch(setAppUserType(parsedJsonValue.user_type));
-              dispatch(setUserData(parsedJsonValue));
-              dispatch(setId(parsedJsonValue.id));
+
               dispatch(setDashboardData(getDashboardData?.body?.app_dashboard));
               setShowLoading(false);
 
@@ -575,30 +569,32 @@ useEffect(()=>{
         tempDrawerData && dispatch(setDrawerData(tempDrawerData[0]));
 
         console.log(
-          "navigate to dashboard error",
+          "navigate to dashboard error 545",
           // minVersionSupport,
           getAppMenuData,
           getDashboardData,
           getWorkflowData
         );
 
-        if((checkKycOption1 || checkKycOption2))
-        {
-          getFormData &&
-          (!__DEV__ ? minVersionSupport : true) &&
-          getAppMenuData &&
-          getDashboardData &&
-          getWorkflowData &&
-          navigation.reset({ index: "0", routes: [{ name: "Dashboard" }] });
-        }
-        else{
-          getFormData &&
-          (!__DEV__ ? minVersionSupport : true) &&
-          getAppMenuData &&
-          getDashboardData &&
-          getWorkflowData &&
-          navigation.reset({ index: "0", routes: [{ name: "CheckKycOptions" }] });
-        }
+        // if (checkKycOption1 || checkKycOption2) {
+        //   getFormData &&
+        //     (!__DEV__ ? minVersionSupport : true) &&
+        //     getAppMenuData &&
+        //     getDashboardData &&
+        //     getWorkflowData &&
+        //     navigation.reset({ index: "0", routes: [{ name: "Dashboard" }] });
+        // } else {
+        //   console.log("ashdghfasghfdghfghsadghasgjyq",checkKycOption1,checkKycOption2)
+        //   getFormData &&
+        //     (!__DEV__ ? minVersionSupport : true) &&
+        //     getAppMenuData &&
+        //     getDashboardData &&
+        //     getWorkflowData &&
+        //     navigation.reset({
+        //       index: "0",
+        //       routes: [{ name: "CheckKycOptions" }],
+        //     });
+        // }
       }
     } else if (getAppMenuError) {
       console.log("getAppMenuError", getAppMenuError);
@@ -654,51 +650,41 @@ useEffect(()=>{
                       } else {
                         console.log("data already present saving appmenu");
                         dispatch(setDrawerData(jsonValue));
-                        dispatch(setAppUserId(parsedJsonValue.user_type_id));
-                        dispatch(setAppUserName(parsedJsonValue.name));
-                        dispatch(setAppUserType(parsedJsonValue.user_type));
-                        dispatch(setUserData(parsedJsonValue));
-                        dispatch(setId(parsedJsonValue.id));
+
                         dispatch(setDashboardData(jsonValue));
                         console.log(
-                          "navigate to dashboard error",
+                          "navigate to dashboard error 632",
                           minVersionSupport,
                           jsonValue,
                           jsonValue,
                           getWorkflowData
                         );
-
-                        if((checkKycOption1 || checkKycOption2))
-                  {
-                    getFormData   &&
-                    (!__DEV__ ? minVersionSupport : true) &&
-                    jsonValue &&
-                    getDashboardData &&
-                    getWorkflowData &&
-                    navigation.reset({
-                      index: "0",
-                      routes: [{ name: "Dashboard" }],
-                    });
-                  }
-                  else{
-                    getFormData   &&
-                    (!__DEV__ ? minVersionSupport : true) &&
-                    jsonValue &&
-                    getDashboardData &&
-                    getWorkflowData &&
-                    navigation.reset({
-                      index: "0",
-                      routes: [{ name: "CheckKycOptions" }],
-                    });
-                  }
+                        // console.log("get form data", checkKycOption1,checkKycOption2)
+                        // if (checkKycOption1 || checkKycOption2) {
+                        //   getFormData &&
+                        //     (!__DEV__ ? minVersionSupport : true) &&
+                        //     jsonValue &&
+                        //     getDashboardData &&
+                        //     getWorkflowData &&
+                        //     navigation.reset({
+                        //       index: "0",
+                        //       routes: [{ name: "Dashboard" }],
+                        //     });
+                        // } else {
+                        //   getFormData &&
+                        //     (!__DEV__ ? minVersionSupport : true) &&
+                        //     jsonValue &&
+                        //     getDashboardData &&
+                        //     getWorkflowData &&
+                        //     navigation.reset({
+                        //       index: "0",
+                        //       routes: [{ name: "CheckKycOptions" }],
+                        //     });
+                        // }
                       }
                     } else {
                       console.log("JsonValue is null", parsedJsonValue);
-                      dispatch(setAppUserId(parsedJsonValue.user_type_id));
-                      dispatch(setAppUserName(parsedJsonValue.name));
-                      dispatch(setAppUserType(parsedJsonValue.user_type));
-                      dispatch(setUserData(parsedJsonValue));
-                      dispatch(setId(parsedJsonValue.id));
+
                       dispatch(
                         setDashboardData(getDashboardData?.body?.app_dashboard)
                       );
@@ -747,12 +733,13 @@ useEffect(()=>{
       dispatch(setProgram(removedWorkFlow));
       dispatch(setWorkflow(getWorkflowData?.body[0]?.workflow_id));
       const form_type = "2";
+
       parsedJsonValue &&
         getFormFunc({ form_type: form_type, token: parsedJsonValue?.token });
     } else if (getWorkflowError) {
       console.log("getWorkflowError", getWorkflowError);
       setError(true);
-      setMessage("Oops something went wrong");
+      setMessage("Oops something went wrong in workflow");
       if (getWorkflowError?.status == 401) {
         removerTokenData();
       }
@@ -816,10 +803,10 @@ useEffect(()=>{
 
   const restartApp = () => {
     AppRestart.restart();
-};
-const onUpdateDownloaded = () => {
-  restartApp();
-};
+  };
+  const onUpdateDownloaded = () => {
+    restartApp();
+  };
 
   const openSettings = () => {
     if (Platform.OS === "android") {
@@ -1059,9 +1046,94 @@ const onUpdateDownloaded = () => {
     }
   }, [getMinVersionSupportData, getMinVersionSupportError]);
 
-  useEffect(()=>{
-    console.log("check ky options", checkKycOption1,checkKycOption2)
-  },[checkKycOption1,checkKycOption2])
+  useEffect(() => {
+    console.log("jjndnjdjnd", checkKycOption1, checkKycOption2);
+    console.log("parsed Json Val111", parsedJsonValue);
+
+    const checkMpin = async () => {
+      if (checkKycOption1 != undefined || checkKycOption2 != undefined) {
+        console.log(
+          "uidfqwghbdhjcbasnmbcbhbsahjbchas",
+          checkKycOption1,
+          checkKycOption2
+        );
+
+       let mPin = await AsyncStorage.getItem("userMpin")
+
+
+        if (checkKycOption1 == true || checkKycOption2 == true) {
+          dispatch(setAppUserId(parsedJsonValue.user_type_id));
+          dispatch(setAppUserName(parsedJsonValue.name));
+          dispatch(setAppUserType(parsedJsonValue.user_type));
+          dispatch(setUserData(parsedJsonValue));
+          dispatch(setId(parsedJsonValue.id));
+          if(mPin != "" && mPin != undefined && mPin != null){
+
+              getFormData &&
+            parsedJsonValue &&
+            (!__DEV__ ? minVersionSupport : true) &&
+            getDashboardData &&
+            getWorkflowData &&
+            setTimeout(()=>{
+              navigation.reset({
+                index: "0",
+                routes: [{ name: "MpinValidationScreen" }],
+              });
+            },5000)
+         
+
+            // navigation.reset({
+            //   index: "0",
+            //   routes: [{ name: "MpinValidationScreen" }],
+            // });
+          }
+          else{
+            navigation.navigate("SelectUser")
+          }
+        
+          // getFormData &&
+          //   parsedJsonValue &&
+          //   (!__DEV__ ? minVersionSupport : true) &&
+          //   getDashboardData &&
+          //   getWorkflowData &&
+          //   navigation.reset({
+          //     index: "0",
+          //     routes: [{ name: "Dashboard" }],
+          //   });
+
+        } else if (checkKycOption1 == false || checkKycOption2 == false) {
+          dispatch(setAppUserId(parsedJsonValue.user_type_id));
+          dispatch(setAppUserName(parsedJsonValue.name));
+          dispatch(setAppUserType(parsedJsonValue.user_type));
+          dispatch(setUserData(parsedJsonValue));
+          dispatch(setId(parsedJsonValue.id));
+
+          getFormData &&
+            (!__DEV__ ? minVersionSupport : true) &&
+            parsedJsonValue &&
+            getDashboardData &&
+            getWorkflowData &&
+            navigation.reset({
+              index: "0",
+              routes: [{ name: "CheckKycOptions" }],
+            });
+        }
+      }
+    };
+    checkMpin();
+  }, [
+    checkKycOption1,
+    checkKycOption2,
+    getFormData,
+    getDashboardData,
+    getWorkflowData,
+    minVersionSupport,
+    parsedJsonValue,
+  ]);
+
+  useEffect(() => {
+    parsedJsonValue && checkKYCDoneStatus(parsedJsonValue);
+  }, [parsedJsonValue]);
 
   useEffect(() => {
     console.log("internet status", isConnected);
@@ -1088,11 +1160,13 @@ const onUpdateDownloaded = () => {
                 id: item.user_type_id,
               };
             });
-            console.log("appUserDataqwerty", appUsersData)
+            console.log("appUserDataqwerty", appUsersData);
             dispatch(setAppUsersData(appUsersData));
           }
         } else {
-          console.log("There is no user data calling the api for the first time");
+          console.log(
+            "There is no user data calling the api for the first time"
+          );
           getUsers();
         }
       } catch (e) {
@@ -1102,7 +1176,7 @@ const onUpdateDownloaded = () => {
     getData();
     dispatch(setAppVersion(currentVersion));
 
-    currentVersion &&  getMinVersionSupportFunc(currentVersion);
+    currentVersion && getMinVersionSupportFunc(currentVersion);
     getAppTheme("modenik");
     getData();
   }, [isConnected, locationStatusChecked]);
@@ -1141,23 +1215,21 @@ const onUpdateDownloaded = () => {
     const jsonValue = await AsyncStorage.getItem("loginData");
 
     const parsedJsonValues = JSON.parse(jsonValue);
-    console.log("parsedJsonValue", parsedJsonValue)
+    console.log("parsedJsonValue", parsedJsonValue);
     setParsedJsonValue(parsedJsonValues);
-    if(jsonValue!=null)
-    checkKYCDoneStatus(parsedJsonValues)
-    
+
     const value = await AsyncStorage.getItem("isAlreadyIntroduced");
-    console.log("Valuesisisisis", value)
+    console.log("Valuesisisisis", value, jsonValue);
 
     if (value != null && jsonValue != null) {
       // value previously stored
       try {
-        console.log("parsedJsonValues",parsedJsonValues)
+        console.log("parsedJsonValues", parsedJsonValues);
 
         const getData = async () => {
           try {
             const dataStored = await AsyncStorage.getItem("storedBanner");
-            console.log("data from async before convevrsion", dataStored)
+            console.log("data from async before convevrsion", dataStored);
             const valueStoredBanner = JSON.parse(dataStored);
             console.log("data from async", valueStoredBanner);
             if (valueStoredBanner !== null) {
@@ -1213,15 +1285,15 @@ const onUpdateDownloaded = () => {
       console.log("minVersionSupport while login", minVersionSupport);
       __DEV__ && setMinVersionSupport(true);
 
-      // if (value === "Yes") {
-      //   setTimeout(()=>{
-      //   navigation.navigate("Introduction");
-      //   },10000)
-      // } else {
-      //   setTimeout(()=>{
-      //   navigation.navigate("Introduction");
-      //   },10000)
-      // }
+      if (value === "Yes") {
+        setTimeout(() => {
+          navigation.navigate("SelectUser");
+        }, 8000);
+      } else {
+        setTimeout(() => {
+          navigation.navigate("Introduction");
+        }, 8000);
+      }
       // console.log("isAlreadyIntroduced",isAlreadyIntroduced,gotLoginData)
     }
   };
@@ -1341,100 +1413,103 @@ const onUpdateDownloaded = () => {
 
   //---------------------------------------
 
-  const checkKYCDoneStatus =(kycData)=>{
+  const checkKYCDoneStatus = (kycData) => {
+    const kycCompletedCount = [];
+    let kycOptions1;
+    let kycOptions2;
 
-    const kycCompletedCount = []
-    
-      for(var i=0;i<kycOption1.length;i++)
-      {
-        if(kycOption1.includes("aadhar") && !kycCompletedCount.includes("aadhar"))
-        {
-          if(kycData.is_valid_aadhar )
-          {
-            kycCompletedCount.push("aadhar")
-          }
-        }
-        if(kycOption1.includes("gstin") && !kycCompletedCount.includes("gstin"))
-        {
-          if(kycData.is_valid_gstin)
-          {
-            kycCompletedCount.push("gstin")
-          }
-        } 
-        if(kycOption1.includes("pan") && !kycCompletedCount.includes("pan"))
-        {
-          if(kycData.is_valid_pan)
-          {
-            kycCompletedCount.push("pan")
-          }
+    console.log("the kyc dataaaaa=>", kycData);
+
+    for (var i = 0; i < kycOption1.length; i++) {
+      if (
+        kycOption1.includes("aadhar") &&
+        !kycCompletedCount.includes("aadhar")
+      ) {
+        if (kycData.is_valid_aadhar) {
+          kycCompletedCount.push("aadhar");
         }
       }
-    
-      var count1 =0;
-
-    for(var i=0;i<kycCompletedCount.length;i++)
-    {
-      if(kycOption1.includes(kycCompletedCount[i] ) )
-      {
-        count1 ++;
+      if (
+        kycOption1.includes("gstin") &&
+        !kycCompletedCount.includes("gstin")
+      ) {
+        if (kycData.is_valid_gstin) {
+          kycCompletedCount.push("gstin");
+        }
+      }
+      if (kycOption1.includes("pan") && !kycCompletedCount.includes("pan")) {
+        if (kycData.is_valid_pan) {
+          kycCompletedCount.push("pan");
+        }
       }
     }
 
-    console.log("count", count1,kycOption1.length)
-    if(count1 == kycOption1.length)
-    {
-      setCheckKycOption1(true)
-    }
-    else{
-      setCheckKycOption1(false)
-    }
-    console.log("new clg",kycCompletedCount.length,kycOption1.length)    
-    
-    if(checkKycOption1 == false && checkKycOption1!=undefined)
-    {
-      for(var i=0;i<kycOption2.length;i++)
-      {
-        if(kycOption2.includes("aadhar") && !kycCompletedCount.includes("aadhar"))
-        {
-          if(kycData.is_valid_aadhar)
-          {
-            kycCompletedCount.push("aadhar")
-          }
-        }
-        if(kycOption2.includes("gstin") && !kycCompletedCount.includes("gstin"))
-        {
-          if(kycData.is_valid_gstin)
-          {
-            kycCompletedCount.push("gstin")
-          }
-        }
-        if(kycOption2.includes("pan") && !kycCompletedCount.includes("pan"))
-        {
-          if(kycData.is_valid_pan)
-          {
-            kycCompletedCount.push("pan")
-          }
-        }
-      }
-      var count2 =0;
-    for(var i=0;i<kycCompletedCount.length;i++)
-    {
-      if(kycOption2.includes(kycCompletedCount[i]))
-      {
-        count2 ++;
-      }
-    }
-    if(count2 == kycOption2.length)
-    {
-      setCheckKycOption2(true)
-    }
-    else{
-      setCheckKycOption2(false)
-    }
-    }
-    
+    var count1 = 0;
 
+    for (var i = 0; i < kycCompletedCount.length; i++) {
+      if (kycOption1.includes(kycCompletedCount[i])) {
+        count1++;
+      }
     }
+
+    if (count1 == kycOption1.length) {
+      setCheckKycOption1(true);
+      kycOptions1 = true;
+    } else {
+      kycOptions1 = false;
+      setCheckKycOption1(false);
+    }
+    console.log("new clg", checkKycOption1, kycOptions1);
+
+    if (kycOptions1 == false && kycOptions1 != undefined) {
+      for (var i = 0; i < kycOption2.length; i++) {
+        console.log("inside option 2 array", kycOptions1, kycData);
+        if (
+          kycOption2.includes("aadhar") &&
+          !kycCompletedCount.includes("aadhar")
+        ) {
+          if (kycData.is_valid_aadhar) {
+            kycCompletedCount.push("aadhar");
+          }
+        }
+        if (
+          kycOption2.includes("gstin") &&
+          !kycCompletedCount.includes("gstin")
+        ) {
+          if (kycData.is_valid_gstin) {
+            kycCompletedCount.push("gstin");
+          }
+        }
+        if (kycOption2.includes("pan") && !kycCompletedCount.includes("pan")) {
+          if (kycData.is_valid_pan) {
+            kycCompletedCount.push("pan");
+          }
+        }
+      }
+      var count2 = 0;
+      for (var i = 0; i < kycCompletedCount.length; i++) {
+        if (kycOption2.includes(kycCompletedCount[i])) {
+          count2++;
+        }
+      }
+      console.log("count2 from option array 2", count2, kycData);
+      if (count2 == kycOption2.length) {
+        kycOptions2 = true;
+        setCheckKycOption2(true);
+      } else {
+        kycOptions2 = false;
+        setCheckKycOption2(false);
+      }
+      console.log("new clg two", kycCompletedCount.length, kycOption1.length);
+      console.log(
+        "hagshdhasfhgdfuygwgqd",
+        checkKycOption1,
+        checkKycOption2,
+        kycOptions1,
+        kycOptions2
+      );
+    }
+  };
 
   const modalClose = () => {
     setError(false);
@@ -1478,13 +1553,19 @@ const onUpdateDownloaded = () => {
       <View style={styles.container}>
         <Text style={styles.header}>Updating Application</Text>
         <Text style={styles.text}>
-          Download Progress: {(downloadProgress*100).toFixed(2)}%
+          Download Progress: {(downloadProgress * 100).toFixed(2)}%
         </Text>
-        {Platform.OS === 'android' ? (
-          <Progress.Bar color={getAppThemeData?.body?.theme?.color_shades["700"]} progress={downloadProgress} width={300} />
+        {Platform.OS === "android" ? (
+          <Progress.Bar
+            color={getAppThemeData?.body?.theme?.color_shades["700"]}
+            progress={downloadProgress}
+            width={300}
+          />
         ) : (
           <View style={styles.progressContainer}>
-            <View style={[styles.progressFill, { width: `${downloadProgress}%` }]} />
+            <View
+              style={[styles.progressFill, { width: `${downloadProgress}%` }]}
+            />
           </View>
         )}
         {downloadProgress === 100 && (
@@ -1497,50 +1578,69 @@ const onUpdateDownloaded = () => {
   // console.log("internet connection status",connected)
   return (
 <View style={{height:'100%',width:"100%",backgroundColor:"#f77b21"}} >
+    <View style={{ height: "100%", width: "100%" }}>
       {/* <ImageBackground resizeMode='stretch' style={{  height: '100%', width: '100%', alignItems:'center',justifyContent:'center' }} source={require('../../../assets/images/splash2.png')}>  */}
       {/* <InternetModal visible={!connected} comp = {NoInternetComp} /> */}
       {/* {isSlowInternet && <InternetModal visible={isSlowInternet} comp = {SlowInternetComp} /> } */}
 
       <FastImage
-                    style={{ width: "100%", height:startDownload ? '80%':'100%', alignSelf: 'center'}}
-                    source={{
-                        uri: gifUri, // Update the path to your GIF
-                        priority: FastImage.priority.normal,
-                    }}
-                    resizeMode={FastImage.resizeMode.cover}
-                />
-   
-     
-      {error &&  <ErrorModal
-          modalClose={modalClose}
+        style={{
+          width: "100%",
+          height: startDownload ? "80%" : "100%",
+          alignSelf: "center",
+        }}
+        source={{
+          uri: gifUri, // Update the path to your GIF
+          priority: FastImage.priority.normal,
+        }}
+        resizeMode={FastImage.resizeMode.cover}
+      />
 
+      {error && (
+        <ErrorModal
+          modalClose={modalClose}
           message={message}
-          openModal={error}></ErrorModal>
-      }
+          openModal={error}
+        ></ErrorModal>
+      )}
       {/* <Image  style={{ width: 200, height: 200,  }}  source={require('../../../assets/gif/Tibcongif.gif')} /> */}
       {
       startDownload && <ShowDownloadProgress  downloadProgress={downloadProgress} />
+     }
 
-      }
-       
-     {!startDownload &&  <View style={{position:'absolute',bottom:30,height:40,width:'100%'}}> 
-      <View>
-      {/* {loading ? (
+      {!startDownload && (
+        <View
+          style={{
+            position: "absolute",
+            bottom: 30,
+            height: 40,
+            width: "100%",
+          }}
+        >
+          <View>
+            {/* {loading ? (
         <Text>Loading...</Text>
       ) : (
         
         <Text>Response Time: {responseTime} ms</Text>
       )} */}
+          </View>
+
+          <ActivityIndicator
+            size={"medium"}
+            animating={true}
+            color={MD2Colors.yellow800}
+          />
+          <PoppinsTextMedium
+            style={{ color: "white", marginTop: 4 }}
+            content="Please Wait"
+          ></PoppinsTextMedium>
+        </View>
+      )}
+
+      {/* </ImageBackground>  */}
     </View>
-    
-      <ActivityIndicator size={'medium'} animating={true} color={MD2Colors.yellow800} />
-      <PoppinsTextMedium style={{color:'white',marginTop:4}} content="Please Wait"></PoppinsTextMedium>
-
-      </View>}
-        
-       {/* </ImageBackground>  */}
-       </View>
-
+    </View>
   );
 };
 
@@ -1552,16 +1652,21 @@ const styles = StyleSheet.create({
     borderTopLeftRadius: 20,
     borderTopRightRadius:20,
     shadowColor: '#000',
+    padding: 20,
+    alignItems: "center",
+    backgroundColor: "white",
+    borderRadius: 10,
+    shadowColor: "#000",
     shadowOpacity: 0.1,
     shadowRadius: 5,
     elevation: 5,
     padding:10,
-    height:'20%'
+    height: '20%',
   },
   header: {
     fontSize: 20,
-    fontWeight: 'bold',
-    color:"black",
+    fontWeight: "bold",
+    color: "black",
     marginBottom: 10,
   },
   text: {
@@ -1569,27 +1674,27 @@ const styles = StyleSheet.create({
     fontSize: 16,
   },
   progressBar: {
-    width: '100%',
+    width: "100%",
     height: 20,
     marginVertical: 10,
   },
   progressContainer: {
-    width: '100%',
+    width: "100%",
     height: 20,
-    backgroundColor: '#e0e0df',
+    backgroundColor: "#e0e0df",
     borderRadius: 5,
     marginVertical: 10,
   },
   progressFill: {
-    height: '100%',
-    backgroundColor: '#3b5998', // Change to desired color
+    height: "100%",
+    backgroundColor: "#3b5998", // Change to desired color
     borderRadius: 5,
   },
   completeText: {
     marginTop: 10,
     fontSize: 16,
-    color: '#28a745', // Green color for success message
+    color: "#28a745", // Green color for success message
   },
-})
+});
 
 export default Splash;

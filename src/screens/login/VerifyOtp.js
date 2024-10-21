@@ -60,7 +60,9 @@ import { kycOption1, kycOption2 } from "../../utils/HandleClientSetup";
 import LeftIcon from "react-native-vector-icons/AntDesign";
 
 const VerifyOtp = ({ navigation, route }) => {
-  const [mobile, setMobile] = useState(route.params.navigationParams.mobile);
+  const [mobile, setMobile] = useState(route.params?.navigationParams?.mobile);
+  const [isMpin, setIsMpin] = useState();
+
   const [otp, setOtp] = useState("");
   const [checkForKyc, setCheckForKyc] = useState();
   const [checkKycOption1, setCheckKycOption1] = useState();
@@ -76,8 +78,23 @@ const VerifyOtp = ({ navigation, route }) => {
     []
   );
 
+  console.log("IsMPINNNNNN", isMpin)
   //modal
   const [openModalWithBorder, setModalWithBorder] = useState(false);
+
+  useEffect(()=>{
+    const checkIsMpin = async()=>{
+      const data = await AsyncStorage.getItem('userMpin');
+      console.log("asyc data", data)
+      if(data != null && data != undefined && data!= ""){
+        setIsMpin(true)
+      }
+      else{
+        setIsMpin(false)
+      }
+    }
+    checkIsMpin()
+  },[])
 
   const dispatch = useDispatch();
   // fetching theme for the screen-----------------------
@@ -224,6 +241,7 @@ const VerifyOtp = ({ navigation, route }) => {
 
   // console.log("Navigation Params are", route.params.navigationParams)
   const navigationParams = route?.params?.navigationParams;
+  
   const kycData = route.params.kycData;
   console.log("KYC DATA IN OTP VERIFICATION PAGE", kycData);
   //   const needsApproval = route.params.navigationParams.needsApproval;
@@ -268,7 +286,7 @@ const VerifyOtp = ({ navigation, route }) => {
         const tempDrawerData = getAppMenuData.body.filter((item) => {
           return item.user_type === parsedJsonValue.user_type;
         });
-        // console.log("tempDrawerData", JSON.stringify(tempDrawerData))
+        console.log("tempDrawerData", JSON.stringify(tempDrawerData))
         tempDrawerData && dispatch(setDrawerData(tempDrawerData[0]));
         setModalWithBorder(true);
       }
@@ -379,7 +397,7 @@ const VerifyOtp = ({ navigation, route }) => {
     console.log("storeDataloginData", value);
     try {
       const jsonValue = JSON.stringify(value);
-      await AsyncStorage.setItem("loginData", jsonValue);
+      // await AsyncStorage.setItem("loginData", jsonValue);
     } catch (e) {
       console.log("Error while saving loginData", e);
     }
@@ -418,6 +436,35 @@ const VerifyOtp = ({ navigation, route }) => {
     }
   }, [getBannerError, getBannerData]);
 
+  async function updateTokenInAsync (newToken) {
+
+    console.log("updateTokenInAsync",newToken)
+    try {
+      const jsonValue = JSON.stringify(newToken);
+      await AsyncStorage.setItem("loginData", jsonValue);
+    } catch (e) {
+      
+      console.log("error in updating token",e)
+    }
+    
+
+    const parsedJsonValues = JSON.parse(jsonValue);
+
+
+    
+    console.log("oldToken", parsedJsonValues?.token)
+    const newJsonValues = { ...parsedJsonValues , token : newToken};
+    console.log("newToken", newJsonValues?.token);
+
+    await AsyncStorage.setItem("kycData", JSON.stringify(newJsonValues));
+    await AsyncStorage.setItem("loginData", JSON.stringify(newJsonValues));
+
+
+    const check = await AsyncStorage.getItem("loginData");
+
+    console.log("check", JSON.parse(check)?.token);
+  }
+
   useEffect(() => {
     if (verifyOtpData) {
       console.log("user Login Data", verifyOtpData);
@@ -426,10 +473,11 @@ const VerifyOtp = ({ navigation, route }) => {
           verifyOtpData?.body?.user_type_id,
           verifyOtpData?.body?.name,
           verifyOtpData?.body?.user_type
-        );
+        ); 
         setParsedJsonValue(verifyOtpData?.body);
         console.log("successfullyLoggedIn");
         saveToken(verifyOtpData?.body?.token);
+        updateTokenInAsync(verifyOtpData?.body)
         storeData(verifyOtpData?.body);
         saveUserDetails(verifyOtpData?.body);
         verifyOtpData?.body?.token &&
@@ -476,14 +524,24 @@ const VerifyOtp = ({ navigation, route }) => {
   }, [verifyLoginOtpData, verifyLoginOtpError]);
 
   useEffect(() => {
-    if (checkKycOption1) {
-      navigation.reset({ index: "0", routes: [{ name: "Dashboard" }] });
-      // !checkForKyc && navigation.navigate("CheckKycOptions")
-    } else if (checkKycOption2) {
-      navigation.reset({ index: "0", routes: [{ name: "Dashboard" }] });
-    } else if (checkKycOption1 == false && checkKycOption2 == false) {
-      navigation.reset({ index: "0", routes: [{ name: "CheckKycOptions" }] });
-    }
+
+
+      if (checkKycOption1) {
+        isMpin ?
+        navigation.reset({ index: "0", routes: [{ name: "Dashboard" }] }) :
+        navigation.reset({ index: "0", routes: [{ name: "MpinSetupScreen" }] });
+  
+        // !checkForKyc && navigation.navigate("CheckKycOptions")
+      } else if (checkKycOption2) {
+        isMpin ?
+        navigation.reset({ index: "0", routes: [{ name: "Dashboard" }] }):
+        navigation.reset({ index: "0", routes: [{ name: "MpinSetupScreen" }] });
+  
+      } else if (checkKycOption1 == false && checkKycOption2 == false) {
+        navigation.reset({ index: "0", routes: [{ name: "CheckKycOptions",params:{isMPin:isMpin} }] });
+      }
+    
+ 
   }, [checkKycOption1, checkKycOption2]);
 
   // -------------------------------------------------
@@ -775,6 +833,7 @@ const VerifyOtp = ({ navigation, route }) => {
             source={{ uri: icon }}
           ></Image>
         </View>
+
         <View
           style={{
             alignItems: "flex-start",

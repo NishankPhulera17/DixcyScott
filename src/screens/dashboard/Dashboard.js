@@ -39,6 +39,8 @@ import { useTranslation } from 'react-i18next';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { needCaimpaign } from '../../utils/HandleClientSetup';
 import { useFetchLegalsMutation } from '../../apiServices/fetchLegal/FetchLegalApi';
+import { useGetAppDashboardDataMutation } from '../../apiServices/dashboard/AppUserDashboardApi';
+import { setDashboardData } from '../../../redux/slices/dashboardDataSlice';
 
 
 
@@ -120,6 +122,16 @@ const Dashboard = ({ navigation }) => {
     isError: fetchUserPointsHistoryIsError
 }] = useFetchUserPointsHistoryMutation()
 
+const [
+  getDashboardFunc,
+  {
+    data: getDashboardData,
+    error: getDashboardError,
+    isLoading: getDashboardIsLoading,
+    isError: getDashboardIsError,
+  },
+] = useGetAppDashboardDataMutation();
+
   
   const id = useSelector(state => state.appusersdata.id);
   const {t} = useTranslation();
@@ -135,6 +147,10 @@ const Dashboard = ({ navigation }) => {
     fetchUserPointsHistoryFunc(params)
 
   }
+
+
+
+
 
   useEffect(()=>{
     if(locationSetup)
@@ -580,9 +596,9 @@ const Dashboard = ({ navigation }) => {
           resizeMode={FastImage.resizeMode.contain}
         />
       }
-          <View style={{ width: '100%', alignItems: "center", justifyContent: "center", marginBottom: 20 }}>
+          {/* <View style={{ width: '100%', alignItems: "center", justifyContent: "center", marginBottom: 20 }}>
             {showKyc && <KYCVerificationComponent buttonTitle={t("Complete Your KYC")} title={t("Your KYC is not completed")}></KYCVerificationComponent>}
-          </View>
+          </View> */}
           {/* <View style={{ flexDirection: "row", width: '100%', alignItems: "center", justifyContent: 'space-evenly' }}> */}
           <ScrollView contentContainerStyle={{}}  horizontal={true}>
           <DashboardSupportBox title={t("Program Brochure")} text="program brochure" backgroundColor="#D8C8C8" borderColor="#FDDADA" image={require('../../../assets/images/vijetaDashboard.png')} pdf={programBrochure?.files?.length> 0 ? programBrochure.files[0] : "" } ></DashboardSupportBox>
