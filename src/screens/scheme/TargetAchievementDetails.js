@@ -25,6 +25,10 @@ const TargetAchievementDetails = ({ navigation, route }) => {
   const [searchTitle, setSearchTitle] = useState();
   const type = route.params.type;
   const schemeData = route.params.data;
+  const titleName = route.params.name;
+
+  console.log("Title name", titleName)
+
   const sb_id = route.params.sb_id;
   const secondaryThemeColor = useSelector(
     (state) => state.apptheme.secondaryThemeColor
@@ -34,7 +38,7 @@ const TargetAchievementDetails = ({ navigation, route }) => {
   );
 
   const userData = useSelector((state) => state.appusersdata.userData);
-  console.log("userdata", userData);
+  console.log("schemeDataaa", schemeData);
 
   const [
     getSalesBoosterFocusFunc,
@@ -977,7 +981,7 @@ const TargetAchievementDetails = ({ navigation, route }) => {
               marginLeft: 20,
             }}
           >
-            Super 20-20 for 2024
+            {titleName}
           </Text>
           {/* <FilterScheme title={"Super 20-20 for 2024"}></FilterScheme> */}
           {/* <View style={{ width: "90%", height: "30%" }}>

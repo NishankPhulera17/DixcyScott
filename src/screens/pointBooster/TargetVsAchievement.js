@@ -467,6 +467,7 @@ const TargetVsAchievement = ({ navigation }) => {
               navigation.navigate("TargetAchievementDetails", {
                 type: "20-20",
                 data: props.data,
+                name:props.name,
                 sb_id: props.sb_id,
                 date:selectedDataStart
               });
