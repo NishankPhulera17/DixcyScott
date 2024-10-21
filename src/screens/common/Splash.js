@@ -11,7 +11,7 @@ import {
   Linking,
   BackHandler,
   NativeModules,
-  ProgressBarAndroidComponent,
+  Modal,
 } from "react-native";
 import { useGetAppThemeDataMutation } from "../../apiServices/appTheme/AppThemeApi";
 import { useSelector, useDispatch } from "react-redux";
@@ -112,7 +112,8 @@ import RNFetchBlob from "rn-fetch-blob";
 import RNFS from "react-native-fs";
 import FileViewer from "react-native-file-viewer";
 import RNApkInstaller from "@dominicvonk/react-native-apk-installer";
-import * as Progress from "react-native-progress";
+import * as Progress from 'react-native-progress';
+import { useCheckLatestVersionForNonPlaystoreApiMutation } from "../../apiServices/minVersion/latestVersionForNonPlaystoreApi";
 
 const Splash = ({ navigation }) => {
   const dispatch = useDispatch();
@@ -167,6 +168,16 @@ const Splash = ({ navigation }) => {
       isError: getWorkflowIsError,
     },
   ] = useGetWorkflowMutation();
+
+  const [
+    checkLatestVersionFunc,
+    {
+      data : checkLatestVersionData,
+      error: checkLatestVersionError,
+      isLoading: checkLatestVersionIsLoading,
+      isError : checkLatestVersionIsError
+    }
+  ] = useCheckLatestVersionForNonPlaystoreApiMutation()
 
   const [
     getFormFunc,
@@ -265,12 +276,12 @@ const Splash = ({ navigation }) => {
 
     //uncoment this to start check for new update
 
-    // getPermission()
+    
   }, []);
 
   // in app update logic---------------------------------------
 
-  const actualDownload = () => {
+  const actualDownload = (url) => {
     const { dirs } = RNFetchBlob.fs;
     const dirToSave =
       Platform.OS === "ios" ? dirs.DocumentDir : dirs.DownloadDir;
@@ -307,35 +318,37 @@ const Splash = ({ navigation }) => {
         console.log("progress", received / total);
         setDownloadProgress(received / total);
       })
-      .then((res) => {
-        if (Platform.OS === "ios") {
-          RNFetchBlob.fs.writeFile(configfb.path, res.data, "base64");
-          RNFetchBlob.ios.previewDocument(configfb.path);
-        }
-        if (Platform.OS === "android") {
-          console.log("Response from file download", JSON.stringify(res));
-          console.log("File downloaded");
-          const filePath = res.path(); // Use res.path() to get the actual path
-          console.log("path of response", filePath);
-          RNApkInstaller.install(filePath);
-        }
-      })
-      .catch((e) => {
-        console.log("Invoice Download Error==>", e);
-      });
-  };
+        .then(res => {
+            if (Platform.OS === 'ios') {
+                RNFetchBlob.fs.writeFile(configfb.path, res.data, 'base64');
+                RNFetchBlob.ios.previewDocument(configfb.path);
+            }
+            if (Platform.OS === 'android') {
+                console.log("Response from file download", JSON.stringify(res));
+                console.log("File downloaded");
+                const filePath = res.path(); // Use res.path() to get the actual path
+                console.log("path of response", filePath) 
+                setStartDownload(false)
+                RNApkInstaller.install(filePath);
+            }
+        })
+        .catch(e => {
+            console.log('Invoice Download Error==>', e);
+        });
+};
 
-  const getPermission = async () => {
-    if (Platform.OS === "ios") {
-    } else {
-      try {
-        setStartDownload(true);
-        actualDownload();
-      } catch (err) {
-        console.log("display error", err);
-      }
-    }
-  };
+
+
+const getPermission = async (uri) => {
+  if (Platform.OS === 'ios') {
+  } else {
+    try {
+      setStartDownload(true)
+      actualDownload(uri)
+    } catch (err) {
+      console.log("display error",err)    }
+  }
+};
 
   // ---------------------------------------------------------
   useEffect(() => {
@@ -368,14 +381,23 @@ const Splash = ({ navigation }) => {
         }
       }
     };
-    requestNotificationPermission();
-  }, []);
+    requestNotificationPermission()
+  },[])
+useEffect(()=>{
+  if(currentVersion)
+  {
+    console.log("currentVersion", currentVersion);
+
+    currentVersion && getMinVersionSupportFunc(currentVersion);
+      currentVersion && checkLatestVersionFunc()
+  }
+},[currentVersion])
+
+
 
   useEffect(() => {
-    console.log("currentVersion", currentVersion);
     if (isConnected.isConnected) {
-      currentVersion && getMinVersionSupportFunc(currentVersion);
-
+      
       const fetchTerms = async () => {
         // const credentials = await Keychain.getGenericPassword();
         // const token = credentials.username;
@@ -397,6 +419,23 @@ const Splash = ({ navigation }) => {
       fetchPolicies();
     }
   }, []);
+
+  useEffect(()=>{
+    if(checkLatestVersionData)
+    {
+      console.log("checkLatestVersionData",checkLatestVersionData,currentVersion)
+      const latestVersion = checkLatestVersionData?.body?.version
+      const uri = checkLatestVersionData?.body?.url
+      if(latestVersion > currentVersion)
+      {
+        getPermission(uri)
+      }
+    }
+    else if(checkLatestVersionError)
+    {
+      console.log("checkLatestVersionError",checkLatestVersionError)
+    }
+  },[checkLatestVersionData,checkLatestVersionError])
 
   useEffect(() => {
     if (getTermsData) {
@@ -1510,6 +1549,8 @@ const Splash = ({ navigation }) => {
 
   const ShowDownloadProgress = ({ downloadProgress }) => {
     return (
+
+     
       <View style={styles.container}>
         <Text style={styles.header}>Updating Application</Text>
         <Text style={styles.text}>
@@ -1537,6 +1578,7 @@ const Splash = ({ navigation }) => {
 
   // console.log("internet connection status",connected)
   return (
+<View style={{height:'100%',width:"100%",backgroundColor:"#f77b21"}} >
     <View style={{ height: "100%", width: "100%" }}>
       {/* <ImageBackground resizeMode='stretch' style={{  height: '100%', width: '100%', alignItems:'center',justifyContent:'center' }} source={require('../../../assets/images/splash2.png')}>  */}
       {/* <InternetModal visible={!connected} comp = {NoInternetComp} /> */}
@@ -1563,9 +1605,9 @@ const Splash = ({ navigation }) => {
         ></ErrorModal>
       )}
       {/* <Image  style={{ width: 200, height: 200,  }}  source={require('../../../assets/gif/Tibcongif.gif')} /> */}
-      {startDownload && (
-        <ShowDownloadProgress downloadProgress={downloadProgress} />
-      )}
+      {
+      startDownload && <ShowDownloadProgress  downloadProgress={downloadProgress} />
+     }
 
       {!startDownload && (
         <View
@@ -1599,11 +1641,18 @@ const Splash = ({ navigation }) => {
 
       {/* </ImageBackground>  */}
     </View>
+    </View>
   );
 };
 
 const styles = StyleSheet.create({
   container: {
+   
+    alignItems: 'center',
+    backgroundColor: 'white',
+    borderTopLeftRadius: 20,
+    borderTopRightRadius:20,
+    shadowColor: '#000',
     padding: 20,
     alignItems: "center",
     backgroundColor: "white",
@@ -1612,8 +1661,8 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.1,
     shadowRadius: 5,
     elevation: 5,
-    marginVertical: 20,
-    height: 200,
+    padding:10,
+    height: '20%',
   },
   header: {
     fontSize: 20,
