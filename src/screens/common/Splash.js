@@ -11,7 +11,7 @@ import {
   Linking,
   BackHandler,
   NativeModules,
-  ProgressBarAndroidComponent
+  Modal
 } from "react-native";
 import { useGetAppThemeDataMutation } from "../../apiServices/appTheme/AppThemeApi";
 import { useSelector, useDispatch } from "react-redux";
@@ -113,6 +113,7 @@ import RNFS from 'react-native-fs';
 import FileViewer from 'react-native-file-viewer';
 import RNApkInstaller from "@dominicvonk/react-native-apk-installer";
 import * as Progress from 'react-native-progress';
+import { useCheckLatestVersionForNonPlaystoreApiMutation } from "../../apiServices/minVersion/latestVersionForNonPlaystoreApi";
 
 const Splash = ({ navigation }) => {
   const dispatch = useDispatch();
@@ -167,6 +168,16 @@ const Splash = ({ navigation }) => {
       isError: getWorkflowIsError,
     },
   ] = useGetWorkflowMutation();
+
+  const [
+    checkLatestVersionFunc,
+    {
+      data : checkLatestVersionData,
+      error: checkLatestVersionError,
+      isLoading: checkLatestVersionIsLoading,
+      isError : checkLatestVersionIsError
+    }
+  ] = useCheckLatestVersionForNonPlaystoreApiMutation()
 
   const [
     getFormFunc,
@@ -265,13 +276,12 @@ const Splash = ({ navigation }) => {
 
     //uncoment this to start check for new update
 
-    // getPermission()
     
   }, []);
 
   // in app update logic---------------------------------------
 
-  const actualDownload = () => {
+  const actualDownload = (url) => {
     const { dirs } = RNFetchBlob.fs;
     const dirToSave =
         Platform.OS === 'ios' ? dirs.DocumentDir : dirs.DownloadDir;
@@ -298,7 +308,7 @@ const Splash = ({ navigation }) => {
     RNFetchBlob.config({
       // response data will be saved to this path if it has access right.
       path : dirToSave + '/app-release.apk'
-    }).fetch('GET', "https://saas-apk.s3.ap-south-1.amazonaws.com/Lastest-APK/app-release.apk", {})
+    }).fetch('GET', url, {})
         .progress((received, total) => {
           console.log('progress', ((received / total)))
           setDownloadProgress(((received / total)));
@@ -313,6 +323,7 @@ const Splash = ({ navigation }) => {
                 console.log("File downloaded");
                 const filePath = res.path(); // Use res.path() to get the actual path
                 console.log("path of response", filePath) 
+                setStartDownload(false)
                 RNApkInstaller.install(filePath);
             }
         })
@@ -323,12 +334,12 @@ const Splash = ({ navigation }) => {
 
 
 
-const getPermission = async () => {
+const getPermission = async (uri) => {
   if (Platform.OS === 'ios') {
   } else {
     try {
       setStartDownload(true)
-      actualDownload()
+      actualDownload(uri)
     } catch (err) {
       console.log("display error",err)    }
   }
@@ -366,12 +377,21 @@ const getPermission = async () => {
     };
     requestNotificationPermission()
   },[])
+useEffect(()=>{
+  if(currentVersion)
+  {
+    console.log("currentVersion", currentVersion);
+
+    currentVersion && getMinVersionSupportFunc(currentVersion);
+      currentVersion && checkLatestVersionFunc()
+  }
+},[currentVersion])
+
+
 
   useEffect(() => {
-    console.log("currentVersion", currentVersion);
     if (isConnected.isConnected) {
-      currentVersion && getMinVersionSupportFunc(currentVersion);
-
+      
       const fetchTerms = async () => {
         // const credentials = await Keychain.getGenericPassword();
         // const token = credentials.username;
@@ -393,6 +413,23 @@ const getPermission = async () => {
       fetchPolicies();
     }
   }, []);
+
+  useEffect(()=>{
+    if(checkLatestVersionData)
+    {
+      console.log("checkLatestVersionData",checkLatestVersionData,currentVersion)
+      const latestVersion = checkLatestVersionData?.body?.version
+      const uri = checkLatestVersionData?.body?.url
+      if(latestVersion > currentVersion)
+      {
+        getPermission(uri)
+      }
+    }
+    else if(checkLatestVersionError)
+    {
+      console.log("checkLatestVersionError",checkLatestVersionError)
+    }
+  },[checkLatestVersionData,checkLatestVersionError])
 
   useEffect(() => {
     if (getTermsData) {
@@ -1436,6 +1473,8 @@ const onUpdateDownloaded = () => {
 
   const ShowDownloadProgress = ({ downloadProgress }) => {
     return (
+
+     
       <View style={styles.container}>
         <Text style={styles.header}>Updating Application</Text>
         <Text style={styles.text}>
@@ -1457,13 +1496,13 @@ const onUpdateDownloaded = () => {
 
   // console.log("internet connection status",connected)
   return (
-<View style={{height:'100%',width:"100%"}} >
+<View style={{height:'100%',width:"100%",backgroundColor:"#f77b21"}} >
       {/* <ImageBackground resizeMode='stretch' style={{  height: '100%', width: '100%', alignItems:'center',justifyContent:'center' }} source={require('../../../assets/images/splash2.png')}>  */}
       {/* <InternetModal visible={!connected} comp = {NoInternetComp} /> */}
       {/* {isSlowInternet && <InternetModal visible={isSlowInternet} comp = {SlowInternetComp} /> } */}
 
       <FastImage
-                    style={{ width: "100%", height:startDownload ? "80%" : '100%', alignSelf: 'center'}}
+                    style={{ width: "100%", height:startDownload ? '80%':'100%', alignSelf: 'center'}}
                     source={{
                         uri: gifUri, // Update the path to your GIF
                         priority: FastImage.priority.normal,
@@ -1480,8 +1519,7 @@ const onUpdateDownloaded = () => {
       }
       {/* <Image  style={{ width: 200, height: 200,  }}  source={require('../../../assets/gif/Tibcongif.gif')} /> */}
       {
-      startDownload && 
-      <ShowDownloadProgress  downloadProgress={downloadProgress} />
+      startDownload && <ShowDownloadProgress  downloadProgress={downloadProgress} />
 
       }
        
@@ -1508,16 +1546,17 @@ const onUpdateDownloaded = () => {
 
 const styles = StyleSheet.create({
   container: {
-    padding: 20,
+   
     alignItems: 'center',
     backgroundColor: 'white',
-    borderRadius: 10,
+    borderTopLeftRadius: 20,
+    borderTopRightRadius:20,
     shadowColor: '#000',
     shadowOpacity: 0.1,
     shadowRadius: 5,
     elevation: 5,
-    marginVertical: 20,
-    height:200
+    padding:10,
+    height:'20%'
   },
   header: {
     fontSize: 20,
