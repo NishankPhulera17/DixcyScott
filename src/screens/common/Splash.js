@@ -282,59 +282,65 @@ const Splash = ({ navigation }) => {
   // in app update logic---------------------------------------
 
   const actualDownload = (url) => {
-    const { dirs } = RNFetchBlob.fs;
-    const dirToSave =
-      Platform.OS === "ios" ? dirs.DocumentDir : dirs.DownloadDir;
-
-    console.log("Saving file to directory", dirToSave);
-
-    const configfb = {
-      fileCache: true,
-      addAndroidDownloads: {
-        useDownloadManager: true,
-        notification: true,
-        mediaScannable: true,
-        title: "app-release.apk",
+    try{
+      const { dirs } = RNFetchBlob.fs;
+      const dirToSave =
+        Platform.OS === "ios" ? dirs.DocumentDir : dirs.DownloadDir;
+  
+      console.log("Saving file to directory", dirToSave);
+  
+      const configfb = {
+        fileCache: true,
+        addAndroidDownloads: {
+          useDownloadManager: true,
+          notification: true,
+          mediaScannable: true,
+          title: "app-release.apk",
+          path: `${dirToSave}/app-release.apk`,
+        },
         path: `${dirToSave}/app-release.apk`,
-      },
-      path: `${dirToSave}/app-release.apk`,
-    };
-
-    const configOptions = Platform.select({
-      ios: configfb,
-      android: configfb,
-    });
-
-    RNFetchBlob.config({
-      // response data will be saved to this path if it has access right.
-      path: dirToSave + "/app-release.apk",
-    })
-      .fetch(
-        "GET",
-        "https://saas-apk.s3.ap-south-1.amazonaws.com/Lastest-APK/app-release.apk",
-        {}
-      )
-      .progress((received, total) => {
-        console.log("progress", received / total);
-        setDownloadProgress(received / total);
+      };
+  
+      const configOptions = Platform.select({
+        ios: configfb,
+        android: configfb,
+      });
+  
+      RNFetchBlob.config({
+        // response data will be saved to this path if it has access right.
+        path: dirToSave + "/app-release.apk",
       })
-        .then(res => {
-            if (Platform.OS === 'ios') {
-                RNFetchBlob.fs.writeFile(configfb.path, res.data, 'base64');
-                RNFetchBlob.ios.previewDocument(configfb.path);
-            }
-            if (Platform.OS === 'android') {
-                console.log("Response from file download", JSON.stringify(res));
-                console.log("File downloaded");
-                const filePath = res.path(); // Use res.path() to get the actual path
-                console.log("path of response", filePath) 
-                setStartDownload(false)
-                RNApkInstaller.install(filePath);
-            }
+        .fetch(
+          "GET",
+          url,
+          {}
+        )
+        .progress((received, total) => {
+          console.log("progress", received / total);
+          setDownloadProgress(received / total);
         })
-        .catch(e => {
-            console.log('Invoice Download Error==>', e);
-        });
+          .then(res => {
+              if (Platform.OS === 'ios') {
+                  RNFetchBlob.fs.writeFile(configfb.path, res.data, 'base64');
+                  RNFetchBlob.ios.previewDocument(configfb.path);
+              }
+              if (Platform.OS === 'android') {
+                  console.log("Response from file download", JSON.stringify(res));
+                  console.log("File downloaded");
+                  const filePath = res.path(); // Use res.path() to get the actual path
+                  console.log("path of response", filePath) 
+                  setStartDownload(false)
+                  RNApkInstaller.install(filePath);
+              }
+          })
+          .catch(e => {
+              console.log('Invoice Download Error==>', e);
+          });
+    }
+    catch(err){
+      console.log("Error in downloading", err);
+    }
+  
 };
 
 
