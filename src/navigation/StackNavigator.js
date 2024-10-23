@@ -97,6 +97,7 @@ import MpinSetupScreen from "../screens/mpin/MpinSetupScreen";
 import MpinValidationScreen from "../screens/mpin/MpinValidationScreen";
 import ForgotMpin from "../screens/mpin/ForgotMpin";
 import VerifyOtpForMpin from "../screens/mpin/VerifyOtpForMpin";
+import CheckUpdate from "../screens/checkUpdate/CheckUpdate";
 
 const Stack = createNativeStackNavigator();
 
@@ -173,6 +174,14 @@ const StackNavigator = () => {
           }}
           name="CouponCartList"
           component={CouponCartList}
+        ></Stack.Screen>
+
+<Stack.Screen
+          options={{
+            headerShown: false,
+          }}
+          name="CheckUpdate"
+          component={CheckUpdate}
         ></Stack.Screen>
 
         <Stack.Screen

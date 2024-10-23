@@ -148,6 +148,7 @@ const TargetAchievementDetails = ({ navigation, route }) => {
             // marginTop: 10,
             borderWidth: 0.54, // Add border to the outer container
             borderColor: "black",
+            borderBottomWidth:1.2
           }}
         >
           <View

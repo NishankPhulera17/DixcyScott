@@ -100,7 +100,7 @@ const Dashboard = ({ navigation }) => {
   const [
     getPdfScheme,
     {
-      data: getTermsData,
+      data: getBrochureData,
       error: getTermsError,
       isLoading: termsLoading,
       isError: termsIsError,
@@ -187,11 +187,11 @@ const [
   }, []);
 
   useEffect(()=>{
-    if(getTermsData && getTermsData.body && getTermsData.body.data && getTermsData.body.data.length > 0){
-      console.log("getTermsData dash", getTermsData.body?.data[0])
-      setProgramBrochure(getTermsData.body.data[0]);
+    if(getBrochureData && getBrochureData.body && getBrochureData.body.data && getBrochureData.body.data.length > 0){
+      console.log("getBrochureData dash", getBrochureData.body?.data[0])
+      setProgramBrochure(getBrochureData.body.data[0]);
     }
-  },[getTermsData])
+  },[getBrochureData])
 
   useEffect(() => {
     const handleBackPress = () => {
@@ -344,8 +344,8 @@ const [
         handleLogout();
       }
       else{
-      setError(true)
-      setMessage("Can't get KYC status kindly retry after sometime.")
+      // setError(true)
+      // setMessage("Can't get KYC status kindly retry after sometime.")
       }
       // console.log("getKycStatusError", getKycStatusError)
     }
@@ -601,7 +601,8 @@ const [
           </View> */}
           {/* <View style={{ flexDirection: "row", width: '100%', alignItems: "center", justifyContent: 'space-evenly' }}> */}
           <ScrollView contentContainerStyle={{}}  horizontal={true}>
-          <DashboardSupportBox title={t("Program Brochure")} text="program brochure" backgroundColor="#D8C8C8" borderColor="#FDDADA" image={require('../../../assets/images/vijetaDashboard.png')} pdf={programBrochure?.files?.length> 0 ? programBrochure.files[0] : "" } ></DashboardSupportBox>
+            {console.log("pgb", programBrochure?.files?.[0])}
+          <DashboardSupportBox title={t("Program Brochure")} text="program brochure" backgroundColor="#D8C8C8" borderColor="#FDDADA" image={require('../../../assets/images/vijetaDashboard.png')} pdf={programBrochure?.files?.[0]? programBrochure?.files?.[0]: "" } ></DashboardSupportBox>
 
           <DashboardSupportBox title={"Product Catalogue"} text="product" backgroundColor="#FBFFC6" borderColor="#FEE8D4" image={require('../../../assets/images/productCatalogue.png')} ></DashboardSupportBox>
             <DashboardSupportBox title={t("Media")} text="media" backgroundColor="#D9C7B6" borderColor="#FEE8D4" image={require('../../../assets/images/mediaDashboard.png')} ></DashboardSupportBox>

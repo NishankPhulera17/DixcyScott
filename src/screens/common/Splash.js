@@ -108,7 +108,7 @@ import { splash } from "../../utils/HandleClientSetup";
 import { kycOption1, kycOption2 } from "../../utils/HandleClientSetup";
 import FastImage from "react-native-fast-image";
 import { AppUpdate } from "react-native-update-in-app";
-import RNFetchBlob from "rn-fetch-blob";
+import ReactNativeBlobUtil from "react-native-blob-util";
 import RNFS from "react-native-fs";
 import FileViewer from "react-native-file-viewer";
 import RNApkInstaller from "@dominicvonk/react-native-apk-installer";
@@ -282,65 +282,65 @@ const Splash = ({ navigation }) => {
   // in app update logic---------------------------------------
 
   const actualDownload = (url) => {
+    const { dirs } = ReactNativeBlobUtil.fs;
+    const dirToSave =
+      Platform.OS === "ios" ? dirs.DocumentDir : dirs.DownloadDir;
+
+
+    const configfb = {
+      
+      addAndroidDownloads: {
+        useDownloadManager: true,
+        notification: true,
+        mediaScannable: true,
+        title: "app-release.apk",
+        // path: `${dirToSave}/app-release.apk`,
+      },
+      // path: `${dirToSave}/app-release.apk`,
+    };
+
+    const configOptions = Platform.select({
+      ios: configfb,
+      android: configfb,
+    });
+
+    console.log("Saving file to directory", dirToSave,configOptions);
+
     try{
-      const { dirs } = RNFetchBlob.fs;
-      const dirToSave =
-        Platform.OS === "ios" ? dirs.DocumentDir : dirs.DownloadDir;
-  
-      console.log("Saving file to directory", dirToSave);
-  
-      const configfb = {
-        fileCache: true,
-        addAndroidDownloads: {
-          useDownloadManager: true,
-          notification: true,
-          mediaScannable: true,
-          title: "app-release.apk",
-          path: `${dirToSave}/app-release.apk`,
-        },
-        path: `${dirToSave}/app-release.apk`,
-      };
-  
-      const configOptions = Platform.select({
-        ios: configfb,
-        android: configfb,
-      });
-  
-      RNFetchBlob.config({
-        // response data will be saved to this path if it has access right.
-        path: dirToSave + "/app-release.apk",
+      ReactNativeBlobUtil.config(configOptions)
+      .fetch(
+        "GET",
+        url,
+       
+        
+      )
+      .progress((received, total) => {
+        console.log("progress", received / total);
+        setDownloadProgress(received / total);
       })
-        .fetch(
-          "GET",
-          url,
-          {}
-        )
-        .progress((received, total) => {
-          console.log("progress", received / total);
-          setDownloadProgress(received / total);
+        .then(res => {
+            if (Platform.OS === 'ios') {
+                ReactNativeBlobUtil.fs.writeFile(configfb.path, res.data, 'base64');
+                ReactNativeBlobUtil.ios.previewDocument(configfb.path);
+            }
+            if (Platform.OS === 'android') {
+                console.log("Response from file download", JSON.stringify(res));
+                console.log("File downloaded");
+                const filePath = res.path(); // Use res.path() to get the actual path
+                console.log("path of response", filePath) 
+                setStartDownload(false)
+                RNApkInstaller.install(filePath);
+            }
         })
-          .then(res => {
-              if (Platform.OS === 'ios') {
-                  RNFetchBlob.fs.writeFile(configfb.path, res.data, 'base64');
-                  RNFetchBlob.ios.previewDocument(configfb.path);
-              }
-              if (Platform.OS === 'android') {
-                  console.log("Response from file download", JSON.stringify(res));
-                  console.log("File downloaded");
-                  const filePath = res.path(); // Use res.path() to get the actual path
-                  console.log("path of response", filePath) 
-                  setStartDownload(false)
-                  RNApkInstaller.install(filePath);
-              }
-          })
-          .catch(e => {
-              console.log('Invoice Download Error==>', e);
-          });
+        .catch(e => {
+            console.log('Invoice Download Error==>', e);
+        });
     }
-    catch(err){
-      console.log("Error in downloading", err);
+    catch(e)
+    {
+      console.log("big problem in downloading the file from the internet",e)
     }
-  
+    
 };
 
 
@@ -393,9 +393,12 @@ useEffect(()=>{
   if(currentVersion)
   {
     console.log("currentVersion", currentVersion);
+    let params = { 
+      user_type : "retailer"
+    }
 
     currentVersion && getMinVersionSupportFunc(currentVersion);
-      currentVersion && checkLatestVersionFunc()
+      currentVersion && checkLatestVersionFunc(params)
   }
 },[currentVersion])
 

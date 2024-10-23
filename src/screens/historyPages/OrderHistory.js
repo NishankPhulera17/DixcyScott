@@ -883,8 +883,10 @@ const OrderHistory = ({ navigation }) => {
       <Header></Header>
 
       {displayList.length == 0 && !isLoading && (
-        <View>
-          <FastImage
+        <TouchableOpacity onPress={()=>{
+          setOpenBottomModal(!openBottomModal)
+        }} style={{backgroundColor:'white',marginTop:'20%',alignItems:'center'}}>
+                 <FastImage
             style={{ width: 180, height: 180 }}
             source={{
               uri: noData, // Update the path to your GIF
@@ -892,11 +894,10 @@ const OrderHistory = ({ navigation }) => {
             }}
             resizeMode={FastImage.resizeMode.contain}
           />
-          <PoppinsTextMedium
-            style={{ color: "#808080", marginTop: -20, fontWeight: "bold" }}
-            content="NO DATA"
-          ></PoppinsTextMedium>
-        </View>
+          <View style={{ borderRadius:5,borderWidth:1, borderColor:'white',backgroundColor:ternaryThemeColor}}>
+          <Text style={{color:'black', fontWeight:'600', padding:10, color:'white',fontWeight:'bold'}}>Select Date Filter</Text>
+          </View>
+        </TouchableOpacity>
       )}
 
       {isLoading && (

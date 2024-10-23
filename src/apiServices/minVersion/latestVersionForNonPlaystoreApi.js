@@ -4,9 +4,9 @@ import { slug } from "../../utils/Slug";
 export const latestVersionForNonPlaystoreApi = baseApi.injectEndpoints({
     endpoints:(builder) =>({
         checkLatestVersionForNonPlaystoreApi : builder.mutation({
-            query(){
+            query(params){
                 return {
-                    url:`/api/tenant/in-app-update/check`,
+                    url:`/api/tenant/in-app-update/check?user_type=${params.user_type}`,
                     method:'post',
                     headers:{
                         "slug":slug,

@@ -351,7 +351,7 @@ const CustomDrawer = () => {
               } else if (props.title.toLowerCase() === "dream gift") {
                 navigation.navigate("ComingSoonScreen");
               } else if (props.title.toLowerCase() === "check update") {
-                navigation.navigate("ComingSoonScreen");
+                navigation.navigate("CheckUpdate");
               } else if (props.title.toLowerCase() === "my rewards") {
                 navigation.navigate("RedeemGifts");
               } else if (props.title.toLowerCase() === "media") {
